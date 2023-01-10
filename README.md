@@ -1,4 +1,4 @@
-# pyproject template
+# legendhpges
 
 ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/legend-exp/legend-geom-hpges?logo=git)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/legend-exp/legend-geom-hpges/legendhpges/main?label=main%20branch&logo=github)](https://github.com/legend-exp/legend-geom-hpges/actions)
@@ -10,64 +10,30 @@
 ![License](https://img.shields.io/github/license/legend-exp/legend-geom-hpges)
 [![Read the Docs](https://img.shields.io/readthedocs/legend-geom-hpges?logo=readthedocs)](https://legend-geom-hpges.readthedocs.io)
 
-Template for modern Python package GitHub repositories.
-
-## Quick configuration
-
-1. Clone the repository locally
-1. Run the interactive configuration script:
-   ```console
-   $ cd pyproject-template
-   $ ./template-config.sh
-   ```
-1. Rename the repository folder to your new repository name
-1. Fill in the missing information in `setup.cfg`
-1. Remove any template instruction from this `README.md` (but keep the footer at the end!)
-1. Choose a license and save its statement in `LICENSE`
-1. Remove the `template-config.sh` file
-1. Create a new (empty) GitHub repository matching your `user/repo`
-1. Create a new commit with the unstaged changes and git-push to the remote
-1. Activate (you can log in with your GitHub credentials):
-    * https://pre-commit.ci
-    * https://codecov.io
-    * https://readthedocs.io (recommended setting: "Advanced settings" > "Build pull requests for this project")
-    * GitHub actions (in the repository settings)
-1. [Optional] Get a PyPI token and add it as a repository secret on GitHub
-   (name it `PYPI_PASSWORD`) to enable publishing the package.
+Geometry management and builder package for LEGEND HPGE detectors using [pyg4ometry](https://pypi.org/project/pyg4ometry/)
 
 ## Quick start
+```console
+# Create, activate a virtualenv for local development
+$ python3 -m venv env
+$ source ./env/bin/activate
 
-* Install:
-  ```console
-  $ pip install .
-  $ pip install .[test] # get ready to run tests
-  $ pip install .[docs] # get ready to build documentation
-  $ pip install .[all]  # get all from above
-  ```
-* Build documentation:
-  ```console
-  $ cd docs
-  $ make        # build docs for the current version
-  ```
-* Run tests with `pytest`
-* Run pre-commit hooks with `pre-commit run --all-files`
-* Release a new version:
-  ```console
-  $ git tag v0.1.0
-  $ git checkout -b releases/v0.1 # to apply patches, if needed, later
-  $ git push v0.1.0
-  ```
+# Create editable install with development packages
+(env) $ python3 -m pip install -e '.[all]'
+...
 
-## Optional customization
+# Run tests, coverage
+(env) $ pytest
+...
 
-* Customize the python versions / operative systems to test the package against in
-  `.github/workflows/main.yml`
-* Edit the pre-commit hook configuration in `.pre-commit-config.yaml`. A long
-  list of hooks can be found [here](https://pre-commit.com/hooks.html)
-* Adapt the Sphinx configuration in `docs/source/conf.py`
-* Building wheels with GitHub actions currently assumes pure Python wheels.
-  Have a look at [this Scikit-HEP
-  documentation](https://scikit-hep.org/developer/gha_wheels) to learn how to
-  configure building of binary wheels.
+(env) $ pytest --cov=legendhpges
+... edit/test/repeat ...
 
-<sub>*This Python package layout is based on [pyproject-template](https://github.com/gipert/pyproject-template).*</sub>
+# Build/Check docs
+(env) $ cd docs
+(env) $ make
+... open build/html/index.html in browser of your choice ..
+
+# Run checks before committing
+(env) $ pre-commit run --all-files
+```
