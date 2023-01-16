@@ -69,15 +69,10 @@ class ICPC:
             Decoded JSON file content as dictionary.
 
         """
-        try:
-            with open(jsonfile) as jfile:
-                data = json.load(jfile)
-                self.detname = data["det_name"]  # get name first
-        except Exception:
-            logger = logging.getLogger(__name__)
-            logger.warning("Error parsing JSON file.")
-            return None
-        return data["geometry"]  # only geometry data is of interest here
+        with open(jsonfile) as jfile:
+            data = json.load(jfile)
+            self.detname = data["det_name"]  # get name first
+            return data["geometry"]  # only geometry data is of interest here
 
     def _decode_polycone(self, datadict):
         """
