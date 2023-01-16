@@ -54,30 +54,6 @@ class ICPC:
         s = "ICPC detector: build a given ICPC from JSON input file.\n"
         return s
 
-    def get_crystal_lv(self):
-        """
-        Access to logical volume as constructed here.
-
-        Returns
-        -------
-        pg4.geant4.LogicalVolume
-            Fully constructed LV of ICPC detector.
-
-        """
-        return self.crystalLV
-
-    def get_name(self):
-        """
-        Access to detector name from JSON file.
-
-        Returns
-        -------
-        name : str
-            Detector name string.
-
-        """
-        return self.detname
-
     def _read_from_file(self, jsonfile):
         """
         Create crystal from description in JSON file.
