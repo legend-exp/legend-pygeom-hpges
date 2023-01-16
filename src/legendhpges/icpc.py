@@ -190,17 +190,3 @@ class ICPC:
         ge_solid = pg4.geant4.solid.GenericPolycone("Ge", 0, 2 * pi, rlist, zlist, reg)
         ge_lv = pg4.geant4.LogicalVolume(ge_solid, material, "GeLV", reg)
         return ge_lv
-
-    def draw_geometry(self):
-        """
-        Draw the geometry held in the World volume.
-
-        Improve/standardize colour scheme
-        """
-        v = pg4.visualisation.VtkViewerColoured(defaultColour="random")
-        v.addLogicalVolume(self.crystalLV)
-        v.addAxes(length=200.0)  # 20 cm axes
-        v.setSurface()
-        v.setOpacity(0.5)
-        v.view()
-        # v.exportScreenShot('trialpic.png')
