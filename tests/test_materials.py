@@ -1,5 +1,6 @@
 import legendhpges.materials as lhm
 
+
 def test_materials():
-    """This is totally noddy just to get a placeholder"""
-    enriched_Ge = lhm.enriched_germanium()
+    """Totally noddy check just to get a placeholder."""
+    enriched_ge = lhm._enriched_germanium()

@@ -1,14 +1,15 @@
-"""LEGEND HPGE material descriptions for use in geometries
+"""LEGEND HPGE material descriptions for use in geometries.
 
 Only a placeholder as it's expected that material descriptions will
-eventually be obtained through a seperate, dedicated package. Originally
+eventually be obtained through a separate, dedicated package. Originally
 part of "LegendGeom" proof-of-principle package.
 """
 
 import pyg4ometry as pg4
 
 
-def enriched_germanium() -> pg4.geant4.MaterialCompound: 
+def _enriched_germanium() -> pg4.geant4.MaterialCompound:
+    """Enriched Germanium builder."""
     ge70 = pg4.geant4.Isotope("Ge70", 32, 70, 69.9243)
     ge72 = pg4.geant4.Isotope("Ge72", 32, 72, 71.9221)
     ge73 = pg4.geant4.Isotope("Ge73", 32, 73, 72.9235)
@@ -20,6 +21,10 @@ def enriched_germanium() -> pg4.geant4.MaterialCompound:
     enrge.add_isotope(ge73, 0.000278)
     enrge.add_isotope(ge74, 0.1258)
     enrge.add_isotope(ge76, 0.8738)
+    # Is the pyg4ometry registry 'reg' needed here?
     matenrge = pg4.geant4.MaterialCompound("enrGe", 5.545, 1, reg)
     matenrge.add_element_massfraction(enrge, 1)
     return matenrge
+
+
+enriched_germanium = _enriched_germanium()
