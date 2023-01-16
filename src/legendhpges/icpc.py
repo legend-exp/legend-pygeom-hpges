@@ -1,17 +1,24 @@
 """Build the inverted coaxial point contact crystal template."""
+from __future__ import annotations
+
 import json
 from math import pi, tan
 
 import numpy as np
-
-# Third-party imports
 import pyg4ometry as pg4
+
+from .materials import enriched_germanium
 
 
 class ICPC:
     """Define ICPC Germanium template."""
 
-    def __init__(self, jsonfile, reg, materials):
+    def __init__(
+        self,
+        jsonfile: str,
+        reg: pg4.geant4.Registry,
+        material: pg4.geant4.MaterialCompound = enriched_germanium,
+    ) -> None:
         """
         Create ICPC detector logical volume (LV).
 
@@ -45,15 +52,15 @@ class ICPC:
         # build crystal, declare as detector
         jsondict = self._read_from_file(jsonfile)
         if jsondict is not None:
-            self.crystalLV = self._build_crystal(jsondict, reg, materials)
+            self.crystalLV = self._build_crystal(jsondict, reg, material)
             self.crystalLV.addAuxiliaryInfo(aux)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Print the object purpose."""
         s = "ICPC detector: build a given ICPC from JSON input file.\n"
         return s
 
-    def _read_from_file(self, jsonfile):
+    def _read_from_file(self, jsonfile: str) -> dict:
         """
         Create crystal from description in JSON file.
 
@@ -73,7 +80,7 @@ class ICPC:
             self.detname = data["det_name"]  # get name first
             return data["geometry"]  # only geometry data is of interest here
 
-    def _decode_polycone(self, datadict):
+    def _decode_polycone(self, datadict: dict) -> tuple[list[float], list[float]]:
         """
         Decode shape information from JSON file as points.
 
@@ -167,7 +174,12 @@ class ICPC:
 
         return rlist, zlist
 
-    def _build_crystal(self, data_dict, reg, material):
+    def _build_crystal(
+        self,
+        data_dict: dict,
+        reg: pg4.geant4.Registry,
+        material: pg4.geant4.MaterialCompound,
+    ) -> pg4.geant4.LogicalVolume:
         """
         Build the crystal from JSON.
 
