@@ -7,7 +7,7 @@ from pkg_resources import get_distribution
 
 sys.path.insert(0, Path(__file__).parents[2].resolve().as_posix())
 
-project = "legendhpges"
+project = "legend-geom-hpges"
 copyright = "Copyright Holder"
 version = get_distribution("legend-geom-hpges").version
 
