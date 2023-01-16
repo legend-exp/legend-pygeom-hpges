@@ -9,7 +9,7 @@ import numpy as np
 import pyg4ometry as pg4
 
 
-class icpc:
+class ICPC:
     """Define ICPC Germanium template."""
 
     def __init__(self, jsonfile, reg, materials):
