@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from math import pi, tan
+import math
 
 from legendmeta.jsondb import AttrsDict
 from pyg4ometry import geant4
@@ -55,7 +55,9 @@ class InvertedCoax(HPGe):
         r, z = _decode_polycone_coord(self.metadata.geometry)
 
         # build generic polycone, and logical volume, default [mm]
-        ic_solid = geant4.solid.GenericPolycone(self.name, 0, 2 * pi, r, z, registry)
+        ic_solid = geant4.solid.GenericPolycone(
+            self.name, 0, 2 * math.pi, r, z, registry
+        )
         self.logical_volume = geant4.LogicalVolume(
             ic_solid, material, self.name, registry
         )
@@ -77,14 +79,14 @@ def _decode_polycone_coord(metadata) -> tuple[list[float], list[float]]:
 
     Returns
     -------
-    (list1, list2)
-        2 lists of r and z coordinates, respectively.
+    (r, z)
+        two lists of r and z coordinates, respectively.
 
     """
     c = metadata
 
     def _tan(a):
-        return tan(180 * a / pi)
+        return math.tan(math.pi * a / 180)
 
     r = [
         0,
@@ -92,28 +94,66 @@ def _decode_polycone_coord(metadata) -> tuple[list[float], list[float]]:
         c.groove.radius_in_mm.inner,
         c.groove.radius_in_mm.outer,
         c.groove.radius_in_mm.outer,
-        c.radius_in_mm
-        - c.taper.bottom.height_in_mm * _tan(c.taper.bottom.angle_in_deg),
-        c.radius_in_mm,
-        c.radius_in_mm,
-        c.radius_in_mm - c.taper.top.height_in_mm * _tan(c.taper.top.angle_in_deg),
-        c.borehole.radius_in_mm
-        + c.taper.borehole.height_in_mm * _tan(c.taper.borehole.angle_in_deg),
-        c.borehole.radius_in_mm,
-        c.borehole.radius_in_mm,
-        0,
     ]
+
     z = [
         0,
         0,
         c.groove.depth_in_mm,
         c.groove.depth_in_mm,
         0,
+    ]
+
+    if c.taper.bottom.height_in_mm > 0:
+        r += [
+            c.radius_in_mm
+            - c.taper.bottom.height_in_mm * _tan(c.taper.bottom.angle_in_deg),
+            c.radius_in_mm,
+        ]
+
+        z += [
+            0,
+            c.taper.bottom.height_in_mm,
+        ]
+    else:
+        r += [c.radius_in_mm]
+        z += [0]
+
+    if c.taper.top.height_in_mm > 0:
+        r += [
+            c.radius_in_mm,
+            c.radius_in_mm - c.taper.top.height_in_mm * _tan(c.taper.top.angle_in_deg),
+        ]
+
+        z += [
+            c.height_in_mm - c.taper.top.height_in_mm,
+            c.height_in_mm,
+        ]
+    else:
+        r += [c.radius_in_mm]
+        z += [c.height_in_mm]
+
+    if c.taper.borehole.height_in_mm > 0:
+        r += [
+            c.borehole.radius_in_mm
+            + c.taper.borehole.height_in_mm * _tan(c.taper.borehole.angle_in_deg),
+            c.borehole.radius_in_mm,
+        ]
+
+        z += [
+            c.height_in_mm,
+            c.height_in_mm - c.taper.borehole.height_in_mm,
+        ]
+    else:
+        r += [c.borehole.radius_in_mm]
+        z += [c.height_in_mm]
+
+    r += [
+        c.borehole.radius_in_mm,
         0,
-        c.taper.bottom.height_in_mm,
-        c.height_in_mm - c.taper.top.height_in_mm,
-        c.height_in_mm - c.taper.top.height_in_mm,
-        c.height_in_mm - c.taper.borehole.height_in_mm,
+    ]
+
+    z += [
         c.height_in_mm - c.borehole.depth_in_mm,
         c.height_in_mm - c.borehole.depth_in_mm,
     ]
