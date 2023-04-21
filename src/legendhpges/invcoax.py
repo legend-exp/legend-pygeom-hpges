@@ -42,7 +42,7 @@ class InvertedCoax(HPGe):
             raise ValueError("metadata cannot be None")
 
         # build crystal, declare as detector
-        if not isinstance(metadata, dict | AttrsDict):
+        if not isinstance(metadata, (dict, AttrsDict)):
             with open(metadata) as jfile:
                 self.metadata = AttrsDict(json.load(jfile))
         else:
