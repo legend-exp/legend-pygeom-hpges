@@ -12,29 +12,3 @@
 
 Geometry management and builder package for LEGEND HPGE detectors using
 [pyg4ometry](https://pypi.org/project/pyg4ometry/).
-
-## Quick start
-```console
-# Create, activate a virtualenv for local development
-$ python3 -m venv env
-$ source ./env/bin/activate
-
-# Create editable install with development packages
-(env) $ python3 -m pip install -e '.[all]'
-...
-
-# Run tests, coverage
-(env) $ pytest
-...
-
-(env) $ pytest --cov=legendhpges
-... edit/test/repeat ...
-
-# Build/Check docs
-(env) $ cd docs
-(env) $ make
-... open build/html/index.html in browser of your choice ..
-
-# Run checks before committing
-(env) $ pre-commit run --all-files
-```
