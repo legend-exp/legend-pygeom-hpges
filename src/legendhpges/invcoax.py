@@ -14,16 +14,32 @@ class InvertedCoax(HPGe):
         def _tan(a):
             return math.tan(math.pi * a / 180)
 
-        r = [
-            0,
+        r = []
+        z = []
+
+        if c.pp_contact.depth_in_mm > 0:
+            r += [
+                0,
+                c.pp_contact.radius_in_mm,
+                c.pp_contact.radius_in_mm,
+            ]
+            z += [
+                c.pp_contact.depth_in_mm,
+                c.pp_contact.depth_in_mm,
+                0,
+            ]
+        else:
+            r += [0]
+            z += [0]
+
+        r += [
             c.groove.radius_in_mm.inner,
             c.groove.radius_in_mm.inner,
             c.groove.radius_in_mm.outer,
             c.groove.radius_in_mm.outer,
         ]
 
-        z = [
-            0,
+        z += [
             0,
             c.groove.depth_in_mm,
             c.groove.depth_in_mm,
