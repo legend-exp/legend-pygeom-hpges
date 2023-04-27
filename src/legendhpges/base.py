@@ -11,7 +11,7 @@ from .materials import enriched_germanium
 from .registry import default_registry
 
 
-class HPGe(ABC):
+class HPGe(ABC, geant4.LogicalVolume):
     """An High-Purity Germanium detector.
 
     Parameters
@@ -58,9 +58,8 @@ class HPGe(ABC):
         ic_solid = geant4.solid.GenericPolycone(
             self.name, 0, 2 * math.pi, r, z, registry
         )
-        self.logical_volume = geant4.LogicalVolume(
-            ic_solid, material, self.name, registry
-        )
+
+        super().__init__(ic_solid, material, self.name, registry)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.metadata})"

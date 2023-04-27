@@ -20,8 +20,8 @@ def plot_profile(hpge: HPGe, axes: plt.Axes = None, **kwargs) -> (plt.Figure, pl
 
     """
     # data
-    r = hpge.logical_volume.solid.pR
-    z = hpge.logical_volume.solid.pZ
+    r = hpge.solid.pR
+    z = hpge.solid.pZ
     x = r + [-x for x in reversed(r)]
     y = z + list(reversed(z))
 
@@ -60,7 +60,8 @@ def visualize(hpge: HPGe, viewer: VtkViewer = None) -> VtkViewer:
     """
     if viewer is None:
         viewer = VtkViewer()
-    viewer.addLogicalVolume(hpge.logical_volume)
+    viewer.addLogicalVolume(hpge)
+    viewer.setSurface()
     viewer.view(interactive=True)
 
     return viewer

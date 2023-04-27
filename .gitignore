@@ -1,5 +1,7 @@
 /src/legendhpges/_version.py
 *.pdf
+*.png
+*.jpg
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
