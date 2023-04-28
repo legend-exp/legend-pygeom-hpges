@@ -5,10 +5,12 @@ import math
 from abc import ABC, abstractmethod
 
 from legendmeta.jsondb import AttrsDict
+from pint import Quantity
 from pyg4ometry import geant4
 
 from .materials import enriched_germanium
-from .registry import default_registry
+from .registry import default_g4_registry
+from .registry import default_units_registry as u
 
 
 class HPGe(ABC, geant4.LogicalVolume):
@@ -32,7 +34,7 @@ class HPGe(ABC, geant4.LogicalVolume):
         self,
         metadata: str | dict | AttrsDict,
         name: str = None,
-        registry: geant4.Registry = default_registry,
+        registry: geant4.Registry = default_g4_registry,
         material: geant4.MaterialCompound = enriched_germanium,
     ) -> None:
         if registry is None:
@@ -80,3 +82,23 @@ class HPGe(ABC, geant4.LogicalVolume):
         Must be overloaded by derived classes.
         """
         pass
+
+    @property
+    def volume(self) -> Quantity:
+        """Volume of the HPGe."""
+        volume = 0
+        r1 = self.solid.pR[-1]
+        z1 = self.solid.pZ[-1]
+        for i in range(len(self.solid.pZ)):
+            r2 = self.solid.pR[i]
+            z2 = self.solid.pZ[i]
+            volume += (r1 * r1 + r1 * r2 + r2 * r2) * (z2 - z1)
+            r1 = r2
+            z1 = z2
+
+        return (2 * math.pi * abs(volume) / 6) * u.mm**3
+
+    @property
+    def mass(self) -> Quantity:
+        """Mass of the HPGe."""
+        return (self.volume * (self.material.density * u.g / u.cm**3)).to(u.g)
