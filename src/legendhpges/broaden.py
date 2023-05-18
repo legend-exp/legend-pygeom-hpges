@@ -5,7 +5,7 @@ import math
 from .base import HPGe
 
 
-class BroadEnergy(HPGe):
+class BEGe(HPGe):
     """A broad-energy germanium detector."""
 
     def _decode_polycone_coord(self):

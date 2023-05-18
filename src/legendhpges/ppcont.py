@@ -5,7 +5,7 @@ import math
 from .base import HPGe
 
 
-class PPContact(HPGe):
+class PPC(HPGe):
     """A p-type point contact germanium detector."""
 
     def _decode_polycone_coord(self):
