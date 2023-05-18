@@ -2,5 +2,6 @@ from ._version import version as __version__
 from .broaden import BEGe
 from .invcoax import InvertedCoax
 from .ppcont import PPC
+from .semicoax import SemiCoax
 
-__all__ = ["__version__", "InvertedCoax", "BEGe", "PPC"]
+__all__ = ["__version__", "InvertedCoax", "BEGe", "PPC", "SemiCoax"]
