@@ -1,0 +1,34 @@
+{
+  "name": "B00091A",
+  "type": "bege",
+  "geometry": {
+    "height_in_mm": 31.18,
+    "radius_in_mm": 35.265,
+    "bulletization": {
+      "top_radius_in_mm": 0,
+      "bottom_radius_in_mm": 0,
+      "pp-contact_radius_in_mm": 0
+    },
+    "groove": {
+      "depth_in_mm": 2.0,
+      "radius_in_mm": {
+        "outer": 10.5,
+        "inner": 7.5
+      }
+    },
+    "pp_contact": {
+      "radius_in_mm": 7.5,
+      "depth_in_mm": 0
+    },
+    "taper": {
+      "top": {
+        "angle_in_deg": 51.6,
+        "height_in_mm": 11.5
+      },
+      "bottom": {
+        "angle_in_deg": 0,
+        "height_in_mm": 0
+      }
+    }
+  }
+}
