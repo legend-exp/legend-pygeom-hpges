@@ -1,0 +1,43 @@
+{
+  "name": "C00ANG2",
+  "type": "coax",
+  "geometry": {
+    "height_in_mm": 107,
+    "radius_in_mm": 40,
+    "bulletization": {
+      "top_radius_in_mm": 0,
+      "bottom_radius_in_mm": 0,
+      "borehole_radius_in_mm": 0,
+      "pp-contact_radius_in_mm": 0
+    },
+    "borehole": {
+      "radius_in_mm": 7,
+      "depth_in_mm": 94
+    },
+    "groove": {
+      "depth_in_mm": 2,
+      "radius_in_mm": {
+        "outer": 18,
+        "inner": 15
+      }
+    },
+    "pp_contact": {
+      "radius_in_mm": 15,
+      "depth_in_mm": 0
+    },
+    "taper": {
+      "top": {
+        "angle_in_deg": 39.7,
+        "height_in_mm": 4.5
+      },
+      "bottom": {
+        "angle_in_deg": 34.3,
+        "height_in_mm": 11
+      },
+      "borehole": {
+        "angle_in_deg": 0,
+        "height_in_mm": 0
+      }
+    }
+  }
+}
