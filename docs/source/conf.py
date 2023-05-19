@@ -8,7 +8,7 @@ from pkg_resources import get_distribution
 sys.path.insert(0, Path(__file__).parents[2].resolve().as_posix())
 
 project = "legend-pygeom-hpges"
-copyright = "Copyright Holder"
+copyright = "The LEGEND Collaboration"
 version = get_distribution("legend-pygeom-hpges").version
 
 extensions = [
