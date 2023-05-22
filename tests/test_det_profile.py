@@ -1,0 +1,36 @@
+import pytest
+from legendtestdata import LegendTestData
+from pyg4ometry import geant4
+
+from legendhpges import PPC, BEGe, InvertedCoax, SemiCoax
+from legendhpges.materials import enriched_germanium
+
+reg = geant4.Registry()
+
+
+@pytest.fixture(scope="session")
+def test_data_configs():
+    ldata = LegendTestData()
+    ldata.checkout("5f9b368")
+    configs = ldata.get_path("legend/metadata/hardware/detectors/germanium/diodes")
+    return configs
+
+
+def test_icpc(test_data_configs):
+    InvertedCoax(
+        test_data_configs + "/V99000A.json", material=enriched_germanium, registry=reg
+    )
+
+
+def test_bege(test_data_configs):
+    BEGe(test_data_configs + "/B99000A.json", material=enriched_germanium, registry=reg)
+
+
+def test_ppc(test_data_configs):
+    PPC(test_data_configs + "/P99000A.json", material=enriched_germanium, registry=reg)
+
+
+def test_semicoax(test_data_configs):
+    SemiCoax(
+        test_data_configs + "/C99000A.json", material=enriched_germanium, registry=reg
+    )
