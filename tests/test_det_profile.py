@@ -2,7 +2,7 @@ import pytest
 from legendtestdata import LegendTestData
 from pyg4ometry import geant4
 
-from legendhpges import PPC, BEGe, InvertedCoax, SemiCoax
+from legendhpges import PPC, BEGe, InvertedCoax, SemiCoax, make_hpge
 from legendhpges.materials import enriched_germanium
 
 reg = geant4.Registry()
@@ -34,3 +34,23 @@ def test_semicoax(test_data_configs):
     SemiCoax(
         test_data_configs + "/C99000A.json", material=enriched_germanium, registry=reg
     )
+
+
+def test_make_icpc(test_data_configs):
+    gedet = make_hpge(test_data_configs + "/V99000A.json")
+    assert isinstance(gedet, InvertedCoax)
+
+
+def test_make_bege(test_data_configs):
+    gedet = make_hpge(test_data_configs + "/B99000A.json")
+    assert isinstance(gedet, BEGe)
+
+
+def test_make_ppc(test_data_configs):
+    gedet = make_hpge(test_data_configs + "/P99000A.json")
+    assert isinstance(gedet, PPC)
+
+
+def test_make_semicoax(test_data_configs):
+    gedet = make_hpge(test_data_configs + "/C99000A.json")
+    assert isinstance(gedet, SemiCoax)
