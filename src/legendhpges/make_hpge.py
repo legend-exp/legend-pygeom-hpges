@@ -18,7 +18,7 @@ def make_hpge(
     registry: geant4.Registry = default_g4_registry,
     **kwargs,
 ) -> geant4.LogicalVolume:
-    """Costructing an HPGe detector logical volume based on the detector metadata.
+    """Construct an HPGe detector logical volume based on the detector metadata.
 
     Parameters
     ----------
@@ -44,7 +44,7 @@ def make_hpge(
     --------
         >>> gedet = make_hpge(metadata, registry)
 
-        >>> make_hpge(metadata, registry, name = "my_det", material = my_material)
+        >>> gedet = make_hpge(metadata, registry, name = "my_det", material = my_material)
 
     """
     if not isinstance(metadata, (dict, AttrsDict)):
