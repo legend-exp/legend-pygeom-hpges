@@ -18,14 +18,19 @@ ge76 = geant4.Isotope("Ge76", 32, 76, 75.9214)
 
 def _enriched_germanium(ge76_fraction: float = 0.92) -> geant4.MaterialCompound:
     """Enriched Germanium builder."""
-    enrge = geant4.ElementIsotopeMixture(f"Germanium{ge76_fraction:.3f}", "EnrGe", 2)
-    # approximation
-    enrge.add_isotope(ge74, 1 - ge76_fraction)
-    enrge.add_isotope(ge76, ge76_fraction)
-    matenrge = geant4.MaterialCompound(
-        f"EnrichedGermanium{ge76_fraction:.3f}", 5.56, 1, default_g4_registry
-    )
-    matenrge.add_element_massfraction(enrge, 1)
+    enrge_name = f"EnrichedGermanium{ge76_fraction:.3f}"
+
+    if enrge_name not in default_g4_registry.materialDict:
+        enrge = geant4.ElementIsotopeMixture(
+            f"Germanium{ge76_fraction:.3f}", "EnrGe", 2
+        )
+        # approximation
+        enrge.add_isotope(ge74, 1 - ge76_fraction)
+        enrge.add_isotope(ge76, ge76_fraction)
+        matenrge = geant4.MaterialCompound(enrge_name, 5.56, 1, default_g4_registry)
+        matenrge.add_element_massfraction(enrge, 1)
+    else:
+        matenrge = default_g4_registry.materialDict[enrge_name]
     return matenrge
 
 

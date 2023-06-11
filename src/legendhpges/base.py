@@ -52,6 +52,8 @@ class HPGe(ABC, geant4.LogicalVolume):
 
         if name is None:
             self.name = self.metadata.name
+        else:
+            self.name = name
 
         # return ordered r,z lists, default unit [mm]
         r, z = self._decode_polycone_coord()
