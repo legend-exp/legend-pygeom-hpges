@@ -61,3 +61,8 @@ def test_make_ppc(test_data_configs):
 def test_make_semicoax(test_data_configs):
     gedet = make_hpge(test_data_configs + "/C99000A.json")
     assert isinstance(gedet, SemiCoax)
+
+
+def make_v07646a():
+    gedet = make_hpge(configs / "V07646A.json")
+    assert isinstance(gedet, V07646A)

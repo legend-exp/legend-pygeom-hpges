@@ -11,6 +11,7 @@ from .materials import _enriched_germanium
 from .ppc import PPC
 from .registry import default_g4_registry
 from .semicoax import SemiCoax
+from .v07646a import V07646A
 
 
 def make_hpge(
@@ -63,7 +64,10 @@ def make_hpge(
         gedet = BEGe(metadata, registry=registry, **kwargs)
 
     elif gedet_meta.type == "icpc":
-        gedet = InvertedCoax(metadata, registry=registry, **kwargs)
+        if gedet_meta.name == "V07646A":
+            gedet = V07646A(metadata, registry=registry, **kwargs)
+        else:
+            gedet = InvertedCoax(metadata, registry=registry, **kwargs)
 
     elif gedet_meta.type == "coax":
         gedet = SemiCoax(metadata, registry=registry, **kwargs)
