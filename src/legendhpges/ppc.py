@@ -2,11 +2,24 @@ from __future__ import annotations
 
 import math
 
+from pyg4ometry import geant4
+
 from .base import HPGe
 
 
 class PPC(HPGe):
     """A p-type point contact germanium detector."""
+
+    def _ic_solid(self):
+        # return ordered r,z lists, default unit [mm]
+        r, z = self._decode_polycone_coord()
+
+        # build generic polycone, default [mm]
+        hpge_solid = geant4.solid.GenericPolycone(
+            self.name, 0, 2 * math.pi, r, z, self.registry
+        )
+
+        return hpge_solid
 
     def _decode_polycone_coord(self):
         c = self.metadata.geometry
