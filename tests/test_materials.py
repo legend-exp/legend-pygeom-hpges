@@ -19,9 +19,10 @@ def test_enriched_ge_density():
 
 
 def test_g4_materials():
-    assert materials.make_enriched_germanium(
-        0.92
-    ).density == materials.enriched_germanium_density(0.92)
+    assert (
+        materials.make_enriched_germanium(0.92).density
+        == materials.enriched_germanium_density(0.92).to("g/cm^3").m
+    )
     assert (
         materials.natural_germanium.density
         == materials.natge_density_meas.to("g/cm^3").m
