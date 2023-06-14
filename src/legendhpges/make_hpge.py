@@ -7,7 +7,7 @@ from pyg4ometry import geant4
 
 from .bege import BEGe
 from .invcoax import InvertedCoax
-from .materials import _enriched_germanium
+from .materials import make_enriched_germanium
 from .ppc import PPC
 from .registry import default_g4_registry
 from .semicoax import SemiCoax
@@ -54,7 +54,9 @@ def make_hpge(
     else:
         gedet_meta = AttrsDict(metadata)
 
-    kwargs.setdefault("material", _enriched_germanium(gedet_meta.production.enrichment))
+    kwargs.setdefault(
+        "material", make_enriched_germanium(gedet_meta.production.enrichment)
+    )
     kwargs.setdefault("name", gedet_meta.name)
 
     if gedet_meta.type == "ppc":
