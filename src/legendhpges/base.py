@@ -8,7 +8,7 @@ from legendmeta.jsondb import AttrsDict
 from pint import Quantity
 from pyg4ometry import geant4
 
-from .materials import enriched_germanium
+from .materials import natural_germanium
 from .registry import default_g4_registry
 from .registry import default_units_registry as u
 
@@ -35,7 +35,7 @@ class HPGe(ABC, geant4.LogicalVolume):
         metadata: str | dict | AttrsDict,
         name: str = None,
         registry: geant4.Registry = default_g4_registry,
-        material: geant4.MaterialCompound = enriched_germanium,
+        material: geant4.MaterialCompound = natural_germanium,
     ) -> None:
         if registry is None:
             raise ValueError("registry cannot be None")
