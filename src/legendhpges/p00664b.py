@@ -35,7 +35,7 @@ class P00664B(HPGe):
             "cut_plane_" + self.name,
             px_sliced,
             py_sliced,
-            c.height_in_mm / 2,
+            c.height_in_mm,
             self.registry,
         )
 
