@@ -8,6 +8,7 @@ from pyg4ometry import geant4
 from .bege import BEGe
 from .invcoax import InvertedCoax
 from .materials import make_enriched_germanium
+from .p00664b import P00664B
 from .ppc import PPC
 from .registry import default_g4_registry
 from .semicoax import SemiCoax
@@ -54,24 +55,35 @@ def make_hpge(
     else:
         gedet_meta = AttrsDict(metadata)
 
-    kwargs.setdefault(
-        "material", make_enriched_germanium(gedet_meta.production.enrichment)
-    )
-    kwargs.setdefault("name", gedet_meta.name)
+    material = kwargs.get("material")
+    name = kwargs.get("name")
+
+    if material is None:
+        if gedet_meta.production.enrichment is None:
+            raise ValueError("The enrichment argument in the metadata is None.")
+        kwargs["material"] = make_enriched_germanium(gedet_meta.production.enrichment)
+
+    if name is None:
+        if gedet_meta.name is None:
+            raise ValueError("The name of the detector in the metadata is None.")
+        kwargs["name"] = gedet_meta.name
 
     if gedet_meta.type == "ppc":
-        gedet = PPC(metadata, registry=registry, **kwargs)
+        if gedet_meta.name == "P00664B":
+            gedet = P00664B(gedet_meta, registry=registry, **kwargs)
+        else:
+            gedet = PPC(gedet_meta, registry=registry, **kwargs)
 
     elif gedet_meta.type == "bege":
-        gedet = BEGe(metadata, registry=registry, **kwargs)
+        gedet = BEGe(gedet_meta, registry=registry, **kwargs)
 
     elif gedet_meta.type == "icpc":
         if gedet_meta.name == "V07646A":
-            gedet = V07646A(metadata, registry=registry, **kwargs)
+            gedet = V07646A(gedet_meta, registry=registry, **kwargs)
         else:
-            gedet = InvertedCoax(metadata, registry=registry, **kwargs)
+            gedet = InvertedCoax(gedet_meta, registry=registry, **kwargs)
 
     elif gedet_meta.type == "coax":
-        gedet = SemiCoax(metadata, registry=registry, **kwargs)
+        gedet = SemiCoax(gedet_meta, registry=registry, **kwargs)
 
     return gedet
