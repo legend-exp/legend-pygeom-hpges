@@ -73,7 +73,7 @@ def make_v07646a():
     assert isinstance(gedet, V07646A)
 
 
-def make_p00664b():
+def test_make_p00664b():
     gedet = make_hpge(configs.P00664B)
     assert isinstance(gedet, P00664B)
 
