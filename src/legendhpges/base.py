@@ -58,25 +58,31 @@ class HPGe(ABC, geant4.LogicalVolume):
         self.registry = registry
 
         # build logical volume, default [mm]
-        super().__init__(self._ic_solid(), material, self.name, registry)
+        super().__init__(self._g4_solid(), material, self.name, self.registry)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.metadata})"
 
-    @abstractmethod
-    def _ic_solid(self) -> geant4.solid.SolidBase:
-        """Build the solid from (r, z) information and other geometrical information from the metadata.
+    def _g4_solid(self) -> geant4.solid.SolidBase:
+        """Build (by default) a :class:`pyg4ometry.solid.GenericPolycone` instance from the (r, z) information.
 
         Returns
         -------
-        hpge_solid
+        g4_solid
             A derived class of :class:`pyg4ometry.solid.SolidBase` to be used to construct the logical volume.
 
         Note
         ----
-            Must be overloaded by derived classes.
+            Detectors with a special geometry can have this method overridden in their class definition.
         """
-        pass
+        # return ordered r,z lists, default unit [mm]
+        r, z = self._decode_polycone_coord()
+
+        # build generic polycone, default [mm]
+        g4_solid = geant4.solid.GenericPolycone(
+            self.name, 0, 2 * math.pi, r, z, self.registry
+        )
+        return g4_solid
 
     @abstractmethod
     def _decode_polycone_coord(self) -> tuple[list[float], list[float]]:
@@ -91,7 +97,7 @@ class HPGe(ABC, geant4.LogicalVolume):
 
         Note
         ----
-            Must be overloaded by derived classes.
+        Must be overloaded by derived classes.
         """
         pass
 

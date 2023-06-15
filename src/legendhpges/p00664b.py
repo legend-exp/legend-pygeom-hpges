@@ -10,12 +10,12 @@ from .base import HPGe
 class P00664B(HPGe):
     """A p-type point contact germanium detector P00664B with a special detector geometry.
 
-    Notes
-    -----
+    Note
+    ----
         The normal vector of the cut plane is in the positive x-direction.
     """
 
-    def _ic_solid(self):
+    def _g4_solid(self):
         c = self.metadata.geometry
 
         # return ordered r,z lists, default unit [mm]
@@ -39,7 +39,7 @@ class P00664B(HPGe):
             self.registry,
         )
 
-        hpge_solid = geant4.solid.Subtraction(
+        g4_solid = geant4.solid.Subtraction(
             self.name,
             uncut_hpge,
             cut_plane,
@@ -47,7 +47,7 @@ class P00664B(HPGe):
             self.registry,
         )
 
-        return hpge_solid
+        return g4_solid
 
     def _decode_polycone_coord(self):
         c = self.metadata.geometry
