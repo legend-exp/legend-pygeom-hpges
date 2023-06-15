@@ -21,7 +21,7 @@ class P00664B(HPGe):
         # return ordered r,z lists, default unit [mm]
         r, z = self._decode_polycone_coord()
 
-        x_cut_plane = c.extra.cut_plane.distance_from_center_in_mm
+        x_cut_plane = c.extra.crack.radius_in_mm
 
         # build generic polycone, default [mm]
         uncut_hpge = geant4.solid.GenericPolycone(
