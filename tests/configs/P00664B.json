@@ -1,0 +1,75 @@
+{
+  "name": "P00664B",
+  "type": "ppc",
+  "production": {
+    "manufacturer": "Dummy Manufacturer",
+    "order": 99,
+    "crystal": "000",
+    "slice": "A",
+    "enrichment": 0.75,
+    "passivation": true,
+    "reprocessing": false,
+    "mass_in_g": 1000.0,
+    "impcc": {
+      "array": {
+        "value_in_1e9e/cm3": [0.0, 0.0],
+        "dist_from_contact_in_mm": [0.0, 0.0]
+      },
+      "function_pars": {
+        "z0_in_1e10e/cm3": 0,
+        "gradient_in_1e10e/cm4": 0,
+        "quadratic_in_1e10e/cm5": 0
+      }
+    },
+    "delivered": "2023-01-01"
+  },
+  "geometry": {
+    "height_in_mm": 40,
+    "radius_in_mm": 30,
+    "pp_contact": {
+      "radius_in_mm": 2,
+      "depth_in_mm": 2
+    },
+    "taper": {
+      "top": {
+        "angle_in_deg": 0,
+        "height_in_mm": 0
+      },
+      "bottom": {
+        "angle_in_deg": 30,
+        "height_in_mm": 4
+      }
+    },
+    "extra": {
+      "cut_plane": {
+        "distance_from_center_in_mm": 20,
+        "width_in_mm": 26
+      }
+    }
+  },
+  "characterization": {
+    "manufacturer": {
+      "depletion_voltage_in_V": 3500.0,
+      "recommended_voltage_in_V": 3800.0,
+      "fwhm_co57fep_in_keV": 0.609,
+      "fwhm_co60fep_in_keV": 1.93,
+      "dl_thickness_in_mm": 0.875
+    },
+    "l200_site": {
+      "daq": "flashcam",
+      "depletion_voltage_in_V": null,
+      "recommended_voltage_in_V": null,
+      "fwhm_in_keV": {
+        "co60fep": null,
+        "tl208fep": null,
+        "qbb": null
+      },
+      "survival_fraction": {
+        "tl208dep": null,
+        "qbb": null,
+        "tl208sep": null,
+        "tl208fep": null
+      }
+    }
+  }
+}

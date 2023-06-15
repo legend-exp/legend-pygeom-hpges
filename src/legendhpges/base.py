@@ -55,18 +55,34 @@ class HPGe(ABC, geant4.LogicalVolume):
         else:
             self.name = name
 
-        # return ordered r,z lists, default unit [mm]
-        r, z = self._decode_polycone_coord()
+        self.registry = registry
 
-        # build generic polycone, and logical volume, default [mm]
-        ic_solid = geant4.solid.GenericPolycone(
-            self.name, 0, 2 * math.pi, r, z, registry
-        )
-
-        super().__init__(ic_solid, material, self.name, registry)
+        # build logical volume, default [mm]
+        super().__init__(self._g4_solid(), material, self.name, self.registry)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.metadata})"
+
+    def _g4_solid(self) -> geant4.solid.SolidBase:
+        """Build (by default) a :class:`pyg4ometry.solid.GenericPolycone` instance from the (r, z) information.
+
+        Returns
+        -------
+        g4_solid
+            A derived class of :class:`pyg4ometry.solid.SolidBase` to be used to construct the logical volume.
+
+        Note
+        ----
+            Detectors with a special geometry can have this method overridden in their class definition.
+        """
+        # return ordered r,z lists, default unit [mm]
+        r, z = self._decode_polycone_coord()
+
+        # build generic polycone, default [mm]
+        g4_solid = geant4.solid.GenericPolycone(
+            self.name, 0, 2 * math.pi, r, z, self.registry
+        )
+        return g4_solid
 
     @abstractmethod
     def _decode_polycone_coord(self) -> tuple[list[float], list[float]]:
