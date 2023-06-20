@@ -1,0 +1,90 @@
+{
+  "name": "V02162B",
+  "type": "icpc",
+  "production": {
+    "manufacturer": "Dummy Manufacturer",
+    "order": 2,
+    "crystal": "000",
+    "slice": "A",
+    "enrichment": 0.75,
+    "passivation": true,
+    "reprocessing": false,
+    "mass_in_g": 1000.0,
+    "impcc": {
+      "array": {
+        "value_in_1e9e/cm3": [0.0, 0.0],
+        "dist_from_contact_in_mm": [0.0, 0.0]
+      },
+      "function_pars": {
+        "z0_in_1e10e/cm3": 0,
+        "gradient_in_1e10e/cm4": 0,
+        "quadratic_in_1e10e/cm5": 0
+      }
+    },
+    "delivered": "2023-01-01"
+  },
+  "geometry": {
+    "height_in_mm": 90,
+    "radius_in_mm": 50,
+    "borehole": {
+      "radius_in_mm": 5,
+      "depth_in_mm": 50
+    },
+    "groove": {
+      "depth_in_mm": 5,
+      "radius_in_mm": {
+        "outer": 15,
+        "inner": 10
+      }
+    },
+    "pp_contact": {
+      "radius_in_mm": 10,
+      "depth_in_mm": 0.0
+    },
+    "taper": {
+      "top": {
+        "angle_in_deg": 3,
+        "height_in_mm": 20
+      },
+      "bottom": {
+        "angle_in_deg": 0,
+        "height_in_mm": 0
+      },
+      "borehole": {
+        "angle_in_deg": 0,
+        "height_in_mm": 0
+      }
+    },
+    "extra": {
+      "topgroove": {
+        "radius_in_mm": 20,
+        "depth_in_mm": 5
+      }
+    }
+  },
+  "characterization": {
+    "manufacturer": {
+      "depletion_voltage_in_V": 3000.0,
+      "recommended_voltage_in_V": 3000.0,
+      "fwhm_co57fep_in_keV": 0,
+      "fwhm_co60fep_in_keV": 0,
+      "dl_thickness_in_mm": null
+    },
+    "l200_site": {
+      "daq": "dummydaq",
+      "depletion_voltage_in_V": 3000.0,
+      "recommended_voltage_in_V": 3000.0,
+      "fwhm_in_keV": {
+        "co60fep": 0,
+        "tl208fep": 0,
+        "qbb": 0
+      },
+      "survival_fraction": {
+        "tl208dep": 0,
+        "qbb": 0,
+        "tl208sep": 0,
+        "tl208fep": 0
+      }
+    }
+  }
+}
