@@ -5,6 +5,7 @@ import math
 from pyg4ometry import geant4
 
 from .base import HPGe
+from .registry import default_units_registry as u
 
 
 class P00664B(HPGe):
@@ -21,7 +22,7 @@ class P00664B(HPGe):
         # return ordered r,z lists, default unit [mm]
         r, z = self._decode_polycone_coord()
 
-        x_cut_plane = c.extra.cut_plane.distance_from_center_in_mm
+        x_cut_plane = c.extra.crack.radius_in_mm
 
         # build generic polycone, default [mm]
         uncut_hpge = geant4.solid.GenericPolycone(
@@ -91,3 +92,46 @@ class P00664B(HPGe):
         z += [c.height_in_mm]
 
         return r, z
+
+    @property
+    def volume(self):
+        c = self.metadata.geometry
+
+        # volume of the full solid without cut
+        full_volume = 0
+        pr, pz = self._decode_polycone_coord()
+        r1 = pr[-1]
+        z1 = pz[-1]
+        for i in range(len(pz)):
+            r2 = pr[i]
+            z2 = pz[i]
+            full_volume += (r1 * r1 + r1 * r2 + r2 * r2) * (z2 - z1)
+            r1 = r2
+            z1 = z2
+        full_volume = 2 * math.pi * abs(full_volume) / 6
+
+        # calculate the volume of the cut
+        r = c.radius_in_mm
+        r_cut = c.extra.crack.radius_in_mm
+        h_bot_taper = c.taper.bottom.height_in_mm
+        angle_bot_taper = c.taper.bottom.angle_in_deg * math.pi / 180
+
+        theta = math.acos(r_cut / r)
+
+        # part above the bottom taper
+        cut_volume_top = (theta * r * r - r * math.sin(theta) * r_cut) * (
+            c.height_in_mm - h_bot_taper
+        )
+
+        # part along the bottom taper
+        r2 = r - h_bot_taper * math.tan(angle_bot_taper)
+
+        cut_volume_bot = theta * (
+            r * r + r * r2 + r2 * r2
+        ) * h_bot_taper / 3 - math.sin(2 * theta) / (6 * math.tan(angle_bot_taper)) * (
+            r**3 - (r - h_bot_taper * math.tan(angle_bot_taper)) ** 3
+        )
+
+        cut_volume = cut_volume_top + cut_volume_bot
+
+        return (full_volume - cut_volume) * u.mm**3

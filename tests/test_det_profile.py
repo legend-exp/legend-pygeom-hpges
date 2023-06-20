@@ -75,6 +75,7 @@ def make_v07646a():
 
 def test_make_p00664b():
     gedet = make_hpge(configs.P00664B)
+    gedet.volume
     assert isinstance(gedet, P00664B)
 
 

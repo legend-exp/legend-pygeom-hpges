@@ -41,9 +41,10 @@
       }
     },
     "extra": {
-      "cut_plane": {
-        "distance_from_center_in_mm": 20,
-        "width_in_mm": 26
+      "crack": {
+        "radius_in_mm": 22.5,
+        "angle_in_deg": 0,
+        "width_in_mm": 41
       }
     }
   },
