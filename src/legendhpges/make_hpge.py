@@ -12,6 +12,8 @@ from .p00664b import P00664B
 from .ppc import PPC
 from .registry import default_g4_registry
 from .semicoax import SemiCoax
+from .v02160a import V02160A
+from .v02162b import V02162B
 from .v07646a import V07646A
 
 
@@ -80,6 +82,10 @@ def make_hpge(
     elif gedet_meta.type == "icpc":
         if gedet_meta.name == "V07646A":
             gedet = V07646A(gedet_meta, registry=registry, **kwargs)
+        elif gedet_meta.name == "V02160A":
+            gedet = V02160A(gedet_meta, registry=registry, **kwargs)
+        elif gedet_meta.name == "V02162B":
+            gedet = V02162B(gedet_meta, registry=registry, **kwargs)
         else:
             gedet = InvertedCoax(gedet_meta, registry=registry, **kwargs)
 
