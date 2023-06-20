@@ -1,12 +1,18 @@
 from __future__ import annotations
 
+import logging
+
 import matplotlib.pyplot as plt
 from pyg4ometry.visualisation import VtkViewer
 
 from .base import HPGe
+from .p00664b import P00664B
+from .v02160a import V02160A
 
 
-def plot_profile(hpge: HPGe, axes: plt.Axes = None, **kwargs) -> (plt.Figure, plt.Axes):
+def plot_profile(
+    hpge: HPGe, axes: plt.Axes = None, **kwargs
+) -> tuple[plt.Figure, plt.Axes]:
     """Plot the HPGe profile with :mod:`matplotlib`.
 
     Parameters
@@ -20,8 +26,14 @@ def plot_profile(hpge: HPGe, axes: plt.Axes = None, **kwargs) -> (plt.Figure, pl
 
     """
     # data
-    r = hpge.solid.pR
-    z = hpge.solid.pZ
+    if isinstance(hpge, (V02160A, P00664B)):
+        r = hpge.solid.obj1.pR
+        z = hpge.solid.obj1.pZ
+        logging.warning("The detector profile is that of the solid without cut")
+    else:
+        r = hpge.solid.pR
+        z = hpge.solid.pZ
+
     x = r + [-x for x in reversed(r)]
     y = z + list(reversed(z))
 

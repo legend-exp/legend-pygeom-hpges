@@ -5,7 +5,17 @@ from legendmeta import JsonDB
 from legendtestdata import LegendTestData
 from pyg4ometry import geant4
 
-from legendhpges import P00664B, PPC, V07646A, BEGe, InvertedCoax, SemiCoax, make_hpge
+from legendhpges import (
+    P00664B,
+    PPC,
+    V02160A,
+    V02162B,
+    V07646A,
+    BEGe,
+    InvertedCoax,
+    SemiCoax,
+    make_hpge,
+)
 from legendhpges.materials import natural_germanium
 
 reg = geant4.Registry()
@@ -48,6 +58,14 @@ def test_p00664p():
     P00664B(configs.P00664B, material=natural_germanium, registry=reg)
 
 
+def test_v02162b():
+    V02162B(configs.V02162B, material=natural_germanium, registry=reg)
+
+
+def test_v02160a():
+    V02160A(configs.V02160A, material=natural_germanium, registry=reg)
+
+
 def test_make_icpc(test_data_configs):
     gedet = make_hpge(test_data_configs + "/V99000A.json")
     assert isinstance(gedet, InvertedCoax)
@@ -75,8 +93,20 @@ def make_v07646a():
 
 def test_make_p00664b():
     gedet = make_hpge(configs.P00664B)
-    gedet.volume
+    gedet.mass
     assert isinstance(gedet, P00664B)
+
+
+def test_make_v02162b():
+    gedet = make_hpge(configs.V02162B)
+    gedet.mass
+    assert isinstance(gedet, V02162B)
+
+
+def test_make_v02160a():
+    gedet = make_hpge(configs.V02160A)
+    gedet.mass
+    assert isinstance(gedet, V02160A)
 
 
 def test_null_enrichment():
