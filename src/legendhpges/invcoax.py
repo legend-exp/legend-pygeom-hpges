@@ -91,14 +91,19 @@ class InvertedCoax(HPGe):
             r += [c.borehole.radius_in_mm]
             z += [c.height_in_mm]
 
-        r += [
-            c.borehole.radius_in_mm,
-            0,
-        ]
+        if c.taper.borehole.height_in_mm != c.borehole.depth_in_mm:
+            r += [
+                c.borehole.radius_in_mm,
+                0,
+            ]
 
-        z += [
-            c.height_in_mm - c.borehole.depth_in_mm,
-            c.height_in_mm - c.borehole.depth_in_mm,
-        ]
+            z += [
+                c.height_in_mm - c.borehole.depth_in_mm,
+                c.height_in_mm - c.borehole.depth_in_mm,
+            ]
+        else:
+            r += [0]
+
+            z += [c.height_in_mm - c.borehole.depth_in_mm]
 
         return r, z
