@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 from legendmeta.jsondb import AttrsDict
 from pyg4ometry import geant4
@@ -52,7 +53,7 @@ def make_hpge(
 
     """
     if not isinstance(metadata, (dict, AttrsDict)):
-        with open(metadata) as jfile:
+        with Path(metadata).open() as jfile:
             gedet_meta = AttrsDict(json.load(jfile))
     else:
         gedet_meta = AttrsDict(metadata)
@@ -62,12 +63,14 @@ def make_hpge(
 
     if material is None:
         if gedet_meta.production.enrichment is None:
-            raise ValueError("The enrichment argument in the metadata is None.")
+            msg = "The enrichment argument in the metadata is None."
+            raise ValueError(msg)
         kwargs["material"] = make_enriched_germanium(gedet_meta.production.enrichment)
 
     if name is None:
         if gedet_meta.name is None:
-            raise ValueError("The name of the detector in the metadata is None.")
+            msg = "The name of the detector in the metadata is None."
+            raise ValueError(msg)
         kwargs["name"] = gedet_meta.name
 
     if gedet_meta.type == "ppc":

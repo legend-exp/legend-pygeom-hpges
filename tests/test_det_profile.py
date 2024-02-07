@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pathlib
 
 import pytest
@@ -26,8 +28,7 @@ configs = JsonDB(pathlib.Path(__file__).parent.resolve() / "configs")
 def test_data_configs():
     ldata = LegendTestData()
     ldata.checkout("5f9b368")
-    configs = ldata.get_path("legend/metadata/hardware/detectors/germanium/diodes")
-    return configs
+    return ldata.get_path("legend/metadata/hardware/detectors/germanium/diodes")
 
 
 def test_icpc(test_data_configs):
@@ -93,19 +94,19 @@ def make_v07646a():
 
 def test_make_p00664b():
     gedet = make_hpge(configs.P00664B)
-    gedet.mass
+    assert gedet.mass
     assert isinstance(gedet, P00664B)
 
 
 def test_make_v02162b():
     gedet = make_hpge(configs.V02162B)
-    gedet.mass
+    assert gedet.mass
     assert isinstance(gedet, V02162B)
 
 
 def test_make_v02160a():
     gedet = make_hpge(configs.V02160A)
-    gedet.mass
+    assert gedet.mass
     assert isinstance(gedet, V02160A)
 
 

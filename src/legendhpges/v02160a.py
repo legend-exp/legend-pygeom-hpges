@@ -40,7 +40,7 @@ class V02160A(HPGe):
         )
 
         # build the subtraction solid
-        g4_solid = geant4.solid.Subtraction(
+        return geant4.solid.Subtraction(
             self.name,
             uncut_hpge,
             cut_plane,
@@ -50,8 +50,6 @@ class V02160A(HPGe):
             ],
             self.registry,
         )
-
-        return g4_solid
 
     def _decode_polycone_coord(self) -> tuple[list[float], list[float]]:
         c = self.metadata.geometry

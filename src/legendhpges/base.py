@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import math
 from abc import ABC, abstractmethod
+from pathlib import Path
 
 from legendmeta.jsondb import AttrsDict
 from pint import Quantity
@@ -33,19 +34,21 @@ class HPGe(ABC, geant4.LogicalVolume):
     def __init__(
         self,
         metadata: str | dict | AttrsDict,
-        name: str = None,
+        name: str | None = None,
         registry: geant4.Registry = default_g4_registry,
         material: geant4.MaterialCompound = natural_germanium,
     ) -> None:
         if registry is None:
-            raise ValueError("registry cannot be None")
+            msg = "registry cannot be None"
+            raise ValueError(msg)
 
         if metadata is None:
-            raise ValueError("metadata cannot be None")
+            msg = "metadata cannot be None"
+            raise ValueError(msg)
 
         # build crystal, declare as detector
         if not isinstance(metadata, (dict, AttrsDict)):
-            with open(metadata) as jfile:
+            with Path(metadata).open() as jfile:
                 self.metadata = AttrsDict(json.load(jfile))
         else:
             self.metadata = AttrsDict(metadata)
@@ -79,10 +82,9 @@ class HPGe(ABC, geant4.LogicalVolume):
         r, z = self._decode_polycone_coord()
 
         # build generic polycone, default [mm]
-        g4_solid = geant4.solid.GenericPolycone(
+        return geant4.solid.GenericPolycone(
             self.name, 0, 2 * math.pi, r, z, self.registry
         )
-        return g4_solid
 
     @abstractmethod
     def _decode_polycone_coord(self) -> tuple[list[float], list[float]]:
@@ -99,7 +101,6 @@ class HPGe(ABC, geant4.LogicalVolume):
         ----
         Must be overloaded by derived classes.
         """
-        pass
 
     @property
     def volume(self) -> Quantity:

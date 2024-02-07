@@ -40,15 +40,13 @@ class P00664B(HPGe):
             self.registry,
         )
 
-        g4_solid = geant4.solid.Subtraction(
+        return geant4.solid.Subtraction(
             self.name,
             uncut_hpge,
             cut_plane,
             [[0, 0, 0], [x_cut_plane + px_sliced / 2, 0, c.height_in_mm / 2]],
             self.registry,
         )
-
-        return g4_solid
 
     def _decode_polycone_coord(self):
         c = self.metadata.geometry
