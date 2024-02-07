@@ -33,7 +33,8 @@ dependencies = [
     "numpy",
     "pint",
     "pyg4ometry",
-    "pylegendmeta",
+    "pylegendmeta>=v0.9.0a2",
+    "pyarrow",
 ]
 dynamic = [
     "version",
@@ -46,7 +47,7 @@ Discussions = "https://github.com/legend-exp/legend-pygeom-hpges/discussions"
 Changelog = "https://github.com/legend-exp/legend-pygeom-hpges/releases"
 
 [tool.setuptools_scm]
-write_to = "src/legendhpges//_version.py"
+write_to = "src/legendhpges/_version.py"
 
 [project.optional-dependencies]
 all = [

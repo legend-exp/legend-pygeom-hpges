@@ -3,7 +3,7 @@ from __future__ import annotations
 import pathlib
 
 import pytest
-from legendmeta import JsonDB
+from legendmeta import TextDB
 from legendtestdata import LegendTestData
 from pyg4ometry import geant4
 
@@ -21,7 +21,7 @@ from legendhpges import (
 from legendhpges.materials import natural_germanium
 
 reg = geant4.Registry()
-configs = JsonDB(pathlib.Path(__file__).parent.resolve() / "configs")
+configs = TextDB(pathlib.Path(__file__).parent.resolve() / "configs")
 
 
 @pytest.fixture(scope="session")

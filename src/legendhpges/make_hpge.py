@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from legendmeta.jsondb import AttrsDict
+from legendmeta import AttrsDict
 from pyg4ometry import geant4
 
 from .bege import BEGe

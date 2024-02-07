@@ -5,7 +5,7 @@ import math
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-from legendmeta.jsondb import AttrsDict
+from legendmeta import AttrsDict
 from pint import Quantity
 from pyg4ometry import geant4
 
