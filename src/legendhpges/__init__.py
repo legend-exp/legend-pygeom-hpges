@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from ._version import version as __version__
 from .bege import BEGe
 from .invcoax import InvertedCoax

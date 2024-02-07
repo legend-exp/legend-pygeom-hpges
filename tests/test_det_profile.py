@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import pathlib
 
 import pytest
-from legendmeta import JsonDB
+from legendmeta import TextDB
 from legendtestdata import LegendTestData
 from pyg4ometry import geant4
 
@@ -19,15 +21,14 @@ from legendhpges import (
 from legendhpges.materials import natural_germanium
 
 reg = geant4.Registry()
-configs = JsonDB(pathlib.Path(__file__).parent.resolve() / "configs")
+configs = TextDB(pathlib.Path(__file__).parent.resolve() / "configs")
 
 
 @pytest.fixture(scope="session")
 def test_data_configs():
     ldata = LegendTestData()
     ldata.checkout("5f9b368")
-    configs = ldata.get_path("legend/metadata/hardware/detectors/germanium/diodes")
-    return configs
+    return ldata.get_path("legend/metadata/hardware/detectors/germanium/diodes")
 
 
 def test_icpc(test_data_configs):
@@ -93,19 +94,19 @@ def make_v07646a():
 
 def test_make_p00664b():
     gedet = make_hpge(configs.P00664B)
-    gedet.mass
+    assert gedet.mass
     assert isinstance(gedet, P00664B)
 
 
 def test_make_v02162b():
     gedet = make_hpge(configs.V02162B)
-    gedet.mass
+    assert gedet.mass
     assert isinstance(gedet, V02162B)
 
 
 def test_make_v02160a():
     gedet = make_hpge(configs.V02160A)
-    gedet.mass
+    assert gedet.mass
     assert isinstance(gedet, V02160A)
 
 
