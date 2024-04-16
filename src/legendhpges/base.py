@@ -121,3 +121,9 @@ class HPGe(ABC, geant4.LogicalVolume):
     def mass(self) -> Quantity:
         """Mass of the HPGe."""
         return (self.volume * (self.material.density * u.g / u.cm**3)).to(u.g)
+
+    @property
+    def max_height(self) -> Quantity:
+        """Maximum height of the detector, i.e. difference between top and bottom plane."""
+        r, z = self._decode_polycone_coord()
+        return (max(z) - min(z)) * u.mm
