@@ -65,7 +65,13 @@ def make_hpge(
         if gedet_meta.production.enrichment is None:
             msg = "The enrichment argument in the metadata is None."
             raise ValueError(msg)
-        kwargs["material"] = make_enriched_germanium(gedet_meta.production.enrichment)
+        # representation of enrichment data changed in legend-exp/legend-detectors PR #43 to
+        # value and uncertainty.
+        if isinstance(gedet_meta.production.enrichment, float):
+            enrichment = gedet_meta.production.enrichment
+        else:
+            enrichment = gedet_meta.production.enrichment.val
+        kwargs["material"] = make_enriched_germanium(enrichment)
 
     if name is None:
         if gedet_meta.name is None:

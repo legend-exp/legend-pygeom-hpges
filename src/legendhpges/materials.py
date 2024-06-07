@@ -75,7 +75,7 @@ def _make_natural_germanium() -> g4.MaterialCompound:
     return matenrge
 
 
-def enriched_germanium_density(ge76_fraction: float = 0.92) -> float:
+def enriched_germanium_density(ge76_fraction: float = 0.92) -> Quantity:
     """Calculate the density of enriched germanium.
 
     Parameters
@@ -90,7 +90,7 @@ def enriched_germanium_density(ge76_fraction: float = 0.92) -> float:
     return (_number_density_meas() * m_eff / n_avogadro).to("g/cm^3")
 
 
-def make_enriched_germanium(ge76_fraction: float = 0.92) -> g4.MaterialCompound:
+def make_enriched_germanium(ge76_fraction: float = 0.92) -> g4.Material:
     """Enriched germanium material builder.
 
     Note
