@@ -9,4 +9,7 @@ default_g4_registry = geant4.Registry()
 default_units_registry = pint.get_application_registry()
 """Default Pint physical units registry."""
 
-default_units_registry.default_format = "~P"
+if hasattr(default_units_registry, "formatter"):  # pint >= 0.24
+    default_units_registry.formatter.default_format = "~P"
+else:  # pint <= 0.23
+    default_units_registry.default_format = "~P"
