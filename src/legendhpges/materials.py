@@ -56,23 +56,22 @@ def _number_density_meas() -> Quantity:
     return n_avogadro * natge_density_meas / a_eff
 
 
-def _make_natural_germanium() -> g4.MaterialCompound:
+def make_natural_germanium(
+    registry: g4.Registry = default_g4_registry,
+) -> g4.MaterialCompound:
     """Natural germanium material builder."""
     enrge_name = "NaturalGermanium"
 
-    if enrge_name not in default_g4_registry.materialDict:
+    if enrge_name not in registry.materialDict:
         enrge = g4.ElementIsotopeMixture(enrge_name, "NatGe", len(natge_isotopes))
 
         for iso, frac in natge_isotopes.items():
             enrge.add_isotope(iso, frac)
 
-        matenrge = g4.MaterialCompound(
-            enrge_name, natge_density_meas.m, 1, default_g4_registry
-        )
+        matenrge = g4.MaterialCompound(enrge_name, natge_density_meas.m, 1, registry)
         matenrge.add_element_massfraction(enrge, 1)
-    else:
-        matenrge = default_g4_registry.materialDict[enrge_name]
-    return matenrge
+
+    return registry.materialDict[enrge_name]
 
 
 def enriched_germanium_density(ge76_fraction: float = 0.92) -> Quantity:
@@ -90,7 +89,10 @@ def enriched_germanium_density(ge76_fraction: float = 0.92) -> Quantity:
     return (_number_density_meas() * m_eff / n_avogadro).to("g/cm^3")
 
 
-def make_enriched_germanium(ge76_fraction: float = 0.92) -> g4.Material:
+def make_enriched_germanium(
+    ge76_fraction: float = 0.92,
+    registry: g4.Registry = default_g4_registry,
+) -> g4.Material:
     """Enriched germanium material builder.
 
     Note
@@ -104,8 +106,8 @@ def make_enriched_germanium(ge76_fraction: float = 0.92) -> g4.Material:
     """
     enrge_name = f"EnrichedGermanium{ge76_fraction:.3f}"
 
-    if enrge_name not in default_g4_registry.materialDict:
-        enrge = g4.ElementIsotopeMixture(enrge_name, "EnrGe", 2)
+    if enrge_name not in registry.materialDict:
+        enrge = g4.ElementIsotopeMixture(f"Element{enrge_name}", "EnrGe", 2, registry)
         enrge.add_isotope(ge74, 1 - ge76_fraction)
         enrge.add_isotope(ge76, ge76_fraction)
 
@@ -113,13 +115,8 @@ def make_enriched_germanium(ge76_fraction: float = 0.92) -> g4.Material:
             enrge_name,
             enriched_germanium_density(ge76_fraction).to("g/cm^3").m,
             1,
-            default_g4_registry,
+            registry,
         )
         matenrge.add_element_massfraction(enrge, 1)
-    else:
-        matenrge = default_g4_registry.materialDict[enrge_name]
-    return matenrge
 
-
-natural_germanium: g4.MaterialCompound = _make_natural_germanium()
-enriched_germanium: g4.MaterialCompound = make_enriched_germanium()
+    return registry.materialDict[enrge_name]

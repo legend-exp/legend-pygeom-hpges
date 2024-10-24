@@ -18,9 +18,10 @@ from legendhpges import (
     SemiCoax,
     make_hpge,
 )
-from legendhpges.materials import natural_germanium
+from legendhpges.materials import make_natural_germanium
 
 reg = geant4.Registry()
+natural_germanium = make_natural_germanium(reg)
 configs = TextDB(pathlib.Path(__file__).parent.resolve() / "configs")
 
 

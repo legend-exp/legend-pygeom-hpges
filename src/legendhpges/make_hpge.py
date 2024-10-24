@@ -71,7 +71,7 @@ def make_hpge(
             enrichment = gedet_meta.production.enrichment
         else:
             enrichment = gedet_meta.production.enrichment.val
-        kwargs["material"] = make_enriched_germanium(enrichment)
+        kwargs["material"] = make_enriched_germanium(enrichment, registry)
 
     if name is None:
         if gedet_meta.name is None:
