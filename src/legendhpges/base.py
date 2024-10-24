@@ -9,7 +9,7 @@ from legendmeta import AttrsDict
 from pint import Quantity
 from pyg4ometry import geant4
 
-from .materials import natural_germanium
+from .materials import make_natural_germanium
 from .registry import default_g4_registry
 from .registry import default_units_registry as u
 
@@ -36,7 +36,7 @@ class HPGe(ABC, geant4.LogicalVolume):
         metadata: str | dict | AttrsDict,
         name: str | None = None,
         registry: geant4.Registry = default_g4_registry,
-        material: geant4.MaterialCompound = natural_germanium,
+        material: geant4.MaterialCompound = None,
     ) -> None:
         if registry is None:
             msg = "registry cannot be None"
@@ -45,6 +45,9 @@ class HPGe(ABC, geant4.LogicalVolume):
         if metadata is None:
             msg = "metadata cannot be None"
             raise ValueError(msg)
+
+        if material is None:
+            material = make_natural_germanium(registry)
 
         # build crystal, declare as detector
         if not isinstance(metadata, (dict, AttrsDict)):
