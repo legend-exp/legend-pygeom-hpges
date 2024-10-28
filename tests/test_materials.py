@@ -38,15 +38,15 @@ def test_g4_materials_on_reg():
     # ensure that all materials, elements and isotopes are actually registered with the registry.
     mat92_1 = materials.make_enriched_germanium(0.92, reg)
     for mat in (
-        "Ge70",
-        "Ge72",
-        "Ge73",
         "Ge74",
         "Ge76",
         "EnrichedGermanium0.920",
         "ElementEnrichedGermanium0.920",
     ):
         assert mat in reg.materialDict
+    # lazy-loaded isotopes should not exist.
+    for mat in ("Ge70", "Ge72", "Ge73"):
+        assert mat not in reg.materialDict
 
     # ensure we get the same instance back, without duplication errors.
     mat92_2 = materials.make_enriched_germanium(0.92, reg)
@@ -54,9 +54,10 @@ def test_g4_materials_on_reg():
 
     # ensure that we can create different enrichments, without duplication errors.
     materials.make_enriched_germanium(0.90, reg)
-    assert "ElementEnrichedGermanium0.900" in reg.materialDict
+    for mat in ("ElementEnrichedGermanium0.900", "EnrichedGermanium0.900"):
+        assert mat in reg.materialDict
 
     # ensure that natural germanium also works.
     materials.make_natural_germanium(reg)
-    for mat in ("NaturalGermanium", "ElementNaturalGermanium"):
+    for mat in ("Ge70", "Ge72", "Ge73", "NaturalGermanium", "ElementNaturalGermanium"):
         assert mat in reg.materialDict
