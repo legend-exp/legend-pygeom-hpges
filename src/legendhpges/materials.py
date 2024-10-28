@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import functools
 import math
+from typing import Callable
 
 from pint import Quantity
 from pyg4ometry import geant4 as g4
@@ -24,14 +26,14 @@ natge_density_meas: Quantity = 5.3234 * u("g/cm^3")
 """Measured density of natural germanium at room temperature."""
 
 
-def _make_ge_isotopes(registry: g4.Registry) -> dict[int, g4.Isotope]:
+def _make_ge_isotopes(registry: g4.Registry) -> dict[int, Callable[[], g4.Isotope]]:
     def make_ge_iso(N: int):
         name = f"Ge{N}"
         if name in registry.materialDict:
             return registry.materialDict[name]
         return g4.Isotope(name, 32, N, ge_iso_a[N], registry)
 
-    return {n: make_ge_iso(n) for n in (70, 72, 73, 74, 76)}
+    return {n: functools.partial(make_ge_iso, n) for n in (70, 72, 73, 74, 76)}
 
 
 def _number_density_theo() -> Quantity:
@@ -58,20 +60,19 @@ def _number_density_meas() -> Quantity:
 
 def _make_germanium(
     ge_name: str,
-    el_symbol: str,
+    iso_symbol: str,
     iso_fracs: dict[int, float],
     density: Quantity,
     reg: g4.Registry,
 ) -> g4.Material:
     if ge_name not in reg.materialDict:
         el = g4.ElementIsotopeMixture(
-            f"Element{ge_name}", el_symbol, len(iso_fracs), reg
+            f"Element{ge_name}", iso_symbol, len(iso_fracs), reg
         )
 
         isos = _make_ge_isotopes(reg)
         for iso, frac in iso_fracs.items():
-            el.add_isotope(isos[iso], frac)
-
+            el.add_isotope(isos[iso](), frac)
         mat = g4.MaterialCompound(ge_name, density.to("g/cm^3").m, 1, reg)
         mat.add_element_massfraction(el, 1)
 
