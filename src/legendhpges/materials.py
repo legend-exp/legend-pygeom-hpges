@@ -60,14 +60,14 @@ def _number_density_meas() -> Quantity:
 
 def _make_germanium(
     ge_name: str,
-    iso_symbol: str,
+    el_symbol: str,
     iso_fracs: dict[int, float],
     density: Quantity,
     reg: g4.Registry,
 ) -> g4.Material:
     if ge_name not in reg.materialDict:
         el = g4.ElementIsotopeMixture(
-            f"Element{ge_name}", iso_symbol, len(iso_fracs), reg
+            f"Element{ge_name}", el_symbol, len(iso_fracs), reg
         )
 
         isos = _make_ge_isotopes(reg)
