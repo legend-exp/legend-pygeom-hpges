@@ -49,10 +49,8 @@ def norm(a: np.ndarray) -> np.ndarray:
     -------
         the length for each vector.
     """
-    if a.ndim == 2:
-        ax = 1
-    else:
-        ax = 0
+    ax = 1 if a.ndim == 2 else 0
+
     return np.sqrt(np.sum(np.power(a, 2), axis=ax))
 
 
@@ -77,7 +75,7 @@ def dot(a: np.ndarray, b: np.ndarray) -> np.ndarray:
 
 
 def shortest_distance(s1: np.ndarray, s2: np.ndarray, points: np.ndarray) -> np.ndarray:
-    """Get the shortest distance between each point and the line segement defined by s1-s2
+    """Get the shortest distance between each point and the line segment defined by s1-s2
 
     Based on vector algebra where the distance is given by:
 
@@ -95,7 +93,7 @@ def shortest_distance(s1: np.ndarray, s2: np.ndarray, points: np.ndarray) -> np.
     Parameters
     ----------
     s1
-        first point in the line segement, 1D array where index 0 correspond to r and 1 to z.
+        first point in the line segment, 1D array where index 0 correspond to r and 1 to z.
     s2
         second point, same format as s1.
     points
@@ -119,5 +117,5 @@ def shortest_distance(s1: np.ndarray, s2: np.ndarray, points: np.ndarray) -> np.
         condition3
     ]
 
-    # TODO make this signed so inside is positive and outside negtive
+    # TODO make this signed so inside is positive and outside negative
     return norm(dist_vec)
