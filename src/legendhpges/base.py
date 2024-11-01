@@ -5,10 +5,12 @@ import math
 from abc import ABC, abstractmethod
 from pathlib import Path
 
+import numpy as np
 from legendmeta import AttrsDict
 from pint import Quantity
 from pyg4ometry import geant4
 
+from . import utils
 from .materials import make_natural_germanium
 from .registry import default_g4_registry
 from .registry import default_units_registry as u
@@ -63,6 +65,8 @@ class HPGe(ABC, geant4.LogicalVolume):
 
         self.registry = registry
 
+        self.surfaces = []
+
         # build logical volume, default [mm]
         super().__init__(self._g4_solid(), material, self.name, self.registry)
 
@@ -104,6 +108,56 @@ class HPGe(ABC, geant4.LogicalVolume):
         ----
         Must be overloaded by derived classes.
         """
+
+    def distance_to_surface(self, coords: np.Array) -> np.ndarray:
+        """Compute the distance of a set of points to the nearest detector surface.
+
+        Parameters
+        ----------
+        coords
+            2D array of `(x,y,z)` coordinates for each point, first index corresponds to the point, second to the dimension `(x,y,z)`.
+
+        Returns
+        -------
+        numpy array of the distance from each point to the nearest surface.
+
+        Note
+        ----
+        - Only implemented for solids based on :class:`G4GenericPolycone`
+        - Coordinates should be relative to the origin of the polycone.
+        """
+        # check type of the solid
+        if isinstance(self.solid, geant4.solid.GenericPolycone) is False:
+            msg = f"distance_to_surface is not implemented for {type(self.solid)} yet"
+            raise NotImplementedError(msg)
+
+        if np.shape(coords)[1] != 3:
+            msg = "coords must be provided as a 2D array with x,y,z coordinates for each point."
+            raise ValueError(msg)
+
+        # convert x,y,z into r,z
+
+        rz_coords = utils.convert_coords(coords)
+
+        # get the coordinates
+        r = self.solid.pR
+        z = self.solid.pZ
+
+        # build lists of pairs of coordinates
+        s1 = np.array([np.array([r1, z1]) for r1, z1 in zip(r[:-1], z[:-1])])
+        s2 = np.array([np.array([r2, z2]) for r2, z2 in zip(r[1:], z[1:])])
+
+        n_segments = np.shape(s1)[0]
+        n = np.shape(coords)[0]
+
+        dists = np.full((n, n_segments), np.nan)
+
+        for segment in range(n_segments):
+            dists[:, segment] = utils.shortest_distance(
+                s1[segment], s2[segment], rz_coords
+            )
+
+        return np.min(dists, axis=1)
 
     @property
     def volume(self) -> Quantity:
