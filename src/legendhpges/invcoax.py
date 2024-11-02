@@ -3,6 +3,7 @@ from __future__ import annotations
 import math
 
 from .base import HPGe
+from .utils import make_pplus
 
 
 class InvertedCoax(HPGe):
@@ -18,46 +19,10 @@ class InvertedCoax(HPGe):
         z = []
         surfaces = []
 
-        if c.pp_contact.depth_in_mm > 0:
-            r += [
-                0,
-                c.pp_contact.radius_in_mm,
-                c.pp_contact.radius_in_mm,
-                c.groove.radius_in_mm.inner,
-            ]
-            z += [
-                c.pp_contact.depth_in_mm,
-                c.pp_contact.depth_in_mm,
-                0,
-                0,
-            ]
-            surfaces += ["p+", "passive", "passive"]
-
-        elif c.pp_contact.radius_in_mm < c.groove.radius_in_mm.inner:
-            r += [
-                0,
-                c.pp_contact.radius_in_mm,
-                c.groove.radius_in_mm.inner,
-            ]
-            z += [0, 0, 0]
-            surfaces += ["p+", "passive"]
-        else:
-            r += [0, c.pp_contact.radius_in_mm]
-            z += [0, 0]
-            surfaces += ["p+"]
-
-        r += [
-            c.groove.radius_in_mm.inner,
-            c.groove.radius_in_mm.outer,
-            c.groove.radius_in_mm.outer,
-        ]
-
-        z += [
-            c.groove.depth_in_mm,
-            c.groove.depth_in_mm,
-            0,
-        ]
-        surfaces += ["passive", "passive", "passive"]
+        r_p, z_p, surface_p = make_pplus(c)
+        r += r_p
+        z += z_p
+        surfaces += surface_p
 
         if c.taper.bottom.height_in_mm > 0:
             r += [

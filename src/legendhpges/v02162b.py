@@ -3,6 +3,7 @@ from __future__ import annotations
 import math
 
 from .base import HPGe
+from .utils import make_pplus
 
 
 class V02162B(HPGe):
@@ -16,35 +17,12 @@ class V02162B(HPGe):
 
         r = []
         z = []
+        surfaces = []
 
-        if c.pp_contact.depth_in_mm > 0:
-            r += [
-                0,
-                c.pp_contact.radius_in_mm,
-                c.pp_contact.radius_in_mm,
-            ]
-            z += [
-                c.pp_contact.depth_in_mm,
-                c.pp_contact.depth_in_mm,
-                0,
-            ]
-        else:
-            r += [0]
-            z += [0]
-
-        r += [
-            c.groove.radius_in_mm.inner,
-            c.groove.radius_in_mm.inner,
-            c.groove.radius_in_mm.outer,
-            c.groove.radius_in_mm.outer,
-        ]
-
-        z += [
-            0,
-            c.groove.depth_in_mm,
-            c.groove.depth_in_mm,
-            0,
-        ]
+        r_p, z_p, surface_p = make_pplus(c)
+        r += r_p
+        z += z_p
+        surfaces += surface_p
 
         if c.taper.bottom.height_in_mm > 0:
             r += [
@@ -57,9 +35,12 @@ class V02162B(HPGe):
                 0,
                 c.taper.bottom.height_in_mm,
             ]
+
+            surfaces += ["n+", "n+"]
         else:
             r += [c.radius_in_mm]
             z += [0]
+            surfaces += ["n+"]
 
         if c.taper.top.height_in_mm > 0:
             r += [
@@ -72,14 +53,17 @@ class V02162B(HPGe):
                 c.height_in_mm - c.taper.top.height_in_mm,
                 c.height_in_mm,
             ]
+            surfaces += ["n+", "n+"]
         else:
             r += [c.radius_in_mm]
             z += [c.height_in_mm]
-
+            surfaces += ["n+"]
         # top groove
         r += [c.extra.topgroove.radius_in_mm, c.extra.topgroove.radius_in_mm]
 
         z += [c.height_in_mm, c.height_in_mm - c.extra.topgroove.depth_in_mm]
+
+        surfaces += ["n+", "n+"]
 
         # borehole
         r += [c.borehole.radius_in_mm, c.borehole.radius_in_mm, 0]
@@ -89,5 +73,8 @@ class V02162B(HPGe):
             c.height_in_mm - c.borehole.depth_in_mm,
             c.height_in_mm - c.borehole.depth_in_mm,
         ]
+        surfaces += ["n+", "n+", "n+"]
+
+        self.surfaces = surfaces
 
         return r, z
