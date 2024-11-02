@@ -186,7 +186,7 @@ class HPGe(ABC, geant4.LogicalVolume):
         """Surface area of the HPGe.
 
         If a list of surface_indices is provided the area is computed only considering these surfaces,
-        from :math: `r_i` to :math: `r_{i+1}` and `z_i` to :math: `z_{i+1}`. Else the full area is computed.
+        from :math:`r_i` to :math:`r_{i+1}` and :math:`z_i` to :math:`z_{i+1}`. Else the full area is computed.
 
         Parameters
         ----------
@@ -220,4 +220,6 @@ class HPGe(ABC, geant4.LogicalVolume):
             r = r[surface_indices]
             z = z[surface_indices]
 
-        return np.sum(np.where(dr == 0, abs(dz) * r[:-1] * 2 * np.pi, abs(dr) * dl * np.pi))
+        return np.sum(
+            np.where(dr == 0, abs(dz) * r[:-1] * 2 * np.pi, abs(dr) * dl * np.pi)
+        )
