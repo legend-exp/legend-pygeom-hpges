@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 
 from .base import HPGe
-from .utils import make_pplus
+from .build_utils import make_pplus
 
 
 class BEGe(HPGe):

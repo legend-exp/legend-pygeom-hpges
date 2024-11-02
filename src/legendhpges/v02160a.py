@@ -5,8 +5,8 @@ import math
 from pyg4ometry import geant4
 
 from .base import HPGe
+from .build_utils import make_pplus
 from .registry import default_units_registry as u
-from .utils import make_pplus
 
 
 class V02160A(HPGe):

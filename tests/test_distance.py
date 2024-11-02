@@ -25,7 +25,7 @@ def test_data_configs():
     return ldata.get_path("legend/metadata/hardware/detectors/germanium/diodes")
 
 
-def test_not_implemented(test_data_configs):
+def test_not_implemented():
     reg = geant4.Registry()
     ppc = make_hpge(configs.P00664B, registry=reg)
 
