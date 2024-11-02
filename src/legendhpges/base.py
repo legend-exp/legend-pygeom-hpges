@@ -110,13 +110,17 @@ class HPGe(ABC, geant4.LogicalVolume):
         Must be overloaded by derived classes.
         """
 
-    def distance_to_surface(self, coords: np.ndarray | list) -> np.ndarray:
+    def distance_to_surface(
+        self, coords: np.ndarray | list, surface_indices: list | None = None
+    ) -> np.ndarray:
         """Compute the distance of a set of points to the nearest detector surface.
 
         Parameters
         ----------
         coords
             2D array of `(x,y,z)` coordinates for each point, first index corresponds to the point, second to the dimension `(x,y,z)`.
+        surface_indices
+            list of indices of surfaces to consider. If `None` (the default) all surfaces used.
 
         Returns
         -------
@@ -143,12 +147,15 @@ class HPGe(ABC, geant4.LogicalVolume):
         rz_coords = utils.convert_coords(coords)
 
         # get the coordinates
-        r = self.solid.pR
-        z = self.solid.pZ
+        r, z = self._decode_polycone_coord()
 
         # build lists of pairs of coordinates
         s1 = np.array([np.array([r1, z1]) for r1, z1 in zip(r[:-1], z[:-1])])
         s2 = np.array([np.array([r2, z2]) for r2, z2 in zip(r[1:], z[1:])])
+
+        if surface_indices is not None:
+            s1 = s1[surface_indices]
+            s2 = s2[surface_indices]
 
         n_segments = np.shape(s1)[0]
         n = np.shape(coords)[0]
@@ -190,7 +197,7 @@ class HPGe(ABC, geant4.LogicalVolume):
 
         Parameters
         ----------
-        surfaace_indices
+        surface_indices
             list of indices or None.
 
         Returns

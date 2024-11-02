@@ -44,8 +44,12 @@ def test_bad_dimensions(test_data_configs):
 def test_output(test_data_configs):
     reg = geant4.Registry()
     gedet = make_hpge(test_data_configs + "/C99000A.json", registry=reg)
+    dist = gedet.distance_to_surface([[0, 0, 0], [1, 3, 3], [0, 0, 0]])
 
-    assert np.shape(
-        gedet.distance_to_surface([[0, 0, 0], [1, 3, 3], [0, 0, 0]]) == (3,)
+    assert np.shape(dist == (3,))
+    assert np.all(dist >= 0)
+
+    dist_indices = gedet.distance_to_surface(
+        [[0, 0, 0], [1, 3, 3], [0, 0, 0]], surface_indices=[0, 3]
     )
-    assert np.all(gedet.distance_to_surface([[0, 0, 0], [1, 3, 3], [0, 0, 0]]) >= 0)
+    assert np.all(dist_indices >= dist)
