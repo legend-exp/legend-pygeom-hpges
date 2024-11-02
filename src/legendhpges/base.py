@@ -109,7 +109,7 @@ class HPGe(ABC, geant4.LogicalVolume):
         Must be overloaded by derived classes.
         """
 
-    def distance_to_surface(self, coords: np.Array) -> np.ndarray:
+    def distance_to_surface(self, coords: np.ndarray | list) -> np.ndarray:
         """Compute the distance of a set of points to the nearest detector surface.
 
         Parameters
@@ -131,12 +131,14 @@ class HPGe(ABC, geant4.LogicalVolume):
             msg = f"distance_to_surface is not implemented for {type(self.solid)} yet"
             raise NotImplementedError(msg)
 
+        if not isinstance(coords, np.ndarray):
+            coords = np.array(coords)
+
         if np.shape(coords)[1] != 3:
             msg = "coords must be provided as a 2D array with x,y,z coordinates for each point."
             raise ValueError(msg)
 
         # convert x,y,z into r,z
-
         rz_coords = utils.convert_coords(coords)
 
         # get the coordinates
