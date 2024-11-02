@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import math
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -180,3 +181,43 @@ class HPGe(ABC, geant4.LogicalVolume):
     def mass(self) -> Quantity:
         """Mass of the HPGe."""
         return (self.volume * (self.material.density * u.g / u.cm**3)).to(u.g)
+
+    def surface_area(self, surface_indices: list | None = None) -> Quantity:
+        """Surface area of the HPGe.
+
+        If a list of surface_indices is provided the area is computed only considering these surfaces,
+        from :math: `r_i` to :math: `r_{i+1}` and `z_i` to :math: `z_{i+1}`. Else the full area is computed.
+
+        Parameters
+        ----------
+        surfaace_indices
+            list of indices or None.
+
+        Returns
+        -------
+        a pint Quantity of the surface area
+
+        Note
+        ----
+        Calculation is based on a polycone geometry so is incorrect for asymmetric detectors.
+        """
+        if not isinstance(self.solid, geant4.solid.GenericPolycone):
+            logging.warning("The area is that of the solid without cut")
+
+        r, z = self._decode_polycone_coord()
+
+        r = np.array(r)
+        z = np.array(z)
+
+        dr = np.array([r2 - r1 for r1, r2 in zip(r[:-1], r[1:])])
+        dz = np.array([z2 - z1 for z1, z2 in zip(z[:-1], z[1:])])
+        dl = np.sqrt(np.power(dr, 2) + np.power(dz, 2))
+
+        if surface_indices is not None:
+            dr = dr[surface_indices]
+            dz = dz[surface_indices]
+            dl = dl[surface_indices]
+            r = r[surface_indices]
+            z = z[surface_indices]
+
+        return np.sum(np.where(dr == 0, abs(dz) * r[:-1] * 2 * np.pi, abs(dr) * dl * np.pi))
