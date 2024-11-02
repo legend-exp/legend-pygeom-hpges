@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import numpy as np
-
 
 def make_pplus(geometry: dict) -> tuple[list, list, list]:
     """Make the p+ contact for BeGe and some ICPC

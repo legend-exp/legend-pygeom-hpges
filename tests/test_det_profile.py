@@ -72,25 +72,36 @@ def test_make_icpc(test_data_configs):
     gedet = make_hpge(test_data_configs + "/V99000A.json")
     assert isinstance(gedet, InvertedCoax)
 
+    assert len(gedet._decode_polycone_coord()[0])==len(gedet.surfaces)+1
+
 
 def test_make_bege(test_data_configs):
     gedet = make_hpge(test_data_configs + "/B99000A.json")
     assert isinstance(gedet, BEGe)
 
+    assert len(gedet._decode_polycone_coord()[0])==len(gedet.surfaces)+1
+
+
 
 def test_make_ppc(test_data_configs):
     gedet = make_hpge(test_data_configs + "/P99000A.json")
     assert isinstance(gedet, PPC)
+    
+    assert len(gedet._decode_polycone_coord()[0])==len(gedet.surfaces)+1
 
 
 def test_make_semicoax(test_data_configs):
     gedet = make_hpge(test_data_configs + "/C99000A.json")
     assert isinstance(gedet, SemiCoax)
+    
+    assert len(gedet._decode_polycone_coord()[0])==len(gedet.surfaces)+1
 
 
 def make_v07646a():
     gedet = make_hpge(configs.V07646A)
     assert isinstance(gedet, V07646A)
+    
+    assert len(gedet._decode_polycone_coord()[0])==len(gedet.surfaces)+1
 
 
 def test_make_p00664b():
@@ -98,17 +109,23 @@ def test_make_p00664b():
     assert gedet.mass
     assert isinstance(gedet, P00664B)
 
+    assert len(gedet._decode_polycone_coord()[0])==len(gedet.surfaces)+1
 
+    
 def test_make_v02162b():
     gedet = make_hpge(configs.V02162B)
     assert gedet.mass
     assert isinstance(gedet, V02162B)
+    
+    assert len(gedet._decode_polycone_coord()[0])==len(gedet.surfaces)+1
 
 
 def test_make_v02160a():
     gedet = make_hpge(configs.V02160A)
     assert gedet.mass
     assert isinstance(gedet, V02160A)
+
+    assert len(gedet._decode_polycone_coord()[0])==len(gedet.surfaces)+1
 
 
 def test_null_enrichment():
