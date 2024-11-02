@@ -16,10 +16,11 @@ class SemiCoax(HPGe):
 
         r = []
         z = []
+        surfaces = []
 
         r += [0, c.borehole.radius_in_mm]
-
         z += [c.borehole.depth_in_mm, c.borehole.depth_in_mm]
+        surfaces += ["p+"]
 
         if c.taper.borehole.height_in_mm > 0:
             r += [
@@ -28,9 +29,11 @@ class SemiCoax(HPGe):
                 + c.taper.borehole.height_in_mm * _tan(c.taper.borehole.angle_in_deg),
             ]
             z += [c.taper.borehole.height_in_mm, 0]
+            surfaces += ["p+", "p+"]
         else:
             r += [c.borehole.radius_in_mm]
             z += [0]
+            surfaces += ["p+"]
 
         r += [
             c.groove.radius_in_mm.inner,
@@ -40,6 +43,7 @@ class SemiCoax(HPGe):
         ]
 
         z += [0, c.groove.depth_in_mm, c.groove.depth_in_mm, 0]
+        surfaces += ["p+", "passive", "passive", "passive"]
 
         if c.taper.bottom.height_in_mm > 0:
             r += [
@@ -48,9 +52,11 @@ class SemiCoax(HPGe):
                 c.radius_in_mm,
             ]
             z += [0, c.taper.bottom.height_in_mm]
+            surfaces += ["n+", "n+"]
         else:
             r += [c.radius_in_mm]
             z += [0]
+            surfaces += ["n+"]
 
         if c.taper.top.height_in_mm > 0:
             r += [
@@ -59,11 +65,15 @@ class SemiCoax(HPGe):
                 - c.taper.top.height_in_mm * _tan(c.taper.top.angle_in_deg),
             ]
             z += [c.height_in_mm - c.taper.top.height_in_mm, c.height_in_mm]
+            surfaces += ["n+", "n+"]
         else:
             r += [c.radius_in_mm]
             z += [c.height_in_mm]
+            surfaces += ["n+"]
 
         r += [0]
         z += [c.height_in_mm]
+        surfaces += ["n+"]
 
+        self.surfaces = surfaces
         return r, z
