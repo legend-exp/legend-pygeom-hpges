@@ -74,13 +74,74 @@ def dot(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     return np.sum(a * b, axis=1)
 
 
-def shortest_distance(s1: np.ndarray, s2: np.ndarray, points: np.ndarray) -> np.ndarray:
-    """Get the shortest distance between each point and the line segment defined by s1-s2
+def shortest_distance_to_plane(
+    a_vec: np.array,
+    d: float,
+    points: np.ndarray,
+    rmax: float | None = None,
+    zrange: tuple[float, float] | None = None,
+) -> np.ndarray:
+    """Get the shortest distance from a plane (constrained in r and z) to each point.
 
-    Based on vector algebra where the distance is given by:
+    The equation of the plane is given by :math:`a_1x+a_2y+a_3z=d`. Where :math:`\\vec{a}=(a_1,a_2,a_3)` The closest point on the plane to the point
+    (:math:`y`) is then given by:
 
     .. math::
-        d = || s_1 - p - ( (n · (a - p)) * n ) ||
+        x =y-(y*a-d)*a/||a||^2
+
+    The distance is then given by the length of the vector :math:`x-y`. This function also checks if the
+    intersection point is above rmax or inside the zrange,  if not nan is returned for that point.
+
+    Parameters
+    ----------
+    a_vec
+        3 coordinate array defining the plane.
+    d
+        scalar in the plane definition.
+    points
+        set of points to compute distance.
+    rmax
+        maximum radius for the plane.
+    zrange
+        range in z for the plane.
+
+    Returns
+    -------
+    np.array of distance for each point.
+    """
+
+    a_norm = np.sum(a_vec * a_vec)
+    proj_points = points - ((dot(points, a_vec) - d)[:, np.newaxis]) * a_vec / a_norm
+
+    dist_vec = norm((dot(points, a_vec) - d)[:, np.newaxis] * a_vec / a_norm)
+
+    # check on r and z
+
+    proj_points_rz = convert_coords(proj_points)
+
+    if rmax is not None:
+        condition_r = proj_points_rz[:, 0] <= rmax
+    else:
+        condition_r = np.full(len(points), True)
+
+    if zrange is not None:
+        condition_z = (proj_points_rz[:, 1] > zrange[0]) & (
+            proj_points_rz[:, 1] < zrange[1]
+        )
+    else:
+        condition_z = np.full(len(points), True)
+
+    condition = condition_r * condition_z
+    return np.where(condition, dist_vec, np.full(len(points), np.nan))
+
+
+def shortest_distance(s1: np.ndarray, s2: np.ndarray, points: np.ndarray) -> np.ndarray:
+    """Get the shortest distance between each point and the line segment defined by s1-s2.
+
+    Based on vector algebra where the distance vector is given by:
+
+    .. math::
+        d = s_1 - p - ( (n · (s_1- p)) * n )
 
     where:
         - :math:`s_1` is a vector from which the distance is measured,
@@ -88,7 +149,8 @@ def shortest_distance(s1: np.ndarray, s2: np.ndarray, points: np.ndarray) -> np.
         - `n` is a unit direction vector from :math:`s_1` to :math:`s_2`,
         - `a` is another point vector.
 
-    This calculation is performed for each vector.
+    If the projection point lies inside the segment s1-s2. Else the closest point is either :math:`s_1` or :math:`s_2`.
+    The distance is the modulus of this vector and this calculation is performed for each point.
 
     Parameters
     ----------

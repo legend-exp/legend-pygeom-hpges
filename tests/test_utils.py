@@ -65,3 +65,72 @@ def test_distances():
         utils.shortest_distance(rot @ (s1 + offset), rot @ (s2 + offset), points_new),
         res,
     )
+
+
+def test_plane_distance_unconstrained():
+    # start with a plane on the x,y plane
+    a = np.array([0, 0, 1])
+    d = 0
+    points = np.array([[0, 0, 1], [1, 1, 7], [-5, 2, 9], [1, 0, 0]])
+    assert np.allclose(
+        utils.shortest_distance_to_plane(a, d, points), np.array([1, 7, 9, 0])
+    )
+
+    # a is the normal vector while d=p*a where p is a point on the plane i.e 0
+
+    offset = np.array([107, -203, 197])
+    d_new = np.sum(a * offset)
+
+    assert np.allclose(
+        utils.shortest_distance_to_plane(a, d_new, points + offset),
+        np.array([1, 7, 9, 0]),
+    )
+
+    # now arbitrary rotation
+
+    alpha = 35
+    beta = 18
+    gamma = 48
+
+    ca = np.cos(np.rad2deg(alpha))
+    cb = np.cos(np.rad2deg(beta))
+    cg = np.cos(np.rad2deg(gamma))
+
+    sa = np.sin(np.rad2deg(alpha))
+    sb = np.sin(np.rad2deg(beta))
+    sg = np.sin(np.rad2deg(gamma))
+
+    rot = np.array(
+        [
+            [cb * cg, sa * sb * cg - ca * sg, ca * sb * cg + sa * sg],
+            [cb * sg, sa * sb * sg + ca * cg, ca * sb * sg - sa * cg],
+            [-sb, sa * cb, ca * cb],
+        ]
+    )
+    p_new = rot @ offset
+    points_new = [rot @ (p_tmp + offset) for p_tmp in points]
+    a_new = rot @ a
+    d_new = np.sum(p_new * a_new)
+
+    assert np.allclose(
+        utils.shortest_distance_to_plane(a_new, d_new, points_new),
+        np.array([1, 7, 9, 0]),
+    )
+
+
+def test_plane_distance_constrained():
+    # vertical plane at x=3
+    a = np.array([1, 0, 0])
+    d = 3
+    points = np.array([[0, 0, 10], [2, 0, -7], [3, 5, -17], [2.9, 4, -5]])
+
+    assert np.allclose(
+        utils.shortest_distance_to_plane(a, d, points, rmax=5),
+        np.array([3, 1, np.nan, 0.1]),
+        equal_nan=True,
+    )
+    assert np.allclose(
+        utils.shortest_distance_to_plane(a, d, points, rmax=5, zrange=[-100, 1]),
+        np.array([np.nan, 1, np.nan, 0.1]),
+        equal_nan=True,
+    )
