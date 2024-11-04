@@ -116,7 +116,7 @@ class HPGe(ABC, geant4.LogicalVolume):
         Parameters
         ----------
         coords
-            2D array of `(x,y,z)` coordinates for each point, first index corresponds to the point, second to the dimension `(x,y,z)`.
+            2D array of shape `(n,3)` of `(x,y,z)` coordinates for each of `n` points, second index corresponds to `(x,y,z)`.
         tol
             distance outside the surface which is considered inside.
 
@@ -149,14 +149,14 @@ class HPGe(ABC, geant4.LogicalVolume):
         return np.where(dists[np.arange(dists.shape[0]), ids] > 0, True, False)
 
     def distance_to_surface(
-        self, coords: np.ndarray | list, surface_indices: list | None = None
+        self, coords: np.ndarray | list, surface_indices: list[int] | None = None
     ) -> np.ndarray:
         """Compute the distance of a set of points to the nearest detector surface.
 
         Parameters
         ----------
         coords
-            2D array of `(x,y,z)` coordinates for each point, first index corresponds to the point, second to the dimension `(x,y,z)`.
+            2D array of shape `(n,3)` of `(x,y,z)` coordinates for each of `n` points, second index corresponds to `(x,y,z)`.
         surface_indices
             list of indices of surfaces to consider. If `None` (the default) all surfaces used.
 
