@@ -1,14 +1,10 @@
 from __future__ import annotations
 
-import logging
-
 import matplotlib.pyplot as plt
 import numpy as np
 from pyg4ometry.visualisation import VtkViewer
 
 from .base import HPGe
-from .p00664b import P00664B
-from .v02160a import V02160A
 
 
 def plot_profile(
@@ -29,13 +25,7 @@ def plot_profile(
 
     """
     # data
-    if isinstance(hpge, (V02160A, P00664B)):
-        r = hpge.solid.obj1.pR
-        z = hpge.solid.obj1.pZ
-        logging.warning("The detector profile is that of the solid without cut")
-    else:
-        r = hpge.solid.pR
-        z = hpge.solid.pZ
+    r, z = hpge.get_profile()
 
     # set options
     colors = plt.rcParams["axes.prop_cycle"].by_key()["color"]

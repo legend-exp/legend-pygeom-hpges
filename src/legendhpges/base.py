@@ -111,6 +111,26 @@ class HPGe(ABC, geant4.LogicalVolume):
         Must be overloaded by derived classes.
         """
 
+    def get_profile(self) -> tuple[list[float], list[float]]:
+        """Get the profile of the HPGe detector.
+
+        Returns
+        -------
+        (r.z)
+            two lists of r and z coordinates, respectively.
+
+        Note
+        -----
+            For V02160A and P00664A the detector profile is that of the solid without cut.
+        """
+        if isinstance(self.solid, geant4.solid.GenericPolycone) is False:
+            r = self.solid.obj1.pR
+            z = self.solid.obj1.pZ
+        else:
+            r = self.solid.pR
+            z = self.solid.pZ
+        return r, z
+
     def is_inside(self, coords: ArrayLike, tol: float = 1e-11) -> NDArray[bool]:
         """Compute whether each point is inside the shape
 
@@ -142,7 +162,8 @@ class HPGe(ABC, geant4.LogicalVolume):
             raise ValueError(msg)
 
         # get the coordinates
-        r, z = self._decode_polycone_coord()
+        r, z = self.get_profile()
+
         dists = utils.get_distance_vectors(coords, r, z, surface_indices=None, tol=tol)
 
         ids = np.argmin(abs(dists), axis=1)
@@ -183,7 +204,7 @@ class HPGe(ABC, geant4.LogicalVolume):
             raise ValueError(msg)
 
         # get the coordinates
-        r, z = self._decode_polycone_coord()
+        r, z = self.get_profile()
 
         dists = utils.get_distance_vectors(
             coords, r, z, surface_indices=surface_indices
@@ -233,7 +254,7 @@ class HPGe(ABC, geant4.LogicalVolume):
         if not isinstance(self.solid, geant4.solid.GenericPolycone):
             logging.warning("The area is that of the solid without cut")
 
-        r, z = self._decode_polycone_coord()
+        r, z = self.get_profile()
 
         r = np.array(r)
         z = np.array(z)
