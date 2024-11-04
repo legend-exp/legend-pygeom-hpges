@@ -143,7 +143,6 @@ class HPGe(ABC, geant4.LogicalVolume):
         # get the coordinates
         r, z = self._decode_polycone_coord()
         dists = utils.get_distance_vectors(coords, r, z, surface_indices=None, tol=tol)
-        print(dists)
 
         ids = np.argmin(abs(dists), axis=1)
 
@@ -167,11 +166,11 @@ class HPGe(ABC, geant4.LogicalVolume):
 
         Note
         ----
-        - Only implemented for solids based on :class:`G4GenericPolycone`
+        - Only implemented for solids based on :class:`geant4.solid.GenericPolycone`
         - Coordinates should be relative to the origin of the polycone.
         """
         # check type of the solid
-        if isinstance(self.solid, geant4.solid.GenericPolycone) is False:
+        if not isinstance(self.solid, geant4.solid.GenericPolycone):
             msg = f"distance_to_surface is not implemented for {type(self.solid)} yet"
             raise NotImplementedError(msg)
 

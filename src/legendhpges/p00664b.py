@@ -61,12 +61,12 @@ class P00664B(HPGe):
         if c.pp_contact.depth_in_mm > 0:
             r += [0, c.pp_contact.radius_in_mm, c.pp_contact.radius_in_mm]
             z += [c.pp_contact.depth_in_mm, c.pp_contact.depth_in_mm, 0]
-            surfaces += ["p+", "passive"]
+            surfaces += ["pplus", "passive"]
 
         else:
             r += [0, c.pp_contact.radius_in_mm]
             z += [0, 0]
-            surfaces += ["p+"]
+            surfaces += ["pplus"]
 
         if c.taper.bottom.height_in_mm > 0:
             r += [
@@ -75,7 +75,7 @@ class P00664B(HPGe):
                 c.radius_in_mm,
             ]
             z += [0, c.taper.bottom.height_in_mm]
-            surfaces += ["passive", "n+"]
+            surfaces += ["passive", "nplus"]
 
         else:
             r += [c.radius_in_mm]
@@ -89,15 +89,15 @@ class P00664B(HPGe):
                 - c.taper.top.height_in_mm * _tan(c.taper.top.angle_in_deg),
             ]
             z += [c.height_in_mm - c.taper.top.height_in_mm, c.height_in_mm]
-            surfaces += ["n+", "n+"]
+            surfaces += ["nplus", "nplus"]
         else:
             r += [c.radius_in_mm]
             z += [c.height_in_mm]
-            surfaces += ["n+"]
+            surfaces += ["nplus"]
 
         r += [0]
         z += [c.height_in_mm]
-        surfaces += ["n+"]
+        surfaces += ["nplus"]
 
         self.surfaces = surfaces
         return r, z

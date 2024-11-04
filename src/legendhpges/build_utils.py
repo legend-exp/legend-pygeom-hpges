@@ -2,7 +2,7 @@ from __future__ import annotations
 
 
 def make_pplus(geometry: dict) -> tuple[list, list, list]:
-    """Make the p+ contact for BeGe and some ICPC
+    """Make the pplus contact for BeGe and some ICPC
 
     Methods to avoid duplicating code.
 
@@ -33,7 +33,7 @@ def make_pplus(geometry: dict) -> tuple[list, list, list]:
             0,
             0,
         ]
-        surfaces += ["p+", "passive", "passive"]
+        surfaces += ["pplus", "passive", "passive"]
 
     elif geometry.pp_contact.radius_in_mm < geometry.groove.radius_in_mm.inner:
         r += [
@@ -42,11 +42,11 @@ def make_pplus(geometry: dict) -> tuple[list, list, list]:
             geometry.groove.radius_in_mm.inner,
         ]
         z += [0, 0, 0]
-        surfaces += ["p+", "passive"]
+        surfaces += ["pplus", "passive"]
     else:
         r += [0, geometry.pp_contact.radius_in_mm]
         z += [0, 0]
-        surfaces += ["p+"]
+        surfaces += ["pplus"]
 
     r += [
         geometry.groove.radius_in_mm.inner,

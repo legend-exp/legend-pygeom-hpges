@@ -31,11 +31,11 @@ class BEGe(HPGe):
                 c.radius_in_mm,
             ]
             z += [0, c.taper.bottom.height_in_mm]
-            surfaces += ["n+", "n+"]
+            surfaces += ["nplus", "nplus"]
         else:
             r += [c.radius_in_mm]
             z += [0]
-            surfaces += ["n+"]
+            surfaces += ["nplus"]
 
         if c.taper.top.height_in_mm > 0:
             r += [
@@ -44,15 +44,15 @@ class BEGe(HPGe):
                 - c.taper.top.height_in_mm * _tan(c.taper.top.angle_in_deg),
             ]
             z += [c.height_in_mm - c.taper.top.height_in_mm, c.height_in_mm]
-            surfaces += ["n+", "n+"]
+            surfaces += ["nplus", "nplus"]
         else:
             r += [c.radius_in_mm]
             z += [c.height_in_mm]
-            surfaces += ["n+"]
+            surfaces += ["nplus"]
 
         r += [0]
         z += [c.height_in_mm]
-        surfaces += ["n+"]
+        surfaces += ["nplus"]
 
         self.surfaces = surfaces
 

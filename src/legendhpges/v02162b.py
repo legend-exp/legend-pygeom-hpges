@@ -36,11 +36,11 @@ class V02162B(HPGe):
                 c.taper.bottom.height_in_mm,
             ]
 
-            surfaces += ["n+", "n+"]
+            surfaces += ["nplus", "nplus"]
         else:
             r += [c.radius_in_mm]
             z += [0]
-            surfaces += ["n+"]
+            surfaces += ["nplus"]
 
         if c.taper.top.height_in_mm > 0:
             r += [
@@ -53,17 +53,17 @@ class V02162B(HPGe):
                 c.height_in_mm - c.taper.top.height_in_mm,
                 c.height_in_mm,
             ]
-            surfaces += ["n+", "n+"]
+            surfaces += ["nplus", "nplus"]
         else:
             r += [c.radius_in_mm]
             z += [c.height_in_mm]
-            surfaces += ["n+"]
+            surfaces += ["nplus"]
         # top groove
         r += [c.extra.topgroove.radius_in_mm, c.extra.topgroove.radius_in_mm]
 
         z += [c.height_in_mm, c.height_in_mm - c.extra.topgroove.depth_in_mm]
 
-        surfaces += ["n+", "n+"]
+        surfaces += ["nplus", "nplus"]
 
         # borehole
         r += [c.borehole.radius_in_mm, c.borehole.radius_in_mm, 0]
@@ -73,7 +73,7 @@ class V02162B(HPGe):
             c.height_in_mm - c.borehole.depth_in_mm,
             c.height_in_mm - c.borehole.depth_in_mm,
         ]
-        surfaces += ["n+", "n+", "n+"]
+        surfaces += ["nplus", "nplus", "nplus"]
 
         self.surfaces = surfaces
 

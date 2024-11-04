@@ -4,7 +4,7 @@ import numpy as np
 
 
 def convert_coords(coords: np.ndarray) -> np.ndarray:
-    """Converts (x,y,zx) coordinates into (r,z)
+    """Converts (x,y,z) coordinates into (r,z)
 
     Parameters
     ----------
@@ -16,7 +16,7 @@ def convert_coords(coords: np.ndarray) -> np.ndarray:
         numpy array of (r,z) coordinates for each point
 
     """
-    r = np.sqrt(np.power(coords[:, 0], 2) + np.power(coords[:, 1], 2))
+    r = np.sqrt(coords[:, 0] ** 2 + coords[:, 1] ** 2)
     return np.column_stack((r, coords[:, 2]))
 
 
@@ -34,7 +34,7 @@ def norm(a: np.ndarray) -> np.ndarray:
     """
     ax = 1 if a.ndim == 2 else 0
 
-    return np.sqrt(np.sum(np.power(a, 2), axis=ax))
+    return np.sqrt(np.sum(a**2, axis=ax))
 
 
 def dot(a: np.ndarray, b: np.ndarray) -> np.ndarray:
@@ -44,10 +44,8 @@ def dot(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     ----------
     a
         First list of vectors, where the second index corresponds to the dimension.
-
     b
         Second list in the same format.
-
 
     Returns
     -------
@@ -66,8 +64,8 @@ def shortest_distance_to_plane(
 ) -> np.ndarray:
     """Get the shortest distance from a plane (constrained in r and z) to each point.
 
-    The equation of the plane is given by :math:`a_1x+a_2y+a_3z=d`. Where :math:`\\vec{a}=(a_1,a_2,a_3)` The closest point on the plane to the point
-    (:math:`y`) is then given by:
+    The equation of the plane is given by :math:`a_1x+a_2y+a_3z=d`. Where :math:`\\vec{a}=(a_1,a_2,a_3)`.
+    The closest point on the plane to the point (:math:`y`) is then given by:
 
     .. math::
         x =y-(y*a-d)*a/||a||^2

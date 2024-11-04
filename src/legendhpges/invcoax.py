@@ -35,12 +35,12 @@ class InvertedCoax(HPGe):
                 0,
                 c.taper.bottom.height_in_mm,
             ]
-            surfaces += ["n+", "n+"]
+            surfaces += ["nplus", "nplus"]
 
         else:
             r += [c.radius_in_mm]
             z += [0]
-            surfaces += ["n+"]
+            surfaces += ["nplus"]
 
         if c.taper.top.height_in_mm > 0:
             r += [
@@ -53,12 +53,12 @@ class InvertedCoax(HPGe):
                 c.height_in_mm - c.taper.top.height_in_mm,
                 c.height_in_mm,
             ]
-            surfaces += ["n+", "n+"]
+            surfaces += ["nplus", "nplus"]
 
         else:
             r += [c.radius_in_mm]
             z += [c.height_in_mm]
-            surfaces += ["n+"]
+            surfaces += ["nplus"]
 
         if c.taper.borehole.height_in_mm > 0:
             r += [
@@ -71,12 +71,12 @@ class InvertedCoax(HPGe):
                 c.height_in_mm,
                 c.height_in_mm - c.taper.borehole.height_in_mm,
             ]
-            surfaces += ["n+", "n+"]
+            surfaces += ["nplus", "nplus"]
 
         else:
             r += [c.borehole.radius_in_mm]
             z += [c.height_in_mm]
-            surfaces += ["n+"]
+            surfaces += ["nplus"]
 
         if c.taper.borehole.height_in_mm != c.borehole.depth_in_mm:
             r += [
@@ -88,13 +88,13 @@ class InvertedCoax(HPGe):
                 c.height_in_mm - c.borehole.depth_in_mm,
                 c.height_in_mm - c.borehole.depth_in_mm,
             ]
-            surfaces += ["n+", "n+"]
+            surfaces += ["nplus", "nplus"]
 
         else:
             r += [0]
 
             z += [c.height_in_mm - c.borehole.depth_in_mm]
-            surfaces += ["n+"]
+            surfaces += ["nplus"]
 
         self.surfaces = surfaces
 
