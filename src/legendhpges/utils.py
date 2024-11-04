@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import numpy as np
+from numpy.typing import ArrayLike, NDArray
 
 
-def convert_coords(coords: np.ndarray) -> np.ndarray:
+def convert_coords(coords: ArrayLike) -> NDArray:
     """Converts (x,y,z) coordinates into (r,z)
 
     Parameters
@@ -20,7 +21,7 @@ def convert_coords(coords: np.ndarray) -> np.ndarray:
     return np.column_stack((r, coords[:, 2]))
 
 
-def norm(a: np.ndarray) -> np.ndarray:
+def norm(a: ArrayLike) -> NDArray:
     """Computes the norm of a set of vectors or a single vector
 
     Parameters
@@ -32,12 +33,13 @@ def norm(a: np.ndarray) -> np.ndarray:
     -------
         the length for each vector.
     """
+
     ax = 1 if a.ndim == 2 else 0
 
     return np.sqrt(np.sum(a**2, axis=ax))
 
 
-def dot(a: np.ndarray, b: np.ndarray) -> np.ndarray:
+def dot(a: ArrayLike, b: ArrayLike) -> NDArray:
     """Computes the dot product of a set of vectors
 
     Parameters
@@ -56,12 +58,12 @@ def dot(a: np.ndarray, b: np.ndarray) -> np.ndarray:
 
 
 def shortest_distance_to_plane(
-    a_vec: np.array,
+    a_vec: ArrayLike,
     d: float,
-    points: np.ndarray,
+    points: ArrayLike,
     rmax: float | None = None,
     zrange: tuple[float, float] | None = None,
-) -> np.ndarray:
+) -> NDArray:
     """Get the shortest distance from a plane (constrained in r and z) to each point.
 
     The equation of the plane is given by :math:`a_1x+a_2y+a_3z=d`. Where :math:`\\vec{a}=(a_1,a_2,a_3)`.
@@ -117,12 +119,12 @@ def shortest_distance_to_plane(
 
 
 def get_distance_vectors(
-    coords: np.ndarray,
-    r: np.ndarray | list,
-    z: np.ndarray | list,
-    surface_indices: list | None = None,
+    coords: ArrayLike,
+    r: ArrayLike,
+    z: ArrayLike,
+    surface_indices: ArrayLike = None,
     tol: float = 1e-11,
-) -> np.ndarray:
+) -> NDArray:
     """Iterates over all line segments in a polycone extracting the distance for each line.
 
     Parameters
@@ -134,7 +136,7 @@ def get_distance_vectors(
     z
         array or list of vertical positions defining the polycone.
     surface_indices
-        list of indices of surfaces to consider. If `None` (the default) all surfaces used.
+        list of integer indices of surfaces to consider. If `None` (the default) all surfaces used.
     tol
         tolerance used in computing the sign of the distances.
 
@@ -167,8 +169,8 @@ def get_distance_vectors(
 
 
 def shortest_distance(
-    s1: np.ndarray, s2: np.ndarray, points: np.ndarray, tol: float = 1e-11
-) -> tuple[np.ndarray, np.array]:
+    s1: ArrayLike, s2: ArrayLike, points: ArrayLike, tol: float = 1e-11
+) -> tuple[NDArray, NDArray]:
     """Get the shortest distance between each point and the line segment defined by s1-s2.
 
     Based on vector algebra where the distance vector is given by:

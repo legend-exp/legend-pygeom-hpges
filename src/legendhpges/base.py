@@ -8,6 +8,7 @@ from pathlib import Path
 
 import numpy as np
 from legendmeta import AttrsDict
+from numpy.typing import ArrayLike, NDArray
 from pint import Quantity
 from pyg4ometry import geant4
 
@@ -110,7 +111,7 @@ class HPGe(ABC, geant4.LogicalVolume):
         Must be overloaded by derived classes.
         """
 
-    def is_inside(self, coords: np.ndarray | list, tol: float = 1e-11) -> np.ndarray:
+    def is_inside(self, coords: ArrayLike, tol: float = 1e-11) -> NDArray[bool]:
         """Compute whether each point is inside the shape
 
         Parameters
@@ -149,8 +150,8 @@ class HPGe(ABC, geant4.LogicalVolume):
         return np.where(dists[np.arange(dists.shape[0]), ids] > 0, True, False)
 
     def distance_to_surface(
-        self, coords: np.ndarray | list, surface_indices: list[int] | None = None
-    ) -> np.ndarray:
+        self, coords: ArrayLike, surface_indices: ArrayLike | None = None
+    ) -> NDArray:
         """Compute the distance of a set of points to the nearest detector surface.
 
         Parameters
