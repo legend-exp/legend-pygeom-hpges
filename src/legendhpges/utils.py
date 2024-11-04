@@ -20,23 +20,6 @@ def convert_coords(coords: np.ndarray) -> np.ndarray:
     return np.column_stack((r, coords[:, 2]))
 
 
-def distance(a: np.ndarray, b: np.ndarray) -> np.ndarray:
-    """Computes the distance between a set of vectors a and b
-
-    Parameters
-    ----------
-    a
-        First list of vectors, where the second index corresponds to the dimension.
-    b
-        Second list in the same format.
-
-    Returns
-    -------
-        the distance for each vector
-    """
-    return np.sqrt(np.sum(np.power(a - b, 2), axis=1))
-
-
 def norm(a: np.ndarray) -> np.ndarray:
     """Computes the norm of a set of vectors or a single vector
 
@@ -135,7 +118,54 @@ def shortest_distance_to_plane(
     return np.where(condition, dist_vec, np.full(len(points), np.nan))
 
 
-def shortest_distance(s1: np.ndarray, s2: np.ndarray, points: np.ndarray) -> np.ndarray:
+def get_distance_vectors(
+    coords: np.ndarray,
+    r: np.ndarray | list,
+    z: np.ndarray | list,
+    surface_indices: list | None = None,
+) -> np.ndarray:
+    """Iterates over all line segments in a polycone extracting the distance for each line.
+
+    Parameters
+    ---------
+    points
+        array of points to compare, first index corresponds to the point and the second to (x,y,z).
+    r
+        array or list of radial positions defining the polycone.
+    z
+        array or list of vertical positions defining the polycone.
+    surface_indices
+        list of indices of surfaces to consider. If `None` (the default) all surfaces used.
+
+    Returns
+    -------
+    numpy array of the distance for each surface.
+    """
+
+    # convert x,y,z into r,z
+    rz_coords = convert_coords(coords)
+
+    # build lists of pairs of coordinates
+    s1 = np.array([np.array([r1, z1]) for r1, z1 in zip(r[:-1], z[:-1])])
+    s2 = np.array([np.array([r2, z2]) for r2, z2 in zip(r[1:], z[1:])])
+
+    if surface_indices is not None:
+        s1 = s1[surface_indices]
+        s2 = s2[surface_indices]
+
+    n_segments = np.shape(s1)[0]
+    n = np.shape(coords)[0]
+
+    dists = np.full((n, n_segments), np.nan)
+
+    for segment in range(n_segments):
+        dists[:, segment] = shortest_distance(s1[segment], s2[segment], rz_coords)
+    return dists
+
+
+def shortest_distance(
+    s1: np.ndarray, s2: np.ndarray, points: np.ndarray
+) -> tuple[np.ndarray, np.array]:
     """Get the shortest distance between each point and the line segment defined by s1-s2.
 
     Based on vector algebra where the distance vector is given by:
@@ -163,7 +193,8 @@ def shortest_distance(s1: np.ndarray, s2: np.ndarray, points: np.ndarray) -> np.
 
     Returns
     -------
-        numpy array of the shortest distances
+        numpy array of the shortest distances.
+
     """
 
     n = (s2 - s1) / norm(s2 - s1)
@@ -174,10 +205,22 @@ def shortest_distance(s1: np.ndarray, s2: np.ndarray, points: np.ndarray) -> np.
     condition3 = (~condition1) & (~condition2)
 
     dist_vec[condition1] = (s1 - points)[condition1]
-    dist_vec[condition2] = (points - s2)[condition2]
+    dist_vec[condition2] = (s2 - points)[condition2]
     dist_vec[condition3] = ((s1 - points) - n * dot(s1 - points, n)[:, np.newaxis])[
         condition3
     ]
 
-    # TODO make this signed so inside is positive and outside negative
-    return norm(dist_vec)
+    # make this signed so inside is positive and outside negative
+    sign_vec = np.array(
+        np.cross(
+            np.hstack([n, 0]),
+            np.hstack([dist_vec, np.zeros(len(dist_vec))[:, np.newaxis]]),
+        )[:, 2]
+    )
+
+    # push points on surface inside
+    sign_vec = np.where(sign_vec == 0, -1e-20, sign_vec)
+
+    sign_vec_norm = -sign_vec / abs(sign_vec)
+
+    return norm(dist_vec) * sign_vec_norm

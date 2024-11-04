@@ -15,13 +15,6 @@ def test_distances():
     assert np.shape(coords_rz) == (2, 2)
     assert np.allclose(coords_rz[1], np.array([0, 0]))
 
-    # test distances
-
-    a = np.array([[1, 0], [1, 0]])
-    b = np.array([[0, 0], [1, 0]])
-
-    assert np.allclose(utils.distance(a, b), np.array([1, 0]))
-
     # test norm
 
     a = np.array([1, 0, 0])
