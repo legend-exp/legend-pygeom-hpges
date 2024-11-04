@@ -47,8 +47,8 @@ def test_distances():
     offset = np.array([107, -203])
     rot = np.array(
         [
-            [np.cos(np.rad2deg(37)), -np.sin(np.rad2deg(37))],
-            [np.sin(np.rad2deg(37)), np.cos(np.rad2deg(37))],
+            [np.cos(np.deg2rad(37)), -np.sin(np.deg2rad(37))],
+            [np.sin(np.deg2rad(37)), np.cos(np.deg2rad(37))],
         ]
     )
 
@@ -85,13 +85,13 @@ def test_plane_distance_unconstrained():
     beta = 18
     gamma = 48
 
-    ca = np.cos(np.rad2deg(alpha))
-    cb = np.cos(np.rad2deg(beta))
-    cg = np.cos(np.rad2deg(gamma))
+    ca = np.cos(np.deg2rad(alpha))
+    cb = np.cos(np.deg2rad(beta))
+    cg = np.cos(np.deg2rad(gamma))
 
-    sa = np.sin(np.rad2deg(alpha))
-    sb = np.sin(np.rad2deg(beta))
-    sg = np.sin(np.rad2deg(gamma))
+    sa = np.sin(np.deg2rad(alpha))
+    sb = np.sin(np.deg2rad(beta))
+    sg = np.sin(np.deg2rad(gamma))
 
     rot = np.array(
         [

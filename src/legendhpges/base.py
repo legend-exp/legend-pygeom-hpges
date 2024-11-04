@@ -110,6 +110,45 @@ class HPGe(ABC, geant4.LogicalVolume):
         Must be overloaded by derived classes.
         """
 
+    def is_inside(self, coords: np.ndarray | list, tol: float = 1e-11) -> np.ndarray:
+        """Compute whether each point is inside the shape
+
+        Parameters
+        ----------
+        coords
+            2D array of `(x,y,z)` coordinates for each point, first index corresponds to the point, second to the dimension `(x,y,z)`.
+        tol
+            distance outside the surface which is considered inside.
+
+        Returns
+        -------
+        numpy array of booleans.
+        """
+
+        if isinstance(self.solid, geant4.solid.GenericPolycone) is False:
+            msg = f"distance_to_surface is not implemented for {type(self.solid)} yet"
+            raise NotImplementedError(msg)
+
+        if isinstance(self.solid, geant4.solid.GenericPolycone) is False:
+            msg = f"distance_to_surface is not implemented for {type(self.solid)} yet"
+            raise NotImplementedError(msg)
+
+        if not isinstance(coords, np.ndarray):
+            coords = np.array(coords)
+
+        if np.shape(coords)[1] != 3:
+            msg = "coords must be provided as a 2D array with x,y,z coordinates for each point."
+            raise ValueError(msg)
+
+        # get the coordinates
+        r, z = self._decode_polycone_coord()
+        dists = utils.get_distance_vectors(coords, r, z, surface_indices=None, tol=tol)
+        print(dists)
+
+        ids = np.argmin(abs(dists), axis=1)
+
+        return np.where(dists[np.arange(dists.shape[0]), ids] > 0, True, False)
+
     def distance_to_surface(
         self, coords: np.ndarray | list, surface_indices: list | None = None
     ) -> np.ndarray:
@@ -143,31 +182,14 @@ class HPGe(ABC, geant4.LogicalVolume):
             msg = "coords must be provided as a 2D array with x,y,z coordinates for each point."
             raise ValueError(msg)
 
-        # convert x,y,z into r,z
-        rz_coords = utils.convert_coords(coords)
-
         # get the coordinates
         r, z = self._decode_polycone_coord()
 
-        # build lists of pairs of coordinates
-        s1 = np.array([np.array([r1, z1]) for r1, z1 in zip(r[:-1], z[:-1])])
-        s2 = np.array([np.array([r2, z2]) for r2, z2 in zip(r[1:], z[1:])])
+        dists = utils.get_distance_vectors(
+            coords, r, z, surface_indices=surface_indices
+        )
 
-        if surface_indices is not None:
-            s1 = s1[surface_indices]
-            s2 = s2[surface_indices]
-
-        n_segments = np.shape(s1)[0]
-        n = np.shape(coords)[0]
-
-        dists = np.full((n, n_segments), np.nan)
-
-        for segment in range(n_segments):
-            dists[:, segment] = utils.shortest_distance(
-                s1[segment], s2[segment], rz_coords
-            )
-
-        return np.min(dists, axis=1)
+        return np.min(abs(dists), axis=1)
 
     @property
     def volume(self) -> Quantity:

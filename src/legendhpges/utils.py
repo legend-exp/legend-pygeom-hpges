@@ -123,6 +123,7 @@ def get_distance_vectors(
     r: np.ndarray | list,
     z: np.ndarray | list,
     surface_indices: list | None = None,
+    tol: float = 1e-11,
 ) -> np.ndarray:
     """Iterates over all line segments in a polycone extracting the distance for each line.
 
@@ -136,6 +137,8 @@ def get_distance_vectors(
         array or list of vertical positions defining the polycone.
     surface_indices
         list of indices of surfaces to consider. If `None` (the default) all surfaces used.
+    tol
+        tolerance used in computing the sign of the distances.
 
     Returns
     -------
@@ -159,12 +162,14 @@ def get_distance_vectors(
     dists = np.full((n, n_segments), np.nan)
 
     for segment in range(n_segments):
-        dists[:, segment] = shortest_distance(s1[segment], s2[segment], rz_coords)
+        dists[:, segment] = shortest_distance(
+            s1[segment], s2[segment], rz_coords, tol=tol
+        )
     return dists
 
 
 def shortest_distance(
-    s1: np.ndarray, s2: np.ndarray, points: np.ndarray
+    s1: np.ndarray, s2: np.ndarray, points: np.ndarray, tol: float = 1e-11
 ) -> tuple[np.ndarray, np.array]:
     """Get the shortest distance between each point and the line segment defined by s1-s2.
 
@@ -181,6 +186,8 @@ def shortest_distance(
 
     If the projection point lies inside the segment s1-s2. Else the closest point is either :math:`s_1` or :math:`s_2`.
     The distance is the modulus of this vector and this calculation is performed for each point.
+    A sign is attached based on the cross product of the line vector and the distance vector.
+    To avoid numerical issues any point within the tolerance is considered inside.
 
     Parameters
     ----------
@@ -190,6 +197,8 @@ def shortest_distance(
         second point, same format as s1.
     points
         array of points to compare, first index corresponds to the point and the second to r,z.
+    tol
+        tolerance when computing sign.
 
     Returns
     -------
@@ -219,8 +228,8 @@ def shortest_distance(
     )
 
     # push points on surface inside
-    sign_vec = np.where(sign_vec == 0, -1e-20, sign_vec)
+    sign_vec = np.where(abs(sign_vec) < tol, -tol, sign_vec)
 
     sign_vec_norm = -sign_vec / abs(sign_vec)
 
-    return norm(dist_vec) * sign_vec_norm
+    return np.where(norm(dist_vec) == 0.0, tol, norm(dist_vec) * sign_vec_norm)

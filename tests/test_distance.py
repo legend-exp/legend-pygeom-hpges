@@ -55,13 +55,13 @@ def test_output(test_data_configs):
     assert np.all(dist_indices >= dist)
 
 
-
 def test_inside_not_implemented():
     reg = geant4.Registry()
     ppc = make_hpge(configs.P00664B, registry=reg)
 
     with pytest.raises(NotImplementedError):
         ppc.is_inside([[1, 0, 0]])
+
 
 def test_inside_bad_dimensions(test_data_configs):
     reg = geant4.Registry()
@@ -71,14 +71,41 @@ def test_inside_bad_dimensions(test_data_configs):
         gedet.is_inside([[1, 0, 0, 0]])
 
 
-def test_output(test_data_configs):
+def test_inside_output(test_data_configs):
     reg = geant4.Registry()
-    print(test_data_configs + "/B99000A.json")
-    gedet = make_hpge(test_data_configs + "/B99000A.json", registry=reg)
-    r,z = gedet._decode_polycone_coord()
-    print(r,z)
-    # detetor is a simple bege
-    # groove at 7.5-12 mm
-    is_in= gedet.is_inside([[0, 0, 0], [1, 3, 3], [0, 0, 0]])
 
-    assert np.shape(is_in== (3,))
+    gedet = make_hpge(test_data_configs + "/B99000A.json", registry=reg)
+    r, z = gedet._decode_polycone_coord()
+
+    # detetor is a simple bege
+    # p+ at 0-7.5 mm
+    # groove at 10-12 mm 2mm deep
+    # radius and height 40mm
+
+    theta = 33
+    cos = np.cos(np.deg2rad(theta))
+    sin = np.sin(np.deg2rad(theta))
+
+    # 1) on axis inside
+    # 2) below outside
+    # 3) inside groove
+    # 4) above groove
+    # 5) outside side
+    # 6) exactly on the side
+    # 7) far above top
+
+    coords = np.array(
+        [
+            [0, 0, 10],
+            [5 * cos, 5 * sin, -0.1],
+            [11 * cos, 11 * sin, 1],
+            [11 * cos, 11 * sin, 4],
+            [50 * cos, 50 * sin, 10],
+            [40 * cos, 40 * sin, 10],
+            [20, 20, 1000],
+        ]
+    )
+
+    is_in = gedet.is_inside(coords, tol=1e-11)
+
+    assert np.all(is_in == np.array([True, False, False, True, False, True, False]))
