@@ -123,12 +123,18 @@ class HPGe(ABC, geant4.LogicalVolume):
         -----
             For V02160A and P00664A the detector profile is that of the solid without cut.
         """
-        if isinstance(self.solid, geant4.solid.GenericPolycone) is False:
+        if not isinstance(self.solid, geant4.solid.GenericPolycone) and not isinstance(
+            self.solid.obj1, geant4.solid.GenericPolycone
+        ):
+            msg = "solid is not a polycone and neither is its primary consistient (obj1), thus no profile can be computed."
+            raise ValueError(msg)
+        if not isinstance(self.solid, geant4.solid.GenericPolycone):
             r = self.solid.obj1.pR
             z = self.solid.obj1.pZ
         else:
             r = self.solid.pR
             z = self.solid.pZ
+
         return r, z
 
     def is_inside(self, coords: ArrayLike, tol: float = 1e-11) -> NDArray[bool]:
@@ -146,7 +152,7 @@ class HPGe(ABC, geant4.LogicalVolume):
         numpy array of booleans.
         """
 
-        if isinstance(self.solid, geant4.solid.GenericPolycone) is False:
+        if not isinstance(self.solid, geant4.solid.GenericPolycone):
             msg = f"distance_to_surface is not implemented for {type(self.solid)} yet"
             raise NotImplementedError(msg)
 
