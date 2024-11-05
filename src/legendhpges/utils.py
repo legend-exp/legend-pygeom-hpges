@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import numpy as np
+from numba import njit
 from numpy.typing import ArrayLike, NDArray
 
 
+@njit
 def convert_coords(coords: ArrayLike) -> NDArray:
     """Converts (x,y,z) coordinates into (r,z)
 
@@ -21,6 +23,7 @@ def convert_coords(coords: ArrayLike) -> NDArray:
     return np.column_stack((r, coords[:, 2]))
 
 
+@njit
 def norm(a: ArrayLike) -> NDArray:
     """Computes the norm of a set of vectors or a single vector
 
@@ -39,6 +42,7 @@ def norm(a: ArrayLike) -> NDArray:
     return np.sqrt(np.sum(a**2, axis=ax))
 
 
+@njit
 def dot(a: ArrayLike, b: ArrayLike) -> NDArray:
     """Computes the dot product of a set of vectors
 
@@ -58,9 +62,9 @@ def dot(a: ArrayLike, b: ArrayLike) -> NDArray:
 
 
 def shortest_distance_to_plane(
-    a_vec: ArrayLike,
+    a_vec: NDArray,
     d: float,
-    points: ArrayLike,
+    points: NDArray,
     rmax: float | None = None,
     zrange: tuple[float, float] | None = None,
 ) -> NDArray:
@@ -94,6 +98,7 @@ def shortest_distance_to_plane(
     """
 
     a_norm = np.sum(a_vec * a_vec)
+
     proj_points = points - ((dot(points, a_vec) - d)[:, np.newaxis]) * a_vec / a_norm
 
     dist_vec = norm((dot(points, a_vec) - d)[:, np.newaxis] * a_vec / a_norm)
@@ -118,36 +123,25 @@ def shortest_distance_to_plane(
     return np.where(condition, dist_vec, np.full(len(points), np.nan))
 
 
-def get_distance_vectors(
-    coords: ArrayLike,
-    r: ArrayLike,
-    z: ArrayLike,
-    surface_indices: ArrayLike = None,
-    tol: float = 1e-11,
-) -> NDArray:
-    """Iterates over all line segments in a polycone extracting the distance for each line.
+def get_line_segments(
+    r: ArrayLike, z: ArrayLike, surface_indices: ArrayLike = None
+) -> tuple[ArrayLike, ArrayLike]:
+    """Extracts the line segments from a shape.
 
     Parameters
     ---------
-    points
-        array of points to compare, first index corresponds to the point and the second to (x,y,z).
     r
         array or list of radial positions defining the polycone.
     z
         array or list of vertical positions defining the polycone.
     surface_indices
         list of integer indices of surfaces to consider. If `None` (the default) all surfaces used.
-    tol
-        tolerance used in computing the sign of the distances.
 
     Returns
     -------
-    numpy array of the distance for each surface.
+        tuple of (s1,s2) arrays describing the line segments, both `s1` and `s2` have shape `(n_segments,2)`
+        where the first axis represents thhe segment and the second `(r,z)`.
     """
-
-    # convert x,y,z into r,z
-    rz_coords = convert_coords(coords)
-
     # build lists of pairs of coordinates
     s1 = np.array([np.array([r1, z1]) for r1, z1 in zip(r[:-1], z[:-1])])
     s2 = np.array([np.array([r2, z2]) for r2, z2 in zip(r[1:], z[1:])])
@@ -155,23 +149,18 @@ def get_distance_vectors(
     if surface_indices is not None:
         s1 = s1[surface_indices]
         s2 = s2[surface_indices]
-
-    n_segments = np.shape(s1)[0]
-    n = np.shape(coords)[0]
-
-    dists = np.full((n, n_segments), np.nan)
-
-    for segment in range(n_segments):
-        dists[:, segment] = shortest_distance(
-            s1[segment], s2[segment], rz_coords, tol=tol
-        )
-    return dists
+    return s1, s2
 
 
+@njit(cache=True)
 def shortest_distance(
-    s1: ArrayLike, s2: ArrayLike, points: ArrayLike, tol: float = 1e-11
+    s1_list: NDArray,
+    s2_list: NDArray,
+    points: NDArray,
+    tol: float = 1e-11,
+    signed: bool = True,
 ) -> tuple[NDArray, NDArray]:
-    """Get the shortest distance between each point and the line segment defined by s1-s2.
+    """Get the shortest distance between each point and the line segments defined by `s1_list` and `s2_list`.
 
     Based on vector algebra where the distance vector is given by:
 
@@ -191,45 +180,58 @@ def shortest_distance(
 
     Parameters
     ----------
-    s1
-        first point in the line segment, 1D array where index 0 correspond to r and 1 to z.
-    s2
-        second point, same format as s1.
+    s1_list
+        `(n_segments,2)` np.array of the first points in the line segment, for the second axis indices 0,1 correspond to r,z.
+    s2_list
+        second points, same format as s1.
     points
-        array of points to compare, first index corresponds to the point and the second to r,z.
+        `(n_points,2)` array of points to compare, first axis corresponds to the point index and the second to `(r,z)`.
     tol
-        tolerance when computing sign.
+        tolerance when computing sign, points within this distance to the surface are pushed inside.
+    signed
+        boolean flag to attach a sign to the distance (positive if inside).
 
     Returns
     -------
-        numpy array of the shortest distances.
+        `(n_points,n_segments)` numpy array of the shortest distances for each segment.
 
     """
+    n_segments = len(s1_list)
+    dists = np.full((len(points), len(s1_list)), np.nan)
 
-    n = (s2 - s1) / norm(s2 - s1)
-    proj_dist = -dot(n, (n * dot(s1 - points, n)[:, np.newaxis]))
-    dist_vec = np.empty_like(s1 - points)
-    condition1 = proj_dist < 0
-    condition2 = proj_dist > norm(s2 - s1)
-    condition3 = (~condition1) & (~condition2)
+    for segment in range(n_segments):
+        s1 = s1_list[segment]
+        s2 = s2_list[segment]
 
-    dist_vec[condition1] = (s1 - points)[condition1]
-    dist_vec[condition2] = (s2 - points)[condition2]
-    dist_vec[condition3] = ((s1 - points) - n * dot(s1 - points, n)[:, np.newaxis])[
-        condition3
-    ]
+        n = (s2 - s1) / norm(s2 - s1)
 
-    # make this signed so inside is positive and outside negative
-    sign_vec = np.array(
-        np.cross(
-            np.hstack([n, 0]),
-            np.hstack([dist_vec, np.zeros(len(dist_vec))[:, np.newaxis]]),
-        )[:, 2]
-    )
+        proj_dist = -dot(n, (n * dot(s1 - points, n)[:, np.newaxis]))
 
-    # push points on surface inside
-    sign_vec = np.where(abs(sign_vec) < tol, -tol, sign_vec)
+        dist_vec = np.empty_like(s1 - points)
 
-    sign_vec_norm = -sign_vec / abs(sign_vec)
+        condition1 = proj_dist < 0
+        condition2 = proj_dist > norm(s2 - s1)
+        condition3 = (~condition1) & (~condition2)
 
-    return np.where(norm(dist_vec) == 0.0, tol, norm(dist_vec) * sign_vec_norm)
+        diff_s1 = s1 - points
+        dist_vec[condition1] = diff_s1[condition1]
+        dist_vec[condition2] = s2 - points[condition2]
+        dist_vec[condition3] = (
+            diff_s1[condition3] - n * dot(diff_s1, n)[condition3, np.newaxis]
+        )
+
+        # make this signed so inside is positive and outside negative
+        if signed:
+            sign_vec = n[0] * dist_vec[:, 1] - n[1] * dist_vec[:, 0]
+
+            # push points on surface inside
+            sign_vec = np.where(np.abs(sign_vec) < tol, -tol, sign_vec)
+            sign_vec_norm = -sign_vec / np.abs(sign_vec)
+
+        else:
+            sign_vec_norm = np.ones(len(dist_vec))
+
+        dists[:, segment] = np.where(
+            np.abs(norm(dist_vec)) < tol, tol, norm(dist_vec) * sign_vec_norm
+        )
+    return dists

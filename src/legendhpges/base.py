@@ -150,10 +150,6 @@ class HPGe(ABC, geant4.LogicalVolume):
             msg = f"distance_to_surface is not implemented for {type(self.solid)} yet"
             raise NotImplementedError(msg)
 
-        if isinstance(self.solid, geant4.solid.GenericPolycone) is False:
-            msg = f"distance_to_surface is not implemented for {type(self.solid)} yet"
-            raise NotImplementedError(msg)
-
         if not isinstance(coords, np.ndarray):
             coords = np.array(coords)
 
@@ -161,17 +157,27 @@ class HPGe(ABC, geant4.LogicalVolume):
             msg = "coords must be provided as a 2D array with x,y,z coordinates for each point."
             raise ValueError(msg)
 
-        # get the coordinates
+        coords_rz = utils.convert_coords(coords)
+
+        # get the profile
         r, z = self.get_profile()
+        s1, s2 = utils.get_line_segments(r, z, surface_indices=None)
 
-        dists = utils.get_distance_vectors(coords, r, z, surface_indices=None, tol=tol)
+        # convert coords
+        coords_rz = utils.convert_coords(coords)
 
+        # compute shortest distances
+        dists = utils.shortest_distance(s1, s2, coords_rz, tol=tol)
+
+        # fnd the sign of the id with the lowest distance
         ids = np.argmin(abs(dists), axis=1)
-
         return np.where(dists[np.arange(dists.shape[0]), ids] > 0, True, False)
 
     def distance_to_surface(
-        self, coords: ArrayLike, surface_indices: ArrayLike | None = None
+        self,
+        coords: ArrayLike,
+        surface_indices: ArrayLike | None = None,
+        tol: float = 1e-11,
     ) -> NDArray:
         """Compute the distance of a set of points to the nearest detector surface.
 
@@ -181,6 +187,8 @@ class HPGe(ABC, geant4.LogicalVolume):
             2D array of shape `(n,3)` of `(x,y,z)` coordinates for each of `n` points, second index corresponds to `(x,y,z)`.
         surface_indices
             list of indices of surfaces to consider. If `None` (the default) all surfaces used.
+        tol
+            distance outside the surface which is considered inside.
 
         Returns
         -------
@@ -205,10 +213,13 @@ class HPGe(ABC, geant4.LogicalVolume):
 
         # get the coordinates
         r, z = self.get_profile()
+        s1, s2 = utils.get_line_segments(r, z, surface_indices=surface_indices)
 
-        dists = utils.get_distance_vectors(
-            coords, r, z, surface_indices=surface_indices
-        )
+        # convert coords
+        coords_rz = utils.convert_coords(coords)
+
+        # compute shortest distances to every surface
+        dists = utils.shortest_distance(s1, s2, coords_rz, tol=tol, signed=False)
 
         return np.min(abs(dists), axis=1)
 

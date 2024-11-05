@@ -30,8 +30,8 @@ def test_distances():
 
     # test shortest distance
     # in all these
-    s1 = np.array([0, 0])
-    s2 = np.array([1, 0])
+    s1 = np.array([[0, 0]])
+    s2 = np.array([[1, 0]])
 
     # first point on segment (distance is 0)
     # second directly above start (distance is 5)
@@ -41,7 +41,7 @@ def test_distances():
 
     points = np.array([[0.5, 0], [0, 5], [0.3, 7], [4, 4], [-3, 4]])
     res = np.array([0.0, 5.0, 7.0, 5.0, 5.0])
-    assert np.allclose(utils.shortest_distance(s1, s2, points), res)
+    assert np.allclose(utils.shortest_distance(s1, s2, points)[:, 0], res)
 
     # all distances shouldn't be affected by a global offset and rotation
     offset = np.array([107, -203])
@@ -52,10 +52,11 @@ def test_distances():
         ]
     )
 
-    points_new = [rot @ (p_tmp + offset) for p_tmp in points]
-
+    points_new = np.array([rot @ (p_tmp + offset) for p_tmp in points])
+    s1_new = np.array([rot @ (s1_t + offset) for s1_t in s1])
+    s2_new = np.array([rot @ (s2_t + offset) for s2_t in s2])
     assert np.allclose(
-        utils.shortest_distance(rot @ (s1 + offset), rot @ (s2 + offset), points_new),
+        utils.shortest_distance(s1_new, s2_new, points_new)[:, 0],
         res,
     )
 
@@ -101,7 +102,7 @@ def test_plane_distance_unconstrained():
         ]
     )
     p_new = rot @ offset
-    points_new = [rot @ (p_tmp + offset) for p_tmp in points]
+    points_new = np.array([rot @ (p_tmp + offset) for p_tmp in points])
     a_new = rot @ a
     d_new = np.sum(p_new * a_new)
 
