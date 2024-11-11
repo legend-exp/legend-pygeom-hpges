@@ -67,15 +67,15 @@ def plot_profile(
             first = True
             for r_tmp, z_tmp in zip(drs_tmp, dzs_tmp):
                 if first:
-                    plt.plot(
+                    axes.plot(
                         r_tmp, z_tmp, color=colors[idx + 2], label=u, **default_kwargs
                     )
                     first = False
-                    plt.plot(-r_tmp, z_tmp, color=colors[idx + 2], **default_kwargs)
+                    axes.plot(-r_tmp, z_tmp, color=colors[idx + 2], **default_kwargs)
                 else:
-                    plt.plot(r_tmp, z_tmp, color=colors[idx + 2], **default_kwargs)
-                    plt.plot(-r_tmp, z_tmp, color=colors[idx + 2], **default_kwargs)
-        plt.legend(loc="upper right")
+                    axes.plot(r_tmp, z_tmp, color=colors[idx + 2], **default_kwargs)
+                    axes.plot(-r_tmp, z_tmp, color=colors[idx + 2], **default_kwargs)
+        axes.legend(loc="upper right")
     return fig, axes
 
 
