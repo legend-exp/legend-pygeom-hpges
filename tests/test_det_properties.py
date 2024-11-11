@@ -6,7 +6,7 @@ import pytest
 from legendmeta import TextDB
 from legendtestdata import LegendTestData
 from pyg4ometry import geant4
-
+import numpy as np
 from legendhpges import (
     make_hpge,
 )
@@ -28,5 +28,5 @@ def test_surface_area(test_data_configs):
     reg = geant4.Registry()
     gedet = make_hpge(test_data_configs + "/C99000A.json", registry=reg)
 
-    assert gedet.surface_area(surface_indices=[]) == 0
-    assert gedet.surface_area(surface_indices=None) > 0
+    assert len(gedet.surface_area(surface_indices=[]))== 0
+    assert np.sum(gedet.surface_area(surface_indices=None)) > 0

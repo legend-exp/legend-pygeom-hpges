@@ -249,7 +249,7 @@ class HPGe(ABC, geant4.LogicalVolume):
         """Mass of the HPGe."""
         return (self.volume * (self.material.density * u.g / u.cm**3)).to(u.g)
 
-    def surface_area(self, surface_indices: list | None = None) -> Quantity:
+    def surface_area(self, surface_indices: list | None = None) -> list[Quantity]:
         """Surface area of the HPGe.
 
         If a list of surface_indices is provided the area is computed only considering these surfaces,
@@ -287,6 +287,7 @@ class HPGe(ABC, geant4.LogicalVolume):
             r = r[surface_indices]
             z = z[surface_indices]
 
-        return np.sum(
+        return (
             np.where(dr == 0, abs(dz) * r[:-1] * 2 * np.pi, abs(dr) * dl * np.pi)
+            * u.mm**2
         )
