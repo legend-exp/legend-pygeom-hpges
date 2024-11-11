@@ -279,12 +279,13 @@ class HPGe(ABC, geant4.LogicalVolume):
         dr = np.array([r2 - r1 for r1, r2 in zip(r[:-1], r[1:])])
         dz = np.array([z2 - z1 for z1, z2 in zip(z[:-1], z[1:])])
         dl = np.sqrt(np.power(dr, 2) + np.power(dz, 2))
+        r0=r[:-1]
 
         if surface_indices is not None:
             dr = dr[surface_indices]
             dz = dz[surface_indices]
             dl = dl[surface_indices]
-            r0 = r[surface_indices]
+            r0 = r0[surface_indices]
             z = z[surface_indices]
 
         return np.where(
