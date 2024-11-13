@@ -15,19 +15,6 @@ def test_distances():
     assert np.shape(coords_rz) == (2, 2)
     assert np.allclose(coords_rz[1], np.array([0, 0]))
 
-    # test norm
-
-    a = np.array([1, 0, 0])
-    b = np.array([[1, 0], [3, 4]])
-    assert utils.norm(a) == 1
-    assert np.allclose(utils.norm(b), np.array([1, 5]))
-
-    # test dot
-    a = np.array([[1, 0], [1, 0]])
-    b = np.array([[0, 0], [1, 0]])
-
-    assert np.allclose(utils.dot(a, b), np.array([0, 1]))
-
     # test shortest distance
     # in all these
     s1 = np.array([[0, 0]])

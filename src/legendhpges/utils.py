@@ -23,44 +23,6 @@ def convert_coords(coords: ArrayLike) -> NDArray:
     return np.column_stack((r, coords[:, 2]))
 
 
-@njit
-def norm(a: ArrayLike) -> NDArray:
-    """Computes the norm of a set of vectors or a single vector
-
-    Parameters
-    ----------
-    a
-        First list of vectors, or a single vector.
-
-    Returns
-    -------
-        the length for each vector.
-    """
-
-    ax = 1 if a.ndim == 2 else 0
-
-    return np.sqrt(np.sum(a**2, axis=ax))
-
-
-@njit
-def dot(a: ArrayLike, b: ArrayLike) -> NDArray:
-    """Computes the dot product of a set of vectors
-
-    Parameters
-    ----------
-    a
-        First list of vectors, where the second index corresponds to the dimension.
-    b
-        Second list in the same format.
-
-    Returns
-    -------
-        the dot product for each vector.
-    """
-
-    return np.sum(a * b, axis=1)
-
-
 def shortest_distance_to_plane(
     a_vec: NDArray,
     d: float,
@@ -97,11 +59,18 @@ def shortest_distance_to_plane(
     np.array of distance for each point.
     """
 
+    def _dot(a, b):
+        return np.sum(a * b, axis=1)
+
+    def _norm(a):
+        ax = 1 if a.ndim == 2 else 0
+        return np.sqrt(np.sum(a**2, axis=ax))
+
     a_norm = np.sum(a_vec * a_vec)
 
-    proj_points = points - ((dot(points, a_vec) - d)[:, np.newaxis]) * a_vec / a_norm
+    proj_points = points - ((_dot(points, a_vec) - d)[:, np.newaxis]) * a_vec / a_norm
 
-    dist_vec = norm((dot(points, a_vec) - d)[:, np.newaxis] * a_vec / a_norm)
+    dist_vec = _norm((_dot(points, a_vec) - d)[:, np.newaxis] * a_vec / a_norm)
 
     # check on r and z
 
@@ -196,6 +165,15 @@ def shortest_distance(
         `(n_points,n_segments)` numpy array of the shortest distances for each segment.
 
     """
+
+    # helped functions
+    def _dot(a, b):
+        return np.sum(a * b, axis=1)
+
+    def _norm(a):
+        ax = 1 if a.ndim == 2 else 0
+        return np.sqrt(np.sum(a**2, axis=ax))
+
     n_segments = len(s1_list)
     dists = np.full((len(points), len(s1_list)), np.nan)
 
@@ -203,21 +181,21 @@ def shortest_distance(
         s1 = s1_list[segment]
         s2 = s2_list[segment]
 
-        n = (s2 - s1) / norm(s2 - s1)
+        n = (s2 - s1) / _norm(s2 - s1)
 
-        proj_dist = -dot(n, (n * dot(s1 - points, n)[:, np.newaxis]))
+        proj_dist = -_dot(n, (n * _dot(s1 - points, n)[:, np.newaxis]))
 
         dist_vec = np.empty_like(s1 - points)
 
         condition1 = proj_dist < 0
-        condition2 = proj_dist > norm(s2 - s1)
+        condition2 = proj_dist > _norm(s2 - s1)
         condition3 = (~condition1) & (~condition2)
 
         diff_s1 = s1 - points
         dist_vec[condition1] = diff_s1[condition1]
         dist_vec[condition2] = s2 - points[condition2]
         dist_vec[condition3] = (
-            diff_s1[condition3] - n * dot(diff_s1, n)[condition3, np.newaxis]
+            diff_s1[condition3] - n * _dot(diff_s1, n)[condition3, np.newaxis]
         )
 
         # make this signed so inside is positive and outside negative
@@ -232,6 +210,6 @@ def shortest_distance(
             sign_vec_norm = np.ones(len(dist_vec))
 
         dists[:, segment] = np.where(
-            np.abs(norm(dist_vec)) < tol, tol, norm(dist_vec) * sign_vec_norm
+            np.abs(_norm(dist_vec)) < tol, tol, np.abs(_norm(dist_vec)) * sign_vec_norm
         )
     return dists
