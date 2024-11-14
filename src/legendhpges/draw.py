@@ -1,17 +1,14 @@
 from __future__ import annotations
 
-import logging
-
 import matplotlib.pyplot as plt
+import numpy as np
 from pyg4ometry.visualisation import VtkViewer
 
 from .base import HPGe
-from .p00664b import P00664B
-from .v02160a import V02160A
 
 
 def plot_profile(
-    hpge: HPGe, axes: plt.Axes = None, **kwargs
+    hpge: HPGe, axes: plt.Axes = None, split_by_type: bool = False, **kwargs
 ) -> tuple[plt.Figure, plt.Axes]:
     """Plot the HPGe profile with :mod:`matplotlib`.
 
@@ -21,22 +18,16 @@ def plot_profile(
         detector.
     axes
         pre-existing axes where the profile will be plotted.
+    split_by_type
+        boolean to separate surfaces of different types.
     **kwargs
         any keyword argument supported by :func:`matplotlib.pyplot.plot`.
 
     """
     # data
-    if isinstance(hpge, (V02160A, P00664B)):
-        r = hpge.solid.obj1.pR
-        z = hpge.solid.obj1.pZ
-        logging.warning("The detector profile is that of the solid without cut")
-    else:
-        r = hpge.solid.pR
-        z = hpge.solid.pZ
+    r, z = hpge.get_profile()
 
-    x = r + [-x for x in reversed(r)]
-    y = z + list(reversed(z))
-
+    # set options
     colors = plt.rcParams["axes.prop_cycle"].by_key()["color"]
 
     fig = None
@@ -50,15 +41,41 @@ def plot_profile(
 
     default_kwargs = {
         "marker": "o",
-        "markersize": 3,
+        "markersize": 2,
         "markeredgecolor": colors[1],
         "markerfacecolor": colors[1],
         "linewidth": 2,
     }
     default_kwargs |= kwargs
 
-    axes.plot(x, y, **default_kwargs)
+    if not split_by_type:
+        x = r + [-x for x in reversed(r)]
+        y = z + list(reversed(z))
 
+        axes.plot(x, y, **default_kwargs)
+    else:
+        surfaces = np.array(hpge.surfaces)
+        unique_surfaces = np.unique(surfaces)
+
+        dr = np.array([np.array([r1, r2]) for r1, r2 in zip(r[:-1], r[1:])])
+        dz = np.array([np.array([z1, z2]) for z1, z2 in zip(z[:-1], z[1:])])
+
+        for idx, u in enumerate(unique_surfaces):
+            drs_tmp = dr[surfaces == u]
+            dzs_tmp = dz[surfaces == u]
+
+            first = True
+            for r_tmp, z_tmp in zip(drs_tmp, dzs_tmp):
+                if first:
+                    axes.plot(
+                        r_tmp, z_tmp, color=colors[idx + 2], label=u, **default_kwargs
+                    )
+                    first = False
+                    axes.plot(-r_tmp, z_tmp, color=colors[idx + 2], **default_kwargs)
+                else:
+                    axes.plot(r_tmp, z_tmp, color=colors[idx + 2], **default_kwargs)
+                    axes.plot(-r_tmp, z_tmp, color=colors[idx + 2], **default_kwargs)
+        axes.legend(loc="upper right")
     return fig, axes
 
 
