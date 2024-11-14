@@ -1,11 +1,11 @@
 from __future__ import annotations
 
+import numba
 import numpy as np
-from numba import njit
 from numpy.typing import ArrayLike, NDArray
 
 
-@njit
+@numba.njit(cache=True)
 def convert_coords(coords: ArrayLike) -> NDArray:
     """Converts (x,y,z) coordinates into (r,z)
 
@@ -32,14 +32,16 @@ def shortest_distance_to_plane(
 ) -> NDArray:
     """Get the shortest distance from a plane (constrained in r and z) to each point.
 
-    The equation of the plane is given by :math:`a_1x+a_2y+a_3z=d`. Where :math:`\\vec{a}=(a_1,a_2,a_3)`.
+    The equation of the plane is given by :math:`a_1x+a_2y+a_3z=d`. Where
+    :math:`\\vec{a}=(a_1,a_2,a_3)`.
     The closest point on the plane to the point (:math:`y`) is then given by:
 
     .. math::
         x =y-(y*a-d)*a/||a||^2
 
-    The distance is then given by the length of the vector :math:`x-y`. This function also checks if the
-    intersection point is above rmax or inside the zrange,  if not nan is returned for that point.
+    The distance is then given by the length of the vector :math:`x-y`. This
+    function also checks if the intersection point is above `rmax` or inside the
+    `zrange`, if not, ``numpy.nan`` is returned for that point.
 
     Parameters
     ----------
@@ -53,10 +55,6 @@ def shortest_distance_to_plane(
         maximum radius for the plane.
     zrange
         range in z for the plane.
-
-    Returns
-    -------
-    np.array of distance for each point.
     """
 
     def _dot(a, b):
@@ -94,7 +92,7 @@ def shortest_distance_to_plane(
 
 def get_line_segments(
     r: ArrayLike, z: ArrayLike, surface_indices: ArrayLike = None
-) -> tuple[ArrayLike, ArrayLike]:
+) -> tuple[NDArray, NDArray]:
     """Extracts the line segments from a shape.
 
     Parameters
@@ -104,12 +102,14 @@ def get_line_segments(
     z
         array or list of vertical positions defining the polycone.
     surface_indices
-        list of integer indices of surfaces to consider. If `None` (the default) all surfaces used.
+        list of integer indices of surfaces to consider. If ``None`` (the
+        default) all surfaces used.
 
     Returns
     -------
-        tuple of (s1,s2) arrays describing the line segments, both `s1` and `s2` have shape `(n_segments,2)`
-        where the first axis represents thhe segment and the second `(r,z)`.
+        tuple of (s1,s2) arrays describing the line segments, both `s1` and
+        `s2` have shape `(n_segments,2)` where the first axis represents thhe
+        segment and the second `(r,z)`.
     """
     # build lists of pairs of coordinates
     s1 = np.array([np.array([r1, z1]) for r1, z1 in zip(r[:-1], z[:-1])])
@@ -118,10 +118,11 @@ def get_line_segments(
     if surface_indices is not None:
         s1 = s1[surface_indices]
         s2 = s2[surface_indices]
+
     return s1, s2
 
 
-@njit(cache=True)
+@numba.njit(cache=True)
 def shortest_distance(
     s1_list: NDArray,
     s2_list: NDArray,
@@ -129,7 +130,7 @@ def shortest_distance(
     tol: float = 1e-11,
     signed: bool = True,
 ) -> tuple[NDArray, NDArray]:
-    """Get the shortest distance between each point and the line segments defined by `s1_list` and `s2_list`.
+    """Get the shortest distance between each point and a line segment.
 
     Based on vector algebra where the distance vector is given by:
 
@@ -137,36 +138,41 @@ def shortest_distance(
         d = s_1 - p - ( (n · (s_1- p)) * n )
 
     where:
-        - :math:`s_1` is a vector from which the distance is measured,
-        - `p` is a point vector,
-        - `n` is a unit direction vector from :math:`s_1` to :math:`s_2`,
-        - `a` is another point vector.
 
-    If the projection point lies inside the segment s1-s2. Else the closest point is either :math:`s_1` or :math:`s_2`.
-    The distance is the modulus of this vector and this calculation is performed for each point.
-    A sign is attached based on the cross product of the line vector and the distance vector.
-    To avoid numerical issues any point within the tolerance is considered inside.
+    - :math:`s_1` is a vector from which the distance is measured,
+    - `p` is a point vector,
+    - `n` is a unit direction vector from :math:`s_1` to :math:`s_2`,
+    - `a` is another point vector.
+
+    If the projection point lies inside the segment s1-s2. Else the closest
+    point is either :math:`s_1` or :math:`s_2`.  The distance is the modulus of
+    this vector and this calculation is performed for each point.  A sign is
+    attached based on the cross product of the line vector and the distance
+    vector.  To avoid numerical issues any point within the tolerance is
+    considered inside.
 
     Parameters
     ----------
     s1_list
-        `(n_segments,2)` np.array of the first points in the line segment, for the second axis indices 0,1 correspond to r,z.
+        `(n_segments,2)` np.array of the first points in the line segment, for
+        the second axis indices `0,1` correspond to `r,z`.
     s2_list
-        second points, same format as s1.
+        second points, same format as `s1_list`.
     points
-        `(n_points,2)` array of points to compare, first axis corresponds to the point index and the second to `(r,z)`.
+        `(n_points,2)` array of points to compare, first axis corresponds to
+        the point index and the second to `(r,z)`.
     tol
-        tolerance when computing sign, points within this distance to the surface are pushed inside.
+        tolerance when computing sign, points within this distance to the
+        surface are pushed inside.
     signed
         boolean flag to attach a sign to the distance (positive if inside).
 
     Returns
     -------
-        `(n_points,n_segments)` numpy array of the shortest distances for each segment.
-
+        ``(n_points,n_segments)`` numpy array of the shortest distances for each segment.
     """
 
-    # helped functions
+    # helper functions
     def _dot(a, b):
         return np.sum(a * b, axis=1)
 

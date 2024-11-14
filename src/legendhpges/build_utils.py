@@ -1,15 +1,17 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 
-def make_pplus(geometry: dict) -> tuple[list, list, list]:
-    """Make the pplus contact for BeGe and some ICPC
+
+def make_pplus(geometry: Mapping) -> tuple[list, list, list]:
+    """Make the pplus contact for BeGe and some ICPC.
 
     Methods to avoid duplicating code.
 
     Parameters
     ----------
     geometry
-        Dictionary with the geometry information.
+        dictionary with the geometry information.
 
     Returns
     -------

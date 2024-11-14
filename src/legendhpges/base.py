@@ -76,16 +76,18 @@ class HPGe(ABC, geant4.LogicalVolume):
         return f"{self.__class__.__name__}({self.metadata})"
 
     def _g4_solid(self) -> geant4.solid.SolidBase:
-        """Build (by default) a :class:`pyg4ometry.solid.GenericPolycone` instance from the (r, z) information.
+        """Build a :class:`pyg4ometry.solid.GenericPolycone` instance from the ``(r, z)`` information.
 
         Returns
         -------
         g4_solid
-            A derived class of :class:`pyg4ometry.solid.SolidBase` to be used to construct the logical volume.
+            A derived class of :class:`pyg4ometry.solid.SolidBase` to be used
+            to construct the logical volume.
 
         Note
         ----
-            Detectors with a special geometry can have this method overridden in their class definition.
+            Detectors with a special geometry can have this method overridden
+            in their class definition.
         """
         # return ordered r,z lists, default unit [mm]
         r, z = self._decode_polycone_coord()
@@ -104,7 +106,7 @@ class HPGe(ABC, geant4.LogicalVolume):
         Returns
         -------
         (r, z)
-            two lists of r and z coordinates, respectively.
+            two lists of `r` and `z` coordinates, respectively.
 
         Note
         ----
@@ -117,7 +119,7 @@ class HPGe(ABC, geant4.LogicalVolume):
         Returns
         -------
         (r.z)
-            two lists of r and z coordinates, respectively.
+            two lists of `r` and `z` coordinates, respectively.
 
         Note
         -----
@@ -138,18 +140,16 @@ class HPGe(ABC, geant4.LogicalVolume):
         return r, z
 
     def is_inside(self, coords: ArrayLike, tol: float = 1e-11) -> NDArray[bool]:
-        """Compute whether each point is inside the shape
+        """Compute whether each point is inside the volume.
 
         Parameters
         ----------
         coords
-            2D array of shape `(n,3)` of `(x,y,z)` coordinates for each of `n` points, second index corresponds to `(x,y,z)`.
+            2D array of shape `(n,3)` of `(x,y,z)` coordinates for each of `n`
+            points, second index corresponds to `(x,y,z)`.
         tol
-            distance outside the surface which is considered inside.
-
-        Returns
-        -------
-        numpy array of booleans.
+            distance outside the surface which is considered inside. Should be
+            on the order of numerical precision of the floating point representation.
         """
 
         if not isinstance(self.solid, geant4.solid.GenericPolycone):
@@ -190,15 +190,14 @@ class HPGe(ABC, geant4.LogicalVolume):
         Parameters
         ----------
         coords
-            2D array of shape `(n,3)` of `(x,y,z)` coordinates for each of `n` points, second index corresponds to `(x,y,z)`.
+            2D array of shape `(n,3)` of `(x,y,z)` coordinates for each of `n`
+            points, second index corresponds to `(x,y,z)`.
         surface_indices
-            list of indices of surfaces to consider. If `None` (the default) all surfaces used.
+            list of indices of surfaces to consider. If ``None`` (the default)
+            all surfaces used.
         tol
-            distance outside the surface which is considered inside.
-
-        Returns
-        -------
-        numpy array of the distance from each point to the nearest surface.
+            distance outside the surface which is considered inside. Should be
+            on the order of numerical precision of the floating point representation.
 
         Note
         ----
@@ -249,24 +248,24 @@ class HPGe(ABC, geant4.LogicalVolume):
         """Mass of the HPGe."""
         return (self.volume * (self.material.density * u.g / u.cm**3)).to(u.g)
 
-    def surface_area(self, surface_indices: list | None = None) -> list[Quantity]:
+    def surface_area(
+        self, surface_indices: ArrayLike | None = None
+    ) -> NDArray[Quantity]:
         """Surface area of the HPGe.
 
-        If a list of surface_indices is provided the area is computed only considering these surfaces,
-        from :math:`r_i` to :math:`r_{i+1}` and :math:`z_i` to :math:`z_{i+1}`. Else the full area is computed.
+        If a list of surface_indices is provided the area is computed only
+        considering these surfaces, from :math:`r_i` to :math:`r_{i+1}` and
+        :math:`z_i` to :math:`z_{i+1}`. Else the full area is computed.
 
         Parameters
         ----------
         surface_indices
-            list of indices or None.
-
-        Returns
-        -------
-        a pint Quantity of the surface area
+            list of indices or ``None``.
 
         Note
         ----
-        Calculation is based on a polycone geometry so is incorrect for asymmetric detectors.
+        Calculation is based on a polycone geometry so is incorrect for
+        asymmetric detectors.
         """
         if not isinstance(self.solid, geant4.solid.GenericPolycone):
             logging.warning("The area is that of the solid without cut")
