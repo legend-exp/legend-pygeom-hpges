@@ -15,35 +15,36 @@ This consists of a JSON file (or python dictionary) describing the geometry for 
 
 .. code-block:: python
 
-    metadata = { "name": "B00000B",
-                 "type": "bege",
-                 "production": {
-                    "enrichment": {"val": 0.9, "unc": 0.003},
-                    "mass_in_g": 697.0,
-                 },
-                 "geometry": {
-                    "height_in_mm": 29.46,
-                    "radius_in_mm": 36.98,
-                    "groove": {"depth_in_mm": 2.0, "radius_in_mm": {"outer": 10.5, "inner": 7.5}},
-                    "pp_contact": {"radius_in_mm": 7.5, "depth_in_mm": 0},
-                    "taper": {
-                        "top": {"angle_in_deg": 0.0, "height_in_mm": 0.0},
-                        "bottom": {"angle_in_deg": 0.0, "height_in_mm": 0.0},
-                    },
-                 },
-            }
+    metadata = {
+        "name": "B00000B",
+        "type": "bege",
+        "production": {
+            "enrichment": {"val": 0.9, "unc": 0.003},
+            "mass_in_g": 697.0,
+        },
+        "geometry": {
+            "height_in_mm": 29.46,
+            "radius_in_mm": 36.98,
+            "groove": {"depth_in_mm": 2.0, "radius_in_mm": {"outer": 10.5, "inner": 7.5}},
+            "pp_contact": {"radius_in_mm": 7.5, "depth_in_mm": 0},
+            "taper": {
+                "top": {"angle_in_deg": 0.0, "height_in_mm": 0.0},
+                "bottom": {"angle_in_deg": 0.0, "height_in_mm": 0.0},
+            },
+        },
+    }
 
 .. note::
     Currently bege, icpc, ppc and coax geometries are implemented as well as a few LEGEND detectors with special geometries.
     Different geometries can be implemented as subclasses deriving from ``legendhpges.base.HPGe``.
 
-The different keys of the dictionary describe the different aspects of the geometry. 
+The different keys of the dictionary describe the different aspects of the geometry.
 Some are self explanatory, for others:
 
 - "production": gives information on the detector production, we need the "enrichment" to define the detector material,
 - "geometry"  : gives the detector geometry in particular, "groove" and "pp_contact" describe the contacts of detector.
 
-Other fields can be added to describe different geometry features (more details in the legend metadata documentation). 
+Other fields can be added to describe different geometry features (more details in the legend metadata documentation).
 
 Constructing the HPGe object
 ----------------------------
@@ -54,9 +55,9 @@ The HPGe object can be constructed from the metadata with:
 
     from legendhpges import make_hpge
     import pyg4ometry as pg4
-    
+
     reg = pg4.geant4.Registry()
-    hpge = make_hpge(metadata,name="det_L")
+    hpge = make_hpge(metadata, name="det_L")
 
 The metadata can either be passed as a python dictionary or a path to a JSON file.
 
@@ -64,7 +65,7 @@ The metadata can either be passed as a python dictionary or a path to a JSON fil
 Detector properties
 -------------------
 
-Most detectors are described by a ``G4GenericPolycone`` `(polcyone-docs) <https://pyg4ometry.readthedocs.io/en/stable/autoapi/pyg4ometry/geant4/solid/GenericPolycone/index.html#module-pyg4ometry.geant4.solid.GenericPolycone>`_ 
+Most detectors are described by a ``G4GenericPolycone`` `(polcyone-docs) <https://pyg4ometry.readthedocs.io/en/stable/autoapi/pyg4ometry/geant4/solid/GenericPolycone/index.html#module-pyg4ometry.geant4.solid.GenericPolycone>`_
 This describes the solid by a series of (r,z) pairs rotated around the z axis.
 
 There are methods to plot the (r,z) profile of the detector, in addition this is able to label the contact type (p+,n+ or passivated) each surface
@@ -74,7 +75,7 @@ corresponds to (based on the metadata).
 
     from legendhpges import draw
 
-    draw.plot_profile(hpge,split_by_type=True)
+    draw.plot_profile(hpge, split_by_type=True)
 
 .. image:: images/bege_profile.png
 
@@ -82,7 +83,7 @@ We can also directly extract the r,z profile and the surface types and surface a
 
 .. code-block:: python
 
-    r,z = hpge.get_profile()
+    r, z = hpge.get_profile()
     surfaces = hpge.surfaces
     area = hpge.surface_area()
     print(f"total area {sum(area)}")
@@ -124,7 +125,9 @@ For example to visualise a detector we can use:
     reg.setWorld(world_l)
 
     # place the detector
-    pg4.geant4.PhysicalVolume([0, 0, 0], [0, 0, 0, "cm"], hpge, "det", world_l, registry=reg)
+    pg4.geant4.PhysicalVolume(
+        [0, 0, 0], [0, 0, 0, "cm"], hpge, "det", world_l, registry=reg
+    )
 
     viewer = pg4.visualisation.VtkViewerColoured()
     viewer.addLogicalVolume(reg.getWorldVolume())
