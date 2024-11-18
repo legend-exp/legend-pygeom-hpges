@@ -94,15 +94,13 @@ def make_natural_germanium(
 def enriched_germanium_density(ge76_fraction: float = 0.92) -> Quantity:
     """Calculate the density of enriched germanium.
 
+    Starting from the measured density of natural germanium at room
+    temperature.
+
     Parameters
     ----------
     ge76_fraction
         fraction of Ge76 atoms.
-
-    Note
-    ----
-    The calulation is starting from the measured density of natural germanium at room
-    temperature.
     """
     m_eff = (ge_iso_a[76] * ge76_fraction + ge_iso_a[74] * (1 - ge76_fraction)) * u(
         "g/mol"
