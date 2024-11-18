@@ -45,6 +45,7 @@ autodoc_default_options = {"ignore-module-all": True}
 napoleon_numpy_docstring = True
 napoleon_google_docstring = False
 napoleon_use_ivar = True
+napoleon_use_rtype = False
 
 # intersphinx
 intersphinx_mapping = {
