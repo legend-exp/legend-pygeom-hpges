@@ -40,7 +40,7 @@ class HPGe(ABC, geant4.LogicalVolume):
         metadata: str | dict | AttrsDict,
         name: str | None = None,
         registry: geant4.Registry = default_g4_registry,
-        material: geant4.MaterialCompound = None,
+        material: geant4.Material | None = None,
     ) -> None:
         if registry is None:
             msg = "registry cannot be None"
@@ -80,9 +80,7 @@ class HPGe(ABC, geant4.LogicalVolume):
 
         Returns
         -------
-        g4_solid
-            A derived class of :class:`pyg4ometry.solid.SolidBase` to be used
-            to construct the logical volume.
+            An object of a derived from :class:`pyg4ometry.geant4.solid.SolidBase` to be used to construct the logical volume.
 
         Note
         ----
@@ -101,11 +99,10 @@ class HPGe(ABC, geant4.LogicalVolume):
     def _decode_polycone_coord(self) -> tuple[list[float], list[float]]:
         """Decode shape information from geometry dictionary into (r, z) coordinates.
 
-        Suitable for building a :class:`G4GenericPolycone`.
+        Suitable for building a :class:`pyg4ometry.geant4.solid.GenericPolycone`.
 
         Returns
         -------
-        (r, z)
             two lists of `r` and `z` coordinates, respectively.
 
         Note
@@ -118,7 +115,6 @@ class HPGe(ABC, geant4.LogicalVolume):
 
         Returns
         -------
-        (r.z)
             two lists of `r` and `z` coordinates, respectively.
 
         Note
