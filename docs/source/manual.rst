@@ -65,7 +65,7 @@ The metadata can either be passed as a python dictionary or a path to a JSON fil
 Detector properties
 -------------------
 
-Most detectors are described by a ``G4GenericPolycone`` `(polcyone-docs) <https://pyg4ometry.readthedocs.io/en/stable/autoapi/pyg4ometry/geant4/solid/GenericPolycone/index.html#module-pyg4ometry.geant4.solid.GenericPolycone>`_
+Most detectors are described by a ``G4GenericPolycone`` (:class:`pyg4ometry.geant4.solid.GenericPolycone`)
 This describes the solid by a series of (r,z) pairs rotated around the z axis.
 
 There are methods to plot the (r,z) profile of the detector, in addition this is able to label the contact type (p+,n+ or passivated) each surface
