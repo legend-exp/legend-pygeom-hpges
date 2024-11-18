@@ -113,7 +113,7 @@ mm
 Use in a Geant4 simulation
 --------------------------
 
-The HPGe object derives from  ``pyg4ometry.geant4.LogicalVolume`` and can be used to visualise the detector, or to run Geant4 simulations.
+The HPGe object derives from :class:`pyg4ometry.geant4.LogicalVolume` and can be used to visualise the detector in 3D, or to run Geant4 simulations.
 
 For example to visualise a detector we can use:
 
