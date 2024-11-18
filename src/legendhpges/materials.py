@@ -13,7 +13,10 @@ from .registry import default_g4_registry
 from .registry import default_units_registry as u
 
 ge_iso_a: dict = {70: 69.924, 72: 71.922, 73: 72.923, 74: 73.921, 76: 75.921}
-"""Molar weight of Germanium isotopes. Source: NIST"""
+"""Molar weight of Germanium isotopes.
+
+Source: `NIST <https://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl?ele=Ge>`_.
+"""
 
 natge_isotopes: dict = {70: 0.2057, 72: 0.2745, 73: 0.0775, 74: 0.3650, 76: 0.0773}
 """Isotopic composition of natural germanium.
@@ -96,7 +99,9 @@ def enriched_germanium_density(ge76_fraction: float = 0.92) -> Quantity:
     ge76_fraction
         fraction of Ge76 atoms.
 
-    Starting from the measured density of natural germanium at room
+    Note
+    ----
+    The calulation is starting from the measured density of natural germanium at room
     temperature.
     """
     m_eff = (ge_iso_a[76] * ge76_fraction + ge_iso_a[74] * (1 - ge76_fraction)) * u(
