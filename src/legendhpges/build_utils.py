@@ -15,8 +15,7 @@ def make_pplus(geometry: Mapping) -> tuple[list, list, list]:
 
     Returns
     -------
-    (r,z,surfaces)
-        Tuple of lists of r,z coordinates and surface names.
+        Tuple ``(r,z,surfaces)`` of lists of r,z coordinates and surface names.
     """
     r = []
     z = []
