@@ -80,7 +80,7 @@ class HPGe(ABC, geant4.LogicalVolume):
 
         Returns
         -------
-            An object of a derived from :class:`pyg4ometry.solid.SolidBase` to be used to construct the logical volume.
+            An object of a derived from :class:`pyg4ometry.geant4.solid.SolidBase` to be used to construct the logical volume.
 
         Note
         ----
@@ -99,7 +99,7 @@ class HPGe(ABC, geant4.LogicalVolume):
     def _decode_polycone_coord(self) -> tuple[list[float], list[float]]:
         """Decode shape information from geometry dictionary into (r, z) coordinates.
 
-        Suitable for building a :class:`geant4.solid.GenericPolycone`.
+        Suitable for building a :class:`pyg4ometry.geant4.solid.GenericPolycone`.
 
         Returns
         -------
