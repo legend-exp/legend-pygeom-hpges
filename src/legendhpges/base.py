@@ -40,7 +40,7 @@ class HPGe(ABC, geant4.LogicalVolume):
         metadata: str | dict | AttrsDict,
         name: str | None = None,
         registry: geant4.Registry = default_g4_registry,
-        material: geant4.MaterialCompound = None,
+        material: geant4.Material | None = None,
     ) -> None:
         if registry is None:
             msg = "registry cannot be None"
@@ -105,8 +105,7 @@ class HPGe(ABC, geant4.LogicalVolume):
 
         Returns
         -------
-        (r, z)
-            two lists of `r` and `z` coordinates, respectively.
+        two lists of `r` and `z` coordinates, respectively.
 
         Note
         ----
@@ -118,8 +117,7 @@ class HPGe(ABC, geant4.LogicalVolume):
 
         Returns
         -------
-        (r.z)
-            two lists of `r` and `z` coordinates, respectively.
+        two lists of `r` and `z` coordinates, respectively.
 
         Note
         -----
