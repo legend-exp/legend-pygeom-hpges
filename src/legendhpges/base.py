@@ -80,8 +80,7 @@ class HPGe(ABC, geant4.LogicalVolume):
 
         Returns
         -------
-            An object of a derived from :class:`pyg4ometry.solid.SolidBase` to be used
-            to construct the logical volume.
+            An object of a derived from :class:`pyg4ometry.solid.SolidBase` to be used to construct the logical volume.
 
         Note
         ----
