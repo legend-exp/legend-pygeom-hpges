@@ -54,7 +54,7 @@ intersphinx_mapping = {
     "pandas": ("https://pandas.pydata.org/docs", None),
     "matplotlib": ("https://matplotlib.org/stable", None),
     "pint": ("https://pint.readthedocs.io/en/stable", None),
-    "pyg4ometry": ("https://pyg4ometry.readthedocs.io/en/stable", None)
+    "pyg4ometry": ("https://pyg4ometry.readthedocs.io/en/stable", None),
 }  # add new intersphinx mappings here
 
 # sphinx-autodoc
