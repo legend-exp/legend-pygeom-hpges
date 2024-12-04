@@ -110,6 +110,13 @@ def test_make_p00664b():
 
     assert len(gedet._decode_polycone_coord()[0]) == len(gedet.surfaces) + 1
 
+    gedet = make_hpge(
+        configs.P00664B, name="P00664B_bis", allow_cylindrical_asymmetry=False
+    )
+    assert isinstance(gedet, PPC)
+    assert not isinstance(gedet, P00664B)
+    assert isinstance(gedet.solid, geant4.solid.GenericPolycone)
+
 
 def test_make_v02162b():
     gedet = make_hpge(configs.V02162B)
