@@ -11,7 +11,6 @@ from .invcoax import InvertedCoax
 from .materials import make_enriched_germanium
 from .p00664b import P00664B
 from .ppc import PPC
-from .registry import default_g4_registry
 from .semicoax import SemiCoax
 from .v02160a import V02160A
 from .v02162b import V02162B
@@ -20,7 +19,7 @@ from .v07646a import V07646A
 
 def make_hpge(
     metadata: str | dict | AttrsDict,
-    registry: geant4.Registry = default_g4_registry,
+    registry: geant4.Registry | None,
     allow_cylindrical_asymmetry: bool = True,
     **kwargs,
 ) -> geant4.LogicalVolume:
