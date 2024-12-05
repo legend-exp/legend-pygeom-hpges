@@ -30,7 +30,7 @@ def test_data_configs():
     return ldata.get_path("legend/metadata/hardware/detectors/germanium/diodes")
 
 
-@pytest.fixture()
+@pytest.fixture
 def reg():
     return geant4.Registry()
 
