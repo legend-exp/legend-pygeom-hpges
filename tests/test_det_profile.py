@@ -30,9 +30,9 @@ def test_data_configs():
     return ldata.get_path("legend/metadata/hardware/detectors/germanium/diodes")
 
 
-@pytest.fixture
-def reg():
-    return geant4.Registry()
+@pytest.fixture(params=["r", "n"])
+def reg(request):
+    return geant4.Registry() if request.param == "r" else None
 
 
 @pytest.fixture
