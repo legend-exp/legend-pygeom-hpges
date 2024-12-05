@@ -8,13 +8,8 @@ from legendmeta import TextDB
 from legendtestdata import LegendTestData
 from pyg4ometry import geant4
 
-from legendhpges import (
-    make_hpge,
-)
-from legendhpges.materials import make_natural_germanium
+from legendhpges import make_hpge
 
-reg = geant4.Registry()
-natural_germanium = make_natural_germanium(reg)
 configs = TextDB(pathlib.Path(__file__).parent.resolve() / "configs")
 
 
