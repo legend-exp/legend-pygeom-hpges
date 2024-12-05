@@ -9,13 +9,13 @@ from pathlib import Path
 import numpy as np
 from legendmeta import AttrsDict
 from numpy.typing import ArrayLike, NDArray
-from pint import Quantity
+from pint import Quantity, get_application_registry
 from pyg4ometry import geant4
 
 from . import utils
 from .materials import make_natural_germanium
-from .registry import default_g4_registry
-from .registry import default_units_registry as u
+
+u = get_application_registry()
 
 
 class HPGe(ABC, geant4.LogicalVolume):
@@ -39,13 +39,9 @@ class HPGe(ABC, geant4.LogicalVolume):
         self,
         metadata: str | dict | AttrsDict,
         name: str | None = None,
-        registry: geant4.Registry = default_g4_registry,
+        registry: geant4.Registry | None = None,
         material: geant4.Material | None = None,
     ) -> None:
-        if registry is None:
-            msg = "registry cannot be None"
-            raise ValueError(msg)
-
         if metadata is None:
             msg = "metadata cannot be None"
             raise ValueError(msg)
