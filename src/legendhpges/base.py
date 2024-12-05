@@ -50,7 +50,8 @@ class HPGe(ABC, geant4.LogicalVolume):
             raise ValueError(msg)
 
         if material is not None and material.registry != registry:
-            raise ValueError()
+            msg = "material has different registry than HPGe det"
+            raise ValueError(msg)
 
         if material is None:
             material = make_natural_germanium(registry)
