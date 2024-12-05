@@ -65,6 +65,9 @@ def make_hpge(
     material = kwargs.get("material")
     name = kwargs.get("name")
 
+    if registry is None:
+        registry = geant4.Registry()
+
     if material is None:
         if gedet_meta.production.enrichment is None:
             msg = "The enrichment argument in the metadata is None."
