@@ -35,6 +35,11 @@ def reg():
     return geant4.Registry()
 
 
+@pytest.fixture(params=["r", "n"])
+def reg_or_none(request):
+    return geant4.Registry() if request.param == "r" else None
+
+
 @pytest.fixture
 def natural_germanium(reg):
     return materials.make_natural_germanium(reg)
@@ -76,43 +81,43 @@ def test_v02160a(reg, natural_germanium):
     V02160A(configs.V02160A, material=natural_germanium, registry=reg)
 
 
-def test_make_icpc(test_data_configs, reg):
-    gedet = make_hpge(test_data_configs + "/V99000A.json", registry=reg)
+def test_make_icpc(test_data_configs, reg_or_none):
+    gedet = make_hpge(test_data_configs + "/V99000A.json", registry=reg_or_none)
     assert isinstance(gedet, InvertedCoax)
 
     assert len(gedet._decode_polycone_coord()[0]) == len(gedet.surfaces) + 1
 
 
-def test_make_bege(test_data_configs, reg):
-    gedet = make_hpge(test_data_configs + "/B99000A.json", registry=reg)
+def test_make_bege(test_data_configs, reg_or_none):
+    gedet = make_hpge(test_data_configs + "/B99000A.json", registry=reg_or_none)
     assert isinstance(gedet, BEGe)
 
     assert len(gedet._decode_polycone_coord()[0]) == len(gedet.surfaces) + 1
 
 
-def test_make_ppc(test_data_configs, reg):
-    gedet = make_hpge(test_data_configs + "/P99000A.json", registry=reg)
+def test_make_ppc(test_data_configs, reg_or_none):
+    gedet = make_hpge(test_data_configs + "/P99000A.json", registry=reg_or_none)
     assert isinstance(gedet, PPC)
 
     assert len(gedet._decode_polycone_coord()[0]) == len(gedet.surfaces) + 1
 
 
-def test_make_semicoax(test_data_configs, reg):
-    gedet = make_hpge(test_data_configs + "/C99000A.json", registry=reg)
+def test_make_semicoax(test_data_configs, reg_or_none):
+    gedet = make_hpge(test_data_configs + "/C99000A.json", registry=reg_or_none)
     assert isinstance(gedet, SemiCoax)
 
     assert len(gedet._decode_polycone_coord()[0]) == len(gedet.surfaces) + 1
 
 
-def make_v07646a(reg):
-    gedet = make_hpge(configs.V07646A, registry=reg)
+def make_v07646a(reg_or_none):
+    gedet = make_hpge(configs.V07646A, registry=reg_or_none)
     assert isinstance(gedet, V07646A)
 
     assert len(gedet._decode_polycone_coord()[0]) == len(gedet.surfaces) + 1
 
 
-def test_make_p00664b(reg):
-    gedet = make_hpge(configs.P00664B, registry=reg)
+def test_make_p00664b(reg_or_none):
+    gedet = make_hpge(configs.P00664B, registry=reg_or_none)
     assert gedet.mass
     assert isinstance(gedet, P00664B)
 
@@ -122,30 +127,31 @@ def test_make_p00664b(reg):
         configs.P00664B,
         name="P00664B_bis",
         allow_cylindrical_asymmetry=False,
-        registry=reg,
+        registry=reg_or_none,
     )
     assert isinstance(gedet, PPC)
     assert not isinstance(gedet, P00664B)
     assert isinstance(gedet.solid, geant4.solid.GenericPolycone)
 
 
-def test_make_v02162b(reg):
-    gedet = make_hpge(configs.V02162B, registry=reg)
+def test_make_v02162b(reg_or_none):
+    gedet = make_hpge(configs.V02162B, registry=reg_or_none)
     assert gedet.mass
     assert isinstance(gedet, V02162B)
 
     assert len(gedet._decode_polycone_coord()[0]) == len(gedet.surfaces) + 1
 
 
-def test_make_v02160a(reg):
-    gedet = make_hpge(configs.V02160A, registry=reg)
+def test_make_v02160a(reg_or_none):
+    gedet = make_hpge(configs.V02160A, registry=reg_or_none)
     assert gedet.mass
     assert isinstance(gedet, V02160A)
 
     assert len(gedet._decode_polycone_coord()[0]) == len(gedet.surfaces) + 1
 
 
-def test_null_enrichment(reg, natural_germanium):
+def test_null_enrichment(reg_or_none):
     metadata = configs.V07646A
     metadata.production.enrichment = None
-    make_hpge(metadata, registry=reg, material=natural_germanium, name="my_gedet")
+    with pytest.raises(ValueError):
+        make_hpge(metadata, registry=reg_or_none, name="my_gedet")
