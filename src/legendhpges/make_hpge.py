@@ -11,7 +11,6 @@ from .invcoax import InvertedCoax
 from .materials import make_enriched_germanium
 from .p00664b import P00664B
 from .ppc import PPC
-from .registry import default_g4_registry
 from .semicoax import SemiCoax
 from .v02160a import V02160A
 from .v02162b import V02162B
@@ -20,7 +19,8 @@ from .v07646a import V07646A
 
 def make_hpge(
     metadata: str | dict | AttrsDict,
-    registry: geant4.Registry = default_g4_registry,
+    registry: geant4.Registry | None,
+    allow_cylindrical_asymmetry: bool = True,
     **kwargs,
 ) -> geant4.LogicalVolume:
     """Construct an HPGe detector logical volume based on the detector metadata.
@@ -32,6 +32,10 @@ def make_hpge(
         detector static properties.
     registry
         pyg4ometry Geant4 registry instance.
+    allow_cylindrical_asymmetry
+        if true, use derived classes for detectors that break cylindrical
+        symmetry. Otherwise, just build them using the base class (i.e.
+        ignoring the non-symmetric features).
 
     Other Parameters
     ----------------
@@ -61,6 +65,9 @@ def make_hpge(
     material = kwargs.get("material")
     name = kwargs.get("name")
 
+    if registry is None:
+        registry = geant4.Registry()
+
     if material is None:
         if gedet_meta.production.enrichment is None:
             msg = "The enrichment argument in the metadata is None."
@@ -80,7 +87,8 @@ def make_hpge(
         kwargs["name"] = gedet_meta.name
 
     if gedet_meta.type == "ppc":
-        if gedet_meta.name == "P00664B":
+        # asymmetric detector
+        if allow_cylindrical_asymmetry and gedet_meta.name == "P00664B":
             gedet = P00664B(gedet_meta, registry=registry, **kwargs)
         else:
             gedet = PPC(gedet_meta, registry=registry, **kwargs)
@@ -91,7 +99,8 @@ def make_hpge(
     elif gedet_meta.type == "icpc":
         if gedet_meta.name == "V07646A":
             gedet = V07646A(gedet_meta, registry=registry, **kwargs)
-        elif gedet_meta.name == "V02160A":
+        # asymmetric detector
+        elif allow_cylindrical_asymmetry and gedet_meta.name == "V02160A":
             gedet = V02160A(gedet_meta, registry=registry, **kwargs)
         elif gedet_meta.name == "V02162B":
             gedet = V02162B(gedet_meta, registry=registry, **kwargs)

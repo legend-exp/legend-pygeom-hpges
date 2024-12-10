@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import math
 
+from pint import get_application_registry
 from pyg4ometry import geant4
 
 from .base import HPGe
-from .registry import default_units_registry as u
+
+u = get_application_registry()
 
 
 class P00664B(HPGe):

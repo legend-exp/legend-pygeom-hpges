@@ -12,15 +12,15 @@ from .v02162b import V02162B
 from .v07646a import V07646A
 
 __all__ = [
-    "__version__",
-    "InvertedCoax",
-    "BEGe",
-    "PPC",
-    "SemiCoax",
-    "make_hpge",
-    "utils",
-    "V07646A",
     "P00664B",
+    "PPC",
     "V02160A",
     "V02162B",
+    "V07646A",
+    "BEGe",
+    "InvertedCoax",
+    "SemiCoax",
+    "__version__",
+    "make_hpge",
+    "utils",
 ]

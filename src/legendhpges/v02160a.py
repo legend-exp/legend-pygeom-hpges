@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import math
 
+from pint import get_application_registry
 from pyg4ometry import geant4
 
 from .base import HPGe
 from .build_utils import make_pplus
-from .registry import default_units_registry as u
+
+u = get_application_registry()
 
 
 class V02160A(HPGe):
@@ -14,7 +16,8 @@ class V02160A(HPGe):
 
     Note
     ----
-        The center of the cut plane faces the positive x-direction with a certain angle with respect to xz-plane.
+        The center of the cut plane faces the positive x-direction with a
+        certain angle with respect to xz-plane.
     """
 
     def _g4_solid(self):

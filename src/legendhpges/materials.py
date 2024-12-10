@@ -6,11 +6,10 @@ import functools
 import math
 from typing import Callable
 
-from pint import Quantity
+from pint import Quantity, get_application_registry
 from pyg4ometry import geant4 as g4
 
-from .registry import default_g4_registry
-from .registry import default_units_registry as u
+u = get_application_registry()
 
 ge_iso_a: dict = {70: 69.924, 72: 71.922, 73: 72.923, 74: 73.921, 76: 75.921}
 """Molar weight of Germanium isotopes.
@@ -29,10 +28,12 @@ natge_density_meas: Quantity = 5.3234 * u("g/cm^3")
 """Measured density of natural germanium at room temperature."""
 
 
-def _make_ge_isotopes(registry: g4.Registry) -> dict[int, Callable[[], g4.Isotope]]:
+def _make_ge_isotopes(
+    registry: g4.Registry | None,
+) -> dict[int, Callable[[], g4.Isotope]]:
     def make_ge_iso(N: int):
         name = f"Ge{N}"
-        if name in registry.materialDict:
+        if registry is not None and name in registry.materialDict:
             return registry.materialDict[name]
         return g4.Isotope(name, 32, N, ge_iso_a[N], registry)
 
@@ -66,9 +67,9 @@ def _make_germanium(
     el_symbol: str,
     iso_fracs: dict[int, float],
     density: Quantity,
-    reg: g4.Registry,
+    reg: g4.Registry | None,
 ) -> g4.Material:
-    if ge_name not in reg.materialDict:
+    if reg is None or ge_name not in reg.materialDict:
         el = g4.ElementIsotopeMixture(
             f"Element{ge_name}", el_symbol, len(iso_fracs), reg
         )
@@ -78,12 +79,13 @@ def _make_germanium(
             el.add_isotope(isos[iso](), frac)
         mat = g4.MaterialCompound(ge_name, density.to("g/cm^3").m, 1, reg)
         mat.add_element_massfraction(el, 1)
+        return mat
 
     return reg.materialDict[ge_name]
 
 
 def make_natural_germanium(
-    registry: g4.Registry = default_g4_registry,
+    registry: g4.Registry | None = None,
 ) -> g4.Material:
     """Natural germanium material builder."""
     return _make_germanium(
@@ -110,7 +112,7 @@ def enriched_germanium_density(ge76_fraction: float = 0.92) -> Quantity:
 
 def make_enriched_germanium(
     ge76_fraction: float = 0.92,
-    registry: g4.Registry = default_g4_registry,
+    registry: g4.Registry | None = None,
 ) -> g4.Material:
     """Enriched germanium material builder.
 
