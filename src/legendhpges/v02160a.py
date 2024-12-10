@@ -16,7 +16,8 @@ class V02160A(HPGe):
 
     Note
     ----
-        The center of the cut plane faces the positive x-direction with a certain angle with respect to xz-plane.
+        The center of the cut plane faces the positive x-direction with a
+        certain angle with respect to xz-plane.
     """
 
     def _g4_solid(self):

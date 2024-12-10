@@ -126,8 +126,8 @@ def test_make_p00664b(reg_or_none):
     gedet = make_hpge(
         configs.P00664B,
         name="P00664B_bis",
-        allow_cylindrical_asymmetry=False,
         registry=reg_or_none,
+        allow_cylindrical_asymmetry=False,
     )
     assert isinstance(gedet, PPC)
     assert not isinstance(gedet, P00664B)
@@ -148,6 +148,16 @@ def test_make_v02160a(reg_or_none):
     assert isinstance(gedet, V02160A)
 
     assert len(gedet._decode_polycone_coord()[0]) == len(gedet.surfaces) + 1
+
+    gedet = make_hpge(
+        configs.V02160A,
+        name="V02160A_bis",
+        registry=reg_or_none,
+        allow_cylindrical_asymmetry=False,
+    )
+    assert isinstance(gedet, InvertedCoax)
+    assert not isinstance(gedet, V02160A)
+    assert isinstance(gedet.solid, geant4.solid.GenericPolycone)
 
 
 def test_null_enrichment(reg_or_none):
