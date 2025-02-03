@@ -1,7 +1,7 @@
 Basic User Manual
 =================
 
-This package implements a ``HPGe`` which describes the detector geometry and can be used for:
+This package implements a ``HPGe`` class (high purity germanium detector) which describes the detector geometry, and can be used for:
 
 - visualisation with `pyg4ometry <https://pyg4ometry.readthedocs.io/en/stable/>`_
 - exporting to GDML for Geant4 simulations (again with pyg4ometry),
@@ -10,8 +10,10 @@ This package implements a ``HPGe`` which describes the detector geometry and can
 Metadata specification
 ----------------------
 
-The detector geometry is constructed based on the LEGEND metadata specification `(metadata-docs) <https://github.com/legend-exp/legend-detectors/tree/main/germanium/diodes>`_.
-This consists of a JSON file (or python dictionary) describing the geometry for example:
+The detector geometry is constructed based on the `LEGEND metadata specification <https://legend-exp.github.io/legend-data-format-specs/dev/metadata/>`_.
+The `production detector metadata <https://github.com/legend-exp/legend-detectors/tree/main/germanium/diodes>`_ is **private**.
+
+The metadata JSON files (or python dictionaries) describe the geometry (and other properties) for detectors:
 
 .. code-block:: python
 
@@ -36,13 +38,13 @@ This consists of a JSON file (or python dictionary) describing the geometry for 
 
 .. note::
     Currently bege, icpc, ppc and coax geometries are implemented as well as a few LEGEND detectors with special geometries.
-    Different geometries can be implemented as subclasses deriving from ``legendhpges.base.HPGe``.
+    Different geometries can be implemented as subclasses deriving from :class:``legendhpges.base.HPGe``.
 
 The different keys of the dictionary describe the different aspects of the geometry.
 Some are self explanatory, for others:
 
-- "production": gives information on the detector production, we need the "enrichment" to define the detector material,
-- "geometry"  : gives the detector geometry in particular, "groove" and "pp_contact" describe the contacts of detector.
+- ``production``: gives information on the detector production, we need the "enrichment" to define the detector material,
+- ``geometry``  : gives the detector geometry in particular, "groove" and "pp_contact" describe the contacts of detector.
 
 Other fields can be added to describe different geometry features (more details in the legend metadata documentation).
 
@@ -57,7 +59,7 @@ The HPGe object can be constructed from the metadata with:
     import pyg4ometry as pg4
 
     reg = pg4.geant4.Registry()
-    hpge = make_hpge(metadata, name="det_L")
+    hpge = make_hpge(metadata, name="det_L", registry=reg)
 
 The metadata can either be passed as a python dictionary or a path to a JSON file.
 
@@ -65,10 +67,10 @@ The metadata can either be passed as a python dictionary or a path to a JSON fil
 Detector properties
 -------------------
 
-Most detectors are described by a ``G4GenericPolycone`` (:class:`pyg4ometry.geant4.solid.GenericPolycone`)
+Most detectors are described by a :class:`G4GenericPolycone <pyg4ometry.geant4.solid.GenericPolycone>`.
 This describes the solid by a series of (r,z) pairs rotated around the z axis.
 
-There are methods to plot the (r,z) profile of the detector, in addition this is able to label the contact type (p+,n+ or passivated) each surface
+There are methods to plot the (r,z) profile of the detector, in addition this is able to label the contact type (p+, n+ or passivated) each surface
 corresponds to (based on the metadata).
 
 .. code-block:: python
@@ -107,7 +109,6 @@ We can also easily extract the detector mass and volume:
     volume 126226.52555880952 mm³
 
 Finally we can compute the distance of a set of points to the electrodes and check whether a point is inside the detector.
-mm
 
 
 Use in a Geant4 simulation
@@ -135,6 +136,6 @@ For example to visualise a detector we can use:
 
 .. image:: images/bege.png
 
-The `(remage-tutorial) <https://remage.readthedocs.io/en/stable/>`_ gives a more complete example of using legendhpges to run a simulation.
+The `remage tutorial <https://remage.readthedocs.io/en/stable/>`_ gives a more complete example of using legendhpges to run a simulation.
 
-This class is also the basis of the *legend-pygeom-l200* implementation of the LEGEND-200 experiment `(legend-pygeom-l200 docs) <https://github.com/legend-exp/legend-pygeom-l200>`_ (**private**),
+This class is also the basis of the *legend-pygeom-l200* `implementation of the LEGEND-200 experiment <https://github.com/legend-exp/legend-pygeom-l200>`_,
