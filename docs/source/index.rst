@@ -6,13 +6,11 @@ Python package of Germanium detector geometries for radiation transport simulati
 Getting started
 ---------------
 
-legendhpges can be installed with pip.
+legendhpges can be installed with pip:
 
 .. code-block:: console
 
-   $ git pull git@github.com:legend-exp/legend-pygeom-hpges.git
-   $ cd legend-pygeom-hpges
-   $ pip install .
+   $ pip install legend-pygeom-hpges
 
 
 Next steps
@@ -35,5 +33,5 @@ See also
  - `reboost <https://github.com/legend-exp/reboost>`_: Post processing of remage simulations in python.
  - `pyg4ometry <https://pyg4ometry.readthedocs.io/en/stable/>`_: Package to create simulation geometry in python,
  - `legend-pygeom-optics <https://legend-pygeom-optics.readthedocs.io/en/stable/>`_: Package to handle optical properties in python,
- - `legend-pygeom-l200 <https://github.com/legend-exp/legend-pygeom-l200>`_: Implementation of the LEGEND-200 experiment (**private**),
+ - `legend-pygeom-l200 <https://github.com/legend-exp/legend-pygeom-l200>`_: Geometry implementation of the LEGEND-200 experiment,
  - `pyvertexgen <https://github.com/tdixon97/pyvertexgen/>`_: Generation of vertices for simulations.
