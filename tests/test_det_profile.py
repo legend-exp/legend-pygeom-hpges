@@ -3,7 +3,7 @@ from __future__ import annotations
 import pathlib
 
 import pytest
-from legendmeta import TextDB
+from dbetto import TextDB
 from legendtestdata import LegendTestData
 from pyg4ometry import geant4
 

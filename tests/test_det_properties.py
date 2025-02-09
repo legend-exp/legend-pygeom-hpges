@@ -4,7 +4,7 @@ import pathlib
 
 import numpy as np
 import pytest
-from legendmeta import TextDB
+from dbetto import TextDB
 from legendtestdata import LegendTestData
 from pyg4ometry import geant4
 

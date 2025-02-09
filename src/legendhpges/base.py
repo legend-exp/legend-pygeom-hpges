@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 
 import numpy as np
-from legendmeta import AttrsDict
+from dbetto import AttrsDict
 from numpy.typing import ArrayLike, NDArray
 from pint import Quantity, get_application_registry
 from pyg4ometry import geant4
