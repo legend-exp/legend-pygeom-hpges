@@ -30,6 +30,47 @@ def test_distances():
     res = np.array([0.0, 5.0, 7.0, 5.0, 5.0])
     assert np.allclose(utils.shortest_distance(s1, s2, points)[:, 0], res)
 
+    # test 90 degree rotation
+    rot = np.array(
+        [
+            [np.cos(np.deg2rad(90)), -np.sin(np.deg2rad(90))],
+            [np.sin(np.deg2rad(90)), np.cos(np.deg2rad(90))],
+        ]
+    )
+
+    points_new = np.array([rot @ (p_tmp) for p_tmp in points])
+    s1_new = np.array([rot @ (s1_t) for s1_t in s1])
+    s2_new = np.array([rot @ (s2_t) for s2_t in s2])
+    assert np.allclose(
+        utils.shortest_distance(s1_new, s2_new, points_new)[:, 0],
+        res,
+    )
+
+    # test 180 degree rotation of surface but not points
+    s1_new = np.array([[1, 0]])
+    s2_new = np.array([[0, 0]])
+
+    assert np.allclose(
+        utils.shortest_distance(s1_new, s2_new, points)[:, 0],
+        -res,
+    )
+
+    # test "tapered" segment
+    rot = np.array(
+        [
+            [np.cos(np.deg2rad(45)), -np.sin(np.deg2rad(45))],
+            [np.sin(np.deg2rad(45)), np.cos(np.deg2rad(45))],
+        ]
+    )
+
+    points_new = np.array([rot @ (p_tmp) for p_tmp in points])
+    s1_new = np.array([rot @ (s1_t) for s1_t in s1])
+    s2_new = np.array([rot @ (s2_t) for s2_t in s2])
+    assert np.allclose(
+        utils.shortest_distance(s1_new, s2_new, points_new)[:, 0],
+        res,
+    )
+
     # all distances shouldn't be affected by a global offset and rotation
     offset = np.array([107, -203])
     rot = np.array(
