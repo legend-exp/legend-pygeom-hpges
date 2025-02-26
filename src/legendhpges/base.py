@@ -18,6 +18,9 @@ from .materials import make_natural_germanium
 u = get_application_registry()
 
 
+log = logging.getLogger(__name__)
+
+
 class HPGe(ABC, geant4.LogicalVolume):
     """An High-Purity Germanium detector.
 
@@ -151,38 +154,15 @@ class HPGe(ABC, geant4.LogicalVolume):
             on the order of numerical precision of the floating point representation.
         """
 
-        if not isinstance(self.solid, geant4.solid.GenericPolycone):
-            msg = f"distance_to_surface is not implemented for {type(self.solid)} yet"
-            raise NotImplementedError(msg)
-
-        if not isinstance(coords, np.ndarray):
-            coords = np.array(coords)
-
-        if np.shape(coords)[1] != 3:
-            msg = "coords must be provided as a 2D array with x,y,z coordinates for each point."
-            raise ValueError(msg)
-
-        coords_rz = utils.convert_coords(coords)
-
-        # get the profile
-        r, z = self.get_profile()
-        s1, s2 = utils.get_line_segments(r, z, surface_indices=None)
-
-        # convert coords
-        coords_rz = utils.convert_coords(coords)
-
-        # compute shortest distances
-        dists = utils.shortest_distance(s1, s2, coords_rz, tol=tol)
-
-        # fnd the sign of the id with the lowest distance
-        ids = np.argmin(abs(dists), axis=1)
-        return np.where(dists[np.arange(dists.shape[0]), ids] > 0, True, False)
+        dists = self.distance_to_surface(coords, tol=tol, signed=True)
+        return np.where(dists >= 0, True, False)
 
     def distance_to_surface(
         self,
         coords: ArrayLike,
         surface_indices: ArrayLike | None = None,
         tol: float = 1e-11,
+        signed=False,
     ) -> NDArray:
         """Compute the distance of a set of points to the nearest detector surface.
 
@@ -222,10 +202,58 @@ class HPGe(ABC, geant4.LogicalVolume):
         # convert coords
         coords_rz = utils.convert_coords(coords)
 
-        # compute shortest distances to every surface
-        dists = utils.shortest_distance(s1, s2, coords_rz, tol=tol, signed=False)
+        diffs = s1 - s2
+        perps = np.abs(diffs[:, 0] * diffs[:, 1]) < tol
 
-        return np.min(abs(dists), axis=1)
+        dists = np.full(len(coords_rz), np.inf)
+
+        # get shortest distance to vertical/horizontal surfaces
+        if np.any(perps):
+            dists = utils.shortest_distance(
+                s1[perps], s2[perps], coords_rz, signed=signed
+            )
+            ids = np.argmin(abs(dists), axis=1)
+            dists = dists[np.arange(dists.shape[0]), ids]
+        # compute shortest distances to remaining surfaces
+        # this condition could probably be tightened
+        for start, end in zip(s1[~perps], s2[~perps]):
+            # Calculate distance to endpoints
+            dist_to_start_sq = np.sum((coords_rz - start) ** 2, axis=1)
+            dist_to_end_sq = np.sum((coords_rz - end) ** 2, axis=1)
+
+            # Calculate segment length
+            segment_length_sq = np.sum((end - start) ** 2)
+
+            # Triangle inequality test:
+            # If a point is closer to the segment than its current min distance,
+            # then at least one of these must be true:
+            # 1. It's within (current_dist + segment_length) of the start point
+            # 2. It's within (current_dist + segment_length) of the end point
+
+            threshold_dist_sq = (
+                dists**2 + segment_length_sq + (2 * dists * segment_length_sq)
+            )
+
+            candidates = np.where(
+                (dist_to_start_sq < threshold_dist_sq)
+                | (dist_to_end_sq < threshold_dist_sq)
+            )[0]
+
+            if len(candidates) > 0:
+                dist_candidates = utils.shortest_distance(
+                    np.array([start]),
+                    np.array([end]),
+                    coords_rz[candidates],
+                    tol=tol,
+                    signed=True,
+                )
+                dists[candidates] = np.where(
+                    np.abs(dist_candidates) < np.abs(dists[candidates]),
+                    dist_candidates,
+                    dists[candidates],
+                )
+
+        return dists
 
     @property
     def volume(self) -> Quantity:
