@@ -70,3 +70,8 @@ autodoc_type_aliases = {
     "ArrayLike": "ArrayLike",
     "NDArray": "NDArray",
 }
+
+myst_enable_extensions = [
+    "colon_fence",
+    "dollarmath",
+]
