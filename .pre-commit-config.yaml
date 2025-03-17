@@ -39,7 +39,6 @@ repos:
     hooks:
       - id: prettier
         types_or: [yaml, markdown, json]
-        args: [--prose-wrap=always]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: "v0.9.9"

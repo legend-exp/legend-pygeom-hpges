@@ -39,9 +39,11 @@ metadata = {
 }
 ```
 
-:::{note} Currently BEGe, ICPC, PPC and Coax geometries are implemented as well
+:::{note}
+Currently BEGe, ICPC, PPC and Coax geometries are implemented as well
 as a few LEGEND detectors with special geometries. Different geometries can be
-implemented as subclasses deriving from `legendhpges.base.HPGe`. :::
+implemented as subclasses deriving from `legendhpges.base.HPGe`.
+:::
 
 The different keys of the dictionary describe the different aspects of the
 geometry. Some are self explanatory, for others:
