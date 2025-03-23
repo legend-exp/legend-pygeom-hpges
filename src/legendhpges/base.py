@@ -202,7 +202,7 @@ class HPGe(ABC, geant4.LogicalVolume):
         # convert coords
         coords_rz = utils.convert_coords(coords)
 
-        return utils.iterate_segements(s1, s2, coords_rz, tol, signed)
+        return utils.iterate_segments(s1, s2, coords_rz, tol, signed)
 
     @property
     def volume(self) -> Quantity:
