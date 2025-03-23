@@ -162,7 +162,7 @@ class HPGe(ABC, geant4.LogicalVolume):
         coords: ArrayLike,
         surface_indices: ArrayLike | None = None,
         tol: float = 1e-11,
-        signed=False,
+        signed: bool = False,
     ) -> NDArray:
         """Compute the distance of a set of points to the nearest detector surface.
 
@@ -202,58 +202,7 @@ class HPGe(ABC, geant4.LogicalVolume):
         # convert coords
         coords_rz = utils.convert_coords(coords)
 
-        diffs = s1 - s2
-        perps = np.abs(diffs[:, 0] * diffs[:, 1]) < tol
-
-        dists = np.full(len(coords_rz), np.inf)
-
-        # get shortest distance to vertical/horizontal surfaces
-        if np.any(perps):
-            dists = utils.shortest_distance(
-                s1[perps], s2[perps], coords_rz, signed=signed
-            )
-            ids = np.argmin(abs(dists), axis=1)
-            dists = dists[np.arange(dists.shape[0]), ids]
-        # compute shortest distances to remaining surfaces
-        # this condition could probably be tightened
-        for start, end in zip(s1[~perps], s2[~perps]):
-            # Calculate distance to endpoints
-            dist_to_start_sq = np.sum((coords_rz - start) ** 2, axis=1)
-            dist_to_end_sq = np.sum((coords_rz - end) ** 2, axis=1)
-
-            # Calculate segment length
-            segment_length_sq = np.sum((end - start) ** 2)
-
-            # Triangle inequality test:
-            # If a point is closer to the segment than its current min distance,
-            # then at least one of these must be true:
-            # 1. It's within (current_dist + segment_length) of the start point
-            # 2. It's within (current_dist + segment_length) of the end point
-
-            threshold_dist_sq = (
-                dists**2 + segment_length_sq + (2 * dists * segment_length_sq)
-            )
-
-            candidates = np.where(
-                (dist_to_start_sq < threshold_dist_sq)
-                | (dist_to_end_sq < threshold_dist_sq)
-            )[0]
-
-            if len(candidates) > 0:
-                dist_candidates = utils.shortest_distance(
-                    np.array([start]),
-                    np.array([end]),
-                    coords_rz[candidates],
-                    tol=tol,
-                    signed=True,
-                )
-                dists[candidates] = np.where(
-                    np.abs(dist_candidates) < np.abs(dists[candidates]),
-                    dist_candidates,
-                    dists[candidates],
-                )
-
-        return dists
+        return utils.iterate_segements(s1, s2, coords_rz, tol, signed)
 
     @property
     def volume(self) -> Quantity:
