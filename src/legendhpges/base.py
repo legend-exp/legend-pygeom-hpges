@@ -177,6 +177,9 @@ class HPGe(ABC, geant4.LogicalVolume):
         tol
             distance outside the surface which is considered inside. Should be
             on the order of numerical precision of the floating point representation.
+        signed
+            whether to return signed distanced (inside the HPGe is positive,
+            outside is negative).
 
         Note
         ----
