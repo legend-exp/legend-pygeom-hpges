@@ -42,7 +42,7 @@ metadata = {
 :::{note}
 Currently BEGe, ICPC, PPC and Coax geometries are implemented as well
 as a few LEGEND detectors with special geometries. Different geometries can be
-implemented as subclasses deriving from `legendhpges.base.HPGe`.
+implemented as subclasses deriving from {class}`.base.HPGe`.
 :::
 
 The different keys of the dictionary describe the different aspects of the
@@ -50,8 +50,8 @@ geometry. Some are self explanatory, for others:
 
 - `production`: gives information on the detector production, we need the
   "enrichment" to define the detector material,
-- `geometry` : gives the detector geometry in particular, "groove" and
-  "pp_contact" describe the contacts of detector.
+- `geometry` : gives the detector geometry in particular, `groove` and
+  `pp_contact` describe the contacts of detector.
 
 Other fields can be added to describe different geometry features (more details
 in the legend metadata documentation).
