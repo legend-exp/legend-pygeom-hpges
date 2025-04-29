@@ -1,11 +1,9 @@
 from __future__ import annotations
 
-import json
-from pathlib import Path
-
 from dbetto import AttrsDict
 from pyg4ometry import geant4
 
+from . import utils
 from .bege import BEGe
 from .invcoax import InvertedCoax
 from .materials import make_enriched_germanium
@@ -57,8 +55,7 @@ def make_hpge(
 
     """
     if not isinstance(metadata, (dict, AttrsDict)):
-        with Path(metadata).open() as jfile:
-            gedet_meta = AttrsDict(json.load(jfile))
+        gedet_meta = AttrsDict(utils.load_dict(metadata))
     else:
         gedet_meta = AttrsDict(metadata)
 
