@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-import json
 import logging
 import math
 from abc import ABC, abstractmethod
-from pathlib import Path
 
 import numpy as np
 from dbetto import AttrsDict
@@ -58,8 +56,7 @@ class HPGe(ABC, geant4.LogicalVolume):
 
         # build crystal, declare as detector
         if not isinstance(metadata, (dict, AttrsDict)):
-            with Path(metadata).open() as jfile:
-                self.metadata = AttrsDict(json.load(jfile))
+            self.metadata = AttrsDict(utils.load_dict(metadata))
         else:
             self.metadata = AttrsDict(metadata)
 
