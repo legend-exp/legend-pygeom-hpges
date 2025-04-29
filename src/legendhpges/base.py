@@ -16,6 +16,9 @@ from .materials import make_natural_germanium
 u = get_application_registry()
 
 
+log = logging.getLogger(__name__)
+
+
 class HPGe(ABC, geant4.LogicalVolume):
     """An High-Purity Germanium detector.
 
@@ -148,38 +151,15 @@ class HPGe(ABC, geant4.LogicalVolume):
             on the order of numerical precision of the floating point representation.
         """
 
-        if not isinstance(self.solid, geant4.solid.GenericPolycone):
-            msg = f"distance_to_surface is not implemented for {type(self.solid)} yet"
-            raise NotImplementedError(msg)
-
-        if not isinstance(coords, np.ndarray):
-            coords = np.array(coords)
-
-        if np.shape(coords)[1] != 3:
-            msg = "coords must be provided as a 2D array with x,y,z coordinates for each point."
-            raise ValueError(msg)
-
-        coords_rz = utils.convert_coords(coords)
-
-        # get the profile
-        r, z = self.get_profile()
-        s1, s2 = utils.get_line_segments(r, z, surface_indices=None)
-
-        # convert coords
-        coords_rz = utils.convert_coords(coords)
-
-        # compute shortest distances
-        dists = utils.shortest_distance(s1, s2, coords_rz, tol=tol)
-
-        # fnd the sign of the id with the lowest distance
-        ids = np.argmin(abs(dists), axis=1)
-        return np.where(dists[np.arange(dists.shape[0]), ids] > 0, True, False)
+        dists = self.distance_to_surface(coords, tol=tol, signed=True)
+        return np.where(dists >= 0, True, False)
 
     def distance_to_surface(
         self,
         coords: ArrayLike,
         surface_indices: ArrayLike | None = None,
         tol: float = 1e-11,
+        signed: bool = False,
     ) -> NDArray:
         """Compute the distance of a set of points to the nearest detector surface.
 
@@ -194,6 +174,9 @@ class HPGe(ABC, geant4.LogicalVolume):
         tol
             distance outside the surface which is considered inside. Should be
             on the order of numerical precision of the floating point representation.
+        signed
+            whether to return signed distanced (inside the HPGe is positive,
+            outside is negative).
 
         Note
         ----
@@ -219,10 +202,7 @@ class HPGe(ABC, geant4.LogicalVolume):
         # convert coords
         coords_rz = utils.convert_coords(coords)
 
-        # compute shortest distances to every surface
-        dists = utils.shortest_distance(s1, s2, coords_rz, tol=tol, signed=False)
-
-        return np.min(abs(dists), axis=1)
+        return utils.iterate_segments(s1, s2, coords_rz, tol, signed)
 
     @property
     def volume(self) -> Quantity:
