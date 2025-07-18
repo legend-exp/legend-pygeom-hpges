@@ -110,7 +110,7 @@ def test_shortest_grid_dist():
     s1 = np.array([0, 0])
     s2 = np.array([0, 1])
     axis = 1 if abs(s1[0] - s2[0]) < 1e-11 else 0
-    sign_factor = (1 if axis == 1 else -1,)
+    sign_factor = 1 if axis == 1 else -1
 
     dist_vec, sign = shortest_grid_distance(
         np.array([[0.5, 0.5], [0.5, 2], [0.5, -1]]),
@@ -160,7 +160,7 @@ def test_shortest_grid_dist():
     s1 = np.array([0, 0])
     s2 = np.array([1, 0])
     axis = 1 if abs(s1[0] - s2[0]) < 1e-11 else 0
-    sign_factor = (1 if axis == 1 else -1,)
+    sign_factor = 1 if axis == 1 else -1
 
     dist_vec, sign = shortest_grid_distance(
         np.array([[0.5, 0.5], [2, 0.5], [-1, 0.5]]),
@@ -175,3 +175,23 @@ def test_shortest_grid_dist():
     assert np.all(dist_vec[1] == np.array([1, 0.5]))
     assert np.all(dist_vec[2] == np.array([-1, 0.5]))
     assert np.all(sign == [1, 1, 1])
+
+
+def test_is_in_borehole(test_data_configs):
+    gedet = make_hpge(test_data_configs + "/V99000A.json", registry=None)
+
+    # simple borehole (cylinder)
+    assert len(gedet.borehole_r) == 4
+    assert len(gedet.borehole_z) == 4
+
+    is_in = gedet.is_inside_borehole(
+        np.array(
+            [
+                [3, 10, 10],  # in Ge not borehole
+                [4, 0, 30],  # in borehole
+                [20, 30, 50],
+            ]
+        )
+    )  # outside
+
+    assert np.all(is_in == [False, True, False])

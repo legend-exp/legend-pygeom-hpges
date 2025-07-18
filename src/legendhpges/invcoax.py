@@ -166,6 +166,7 @@ class InvertedCoax(HPGe):
 
         coords_rz = utils.convert_coords(coords)
         s1, s2 = utils.get_line_segments(r, z)
+
         # get the distance for each line segment
         dists = utils.shortest_distance(s1, s2, coords_rz, tol, signed=True)
 

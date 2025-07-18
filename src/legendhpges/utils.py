@@ -180,7 +180,10 @@ def shortest_grid_distance(points, s1, s2, axis, signed=True, sign_factor=1):
     # Compute sign for segment (positive to the right for vertical and positive below for horizontal)
     if signed:
         sign_vec_norm = np.ones(len(points))
-        sign_vec_norm[x_diff > 0 if sign_factor == 1 else x_diff < 0] = -1
+
+        mask = x_diff > 0 if sign_factor == 1 else x_diff < 0
+        sign_vec_norm[mask] = -1
+
     else:
         sign_vec_norm = np.ones(len(points))
 
