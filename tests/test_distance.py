@@ -9,6 +9,7 @@ from legendtestdata import LegendTestData
 from pyg4ometry import geant4
 
 from legendhpges import make_hpge
+from legendhpges.utils import shortest_grid_distance
 
 configs = TextDB(pathlib.Path(__file__).parent.resolve() / "configs")
 
@@ -102,3 +103,75 @@ def test_inside_output(test_data_configs, reg):
     is_in = gedet.is_inside(coords, tol=1e-11)
 
     assert np.all(is_in == np.array([True, False, False, True, False, True, False]))
+
+
+def test_shortest_grid_dist():
+    # vertical line
+    s1 = np.array([0, 0])
+    s2 = np.array([0, 1])
+    axis = 1 if abs(s1[0] - s2[0]) < 1e-11 else 0
+    sign_factor = (1 if axis == 1 else -1,)
+
+    dist_vec, sign = shortest_grid_distance(
+        np.array([[0.5, 0.5], [0.5, 2], [0.5, -1]]),
+        s1,
+        s2,
+        axis,
+        signed=True,
+        sign_factor=sign_factor,
+    )
+
+    # first point is adjacent
+    assert np.all(dist_vec[0] == np.array([0.5, 0]))
+
+    # second is above
+    assert np.all(dist_vec[1] == np.array([0.5, 1]))
+
+    # third is below
+    assert np.all(dist_vec[2] == np.array([0.5, -1]))
+
+    # all are outside
+    assert np.all(sign == [-1, -1, -1])
+
+    # try inside points
+    dist_vec, sign = shortest_grid_distance(
+        np.array([[-0.5, 0.5], [-0.5, 2], [-0.5, -1]]),
+        s1,
+        s2,
+        axis,
+        signed=True,
+        sign_factor=sign_factor,
+    )
+
+    # first point is adjacent
+    assert np.all(dist_vec[0] == np.array([-0.5, 0]))
+
+    # second is above
+    assert np.all(dist_vec[1] == np.array([-0.5, 1]))
+
+    # third is below
+    assert np.all(dist_vec[2] == np.array([-0.5, -1]))
+
+    # all are outside
+    assert np.all(sign == [1, 1, 1])
+
+    # horizontal line
+
+    s1 = np.array([0, 0])
+    s2 = np.array([1, 0])
+    axis = 1 if abs(s1[0] - s2[0]) < 1e-11 else 0
+    sign_factor = (1 if axis == 1 else -1,)
+
+    dist_vec, sign = shortest_grid_distance(
+        np.array([[0.5, 0.5], [2, 0.5], [-1, 0.5]]),
+        s1,
+        s2,
+        axis,
+        signed=True,
+        sign_factor=sign_factor,
+    )
+
+    assert np.all(dist_vec[0] == np.array([0, 0.5]))
+    assert np.all(dist_vec[1] == np.array([1, 0.5]))
+    assert np.all(dist_vec[2] == np.array([-1, 0.5]))
+    assert np.all(sign == [1, 1, 1])
