@@ -166,14 +166,14 @@ class InvertedCoax(HPGe):
 
         coords_rz = utils.convert_coords(coords)
         s1, s2 = utils.get_line_segments(r, z)
-        print(s1,s2)
+
         # get the distance for each line segment
         dists = utils.shortest_distance(s1, s2, coords_rz, tol, signed=True)
 
         # find the minimal distance
         # if we have two of the same sign take the negative value
-        # this is correct as long as we dont have angles > 180 deg 
-        
+        # this is correct as long as we dont have angles > 180 deg
+
         abs_arr = np.abs(dists)
         min_vals = ak.min(abs_arr, axis=1)
 
@@ -181,6 +181,6 @@ class InvertedCoax(HPGe):
         dists = ak.Array(dists)
 
         min_dist = ak.min(dists[is_min], axis=-1)
-        sign = ak.where(min_dist >= 0, True,False)
+        sign = ak.where(min_dist >= 0, True, False)
 
         return np.array(sign)
