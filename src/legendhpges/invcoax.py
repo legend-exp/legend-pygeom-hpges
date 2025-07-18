@@ -183,4 +183,4 @@ class InvertedCoax(HPGe):
         min_dist = ak.min(dists[is_min], axis=-1)
         sign = ak.where(min_dist >= 0, True, False)
 
-        return np.array(sign)
+        return sign.to_numpy()
