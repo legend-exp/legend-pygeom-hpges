@@ -35,6 +35,7 @@ dependencies = [
     "pint != 0.24",
     "pyg4ometry",
     "dbetto",
+    "awkward",
     "pyarrow",
 ]
 dynamic = [
