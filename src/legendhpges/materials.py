@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import functools
 import math
-from typing import Callable
+from collections.abc import Callable
 
 from pint import Quantity, get_application_registry
 from pyg4ometry import geant4 as g4

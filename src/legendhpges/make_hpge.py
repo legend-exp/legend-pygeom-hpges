@@ -54,7 +54,7 @@ def make_hpge(
         >>> gedet = make_hpge(metadata, registry, name = "my_det", material = my_material)
 
     """
-    if not isinstance(metadata, (dict, AttrsDict)):
+    if not isinstance(metadata, dict | AttrsDict):
         gedet_meta = AttrsDict(utils.load_dict(metadata))
     else:
         gedet_meta = AttrsDict(metadata)

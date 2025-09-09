@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import math
 from abc import ABC, abstractmethod
+from itertools import pairwise
 
 import numpy as np
 from dbetto import AttrsDict
@@ -58,7 +59,7 @@ class HPGe(ABC, geant4.LogicalVolume):
             material = make_natural_germanium(registry)
 
         # build crystal, declare as detector
-        if not isinstance(metadata, (dict, AttrsDict)):
+        if not isinstance(metadata, dict | AttrsDict):
             self.metadata = AttrsDict(utils.load_dict(metadata))
         else:
             self.metadata = AttrsDict(metadata)
@@ -251,9 +252,9 @@ class HPGe(ABC, geant4.LogicalVolume):
         r = np.array(r)
         z = np.array(z)
 
-        dr = np.array([r2 - r1 for r1, r2 in zip(r[:-1], r[1:])])
-        sr = np.array([r2 + r1 for r1, r2 in zip(r[:-1], r[1:])])
-        dz = np.array([z2 - z1 for z1, z2 in zip(z[:-1], z[1:])])
+        dr = np.array([r2 - r1 for r1, r2 in pairwise(r)])
+        sr = np.array([r2 + r1 for r1, r2 in pairwise(r)])
+        dz = np.array([z2 - z1 for z1, z2 in pairwise(z)])
         dl = np.sqrt(np.power(dr, 2) + np.power(dz, 2))
         r0 = r[:-1]
 

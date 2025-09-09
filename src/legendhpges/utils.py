@@ -143,8 +143,8 @@ def get_line_segments(
         segment and the second `(r,z)`.
     """
     # build lists of pairs of coordinates
-    s1 = np.array([np.array([r1, z1]) for r1, z1 in zip(r[:-1], z[:-1])])
-    s2 = np.array([np.array([r2, z2]) for r2, z2 in zip(r[1:], z[1:])])
+    s1 = np.array([np.array([r1, z1]) for r1, z1 in zip(r[:-1], z[:-1], strict=True)])
+    s2 = np.array([np.array([r2, z2]) for r2, z2 in zip(r[1:], z[1:], strict=True)])
 
     if surface_indices is not None:
         s1 = s1[surface_indices]
@@ -430,7 +430,7 @@ def iterate_segments(s1, s2, coords_rz, tol, signed):
 
     # get shortest distance to vertical/horizontal surfaces
     if len(perp_indices) > 0:
-        for start, end in zip(s1[perp_indices], s2[perp_indices]):
+        for start, end in zip(s1[perp_indices], s2[perp_indices]):  # noqa: B905
             if (dists == np.inf).all():
                 candidates = np.arange(0, len(coords_rz))
             else:
@@ -463,7 +463,7 @@ def iterate_segments(s1, s2, coords_rz, tol, signed):
     # compute shortest distances to remaining surfaces
     # this condition could probably be tightened
     if len(non_perp_indices) > 0:
-        for start, end in zip(s1[non_perp_indices], s2[non_perp_indices]):
+        for start, end in zip(s1[non_perp_indices], s2[non_perp_indices]):  # noqa: B905
             # Calculate distance to endpoints
             dist_to_start_sq = np.sum((coords_rz - start) ** 2, axis=1)
             dist_to_end_sq = np.sum((coords_rz - end) ** 2, axis=1)

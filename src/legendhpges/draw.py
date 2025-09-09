@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from itertools import pairwise
+
 import matplotlib.pyplot as plt
 import numpy as np
 from pyg4ometry.visualisation import VtkViewer
@@ -57,15 +59,15 @@ def plot_profile(
         surfaces = np.array(hpge.surfaces)
         unique_surfaces = np.unique(surfaces)
 
-        dr = np.array([np.array([r1, r2]) for r1, r2 in zip(r[:-1], r[1:])])
-        dz = np.array([np.array([z1, z2]) for z1, z2 in zip(z[:-1], z[1:])])
+        dr = np.array([np.array([r1, r2]) for r1, r2 in pairwise(r)])
+        dz = np.array([np.array([z1, z2]) for z1, z2 in pairwise(z)])
 
         for idx, u in enumerate(unique_surfaces):
             drs_tmp = dr[surfaces == u]
             dzs_tmp = dz[surfaces == u]
 
             first = True
-            for r_tmp, z_tmp in zip(drs_tmp, dzs_tmp):
+            for r_tmp, z_tmp in zip(drs_tmp, dzs_tmp, strict=True):
                 if first:
                     axes.plot(
                         r_tmp, z_tmp, color=colors[idx + 2], label=u, **default_kwargs
