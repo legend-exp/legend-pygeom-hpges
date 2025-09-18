@@ -129,7 +129,7 @@ draw.plot_profile(hpge, split_by_type=True)
 ```
 
 ```{image} images/bege_profile.png
-
+:width: 70%
 ```
 
 We can also directly extract the $(r,z)$ profile and the surface types and
@@ -240,7 +240,7 @@ viewer.view()
 ```
 
 ```{image} images/bege.png
-
+:width: 70%
 ```
 
 The [remage tutorial](https://remage.readthedocs.io/en/stable/) gives a more
