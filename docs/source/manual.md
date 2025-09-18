@@ -47,7 +47,7 @@ metadata = {
 :::{note}
 Currently BEGe, ICPC, PPC and Coax geometries are implemented as well
 as a few LEGEND detectors with special geometries. Different geometries can be
-implemented as subclasses deriving from {class}`.base.HPGe`.
+implemented as subclasses deriving from {class}`~.base.HPGe`.
 :::
 
 The different keys of the dictionary describe the different aspects of the
@@ -65,12 +65,12 @@ in the legend metadata documentation).
 
 ### Supported geometries
 
-- PPC: {class}`.ppc.PPC`
-- BEGe: {class}`.bege.BEGe`
-- Semi-coax: {class}`.semicoax.SemiCoax`
-- ICPC (inverted coax): {class}`.invcoax.InvertedCoax`
-- Special asymmetrical variants: {class}`.p00664b.P00664B`, {class}`.v02160a.V02160A`,
-  {class}`.v07646a.V07646A`, {class}`.v02162b.V02162B`
+- PPC: {class}`~.ppc.PPC`
+- BEGe: {class}`~.bege.BEGe`
+- Semi-coax: {class}`~.semicoax.SemiCoax`
+- ICPC (inverted coax): {class}`~.invcoax.InvertedCoax`
+- Special asymmetrical variants: {class}`~.p00664b.P00664B`, {class}`~.v02160a.V02160A`,
+  {class}`~.v07646a.V07646A`, {class}`~.v02162b.V02162B`
 
 ## Constructing the HPGe object
 
@@ -101,10 +101,10 @@ it must belong to the same Geant4 registry you pass in.
 
 ### Handling asymmetries
 
-For detectors that break cylindrical symmetry (e.g. {class}`.v02160a.V02160A`,
-{class}`.p00664b.P00664B`), {func}`.make_hpge` will build special subclasses if
+For detectors that break cylindrical symmetry (e.g. {class}`~.v02160a.V02160A`,
+{class}`~.p00664b.P00664B`), {func}`.make_hpge` will build special subclasses if
 `allow_cylindrical_asymmetry=True` (default). Set it to `False` to get a
-symmetrized {class}`.invcoax.InvertedCoax` or {class}`.ppc.PPC` shape:
+symmetrized {class}`~.invcoax.InvertedCoax` or {class}`~.ppc.PPC` shape:
 
 ```pycon
 >>> hpge_sym = make_hpge(
@@ -182,8 +182,8 @@ Distances are computed in $(r,z)$ after converting from $(x,y,z)$. A tolerance
 `tol` is used to treat points very close to the surface as inside.
 
 :::{note}
-For asymmetric detectors implemented via CSG subtraction (e.g. {class}`.v02160a.V02160A`,
-{class}`.p00664b.P00664B`), `get_profile()` returns the uncut polycone profile.
+For asymmetric detectors implemented via CSG subtraction (e.g. {class}`~.v02160a.V02160A`,
+{class}`~.p00664b.P00664B`), `get_profile()` returns the uncut polycone profile.
 Consequently, `surface_area()` refers to the symmetric parent polycone.
 :::
 
@@ -258,7 +258,7 @@ complete example of using legendhpges to run a simulation.
 
 ## Extending
 
-New detector variants can be added by subclassing {class}`.base.HPGe` and
+New detector variants can be added by subclassing {class}`~.base.HPGe` and
 implementing {meth}`.base.HPGe._decode_polycone_coord`. For asymmetric shapes,
 override {meth}`.base.HPGe._g4_solid` to build a CSG subtracted solid.
 
