@@ -1,4 +1,4 @@
-# Welcome to legendhpges's documentation!
+# legend-pygeom-hpges
 
 Python package of Germanium detector geometries for radiation transport
 simulations.
