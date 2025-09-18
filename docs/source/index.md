@@ -19,10 +19,18 @@ properties and perform geometric queries.
 
 ## Getting started
 
-legendhpges can be installed with pip:
+legendhpges can be installed from PyPI or conda-forge:
+
+PyPI:
 
 ```console
 $ pip install legend-pygeom-hpges
+```
+
+conda-forge:
+
+```console
+$ conda install -c conda-forge legend-pygeom-hpges
 ```
 
 ## Next steps
