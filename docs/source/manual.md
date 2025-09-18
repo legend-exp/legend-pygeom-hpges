@@ -107,7 +107,9 @@ For detectors that break cylindrical symmetry (e.g. {class}`.v02160a.V02160A`,
 symmetrized {class}`.invcoax.InvertedCoax` or {class}`.ppc.PPC` shape:
 
 ```pycon
->>> hpge_sym = make_hpge(metadata, registry=reg, allow_cylindrical_asymmetry=False)  # doctest: +SKIP
+>>> hpge_sym = make_hpge(
+...     metadata, registry=reg, allow_cylindrical_asymmetry=False
+... )  # doctest: +SKIP
 ```
 
 ## Detector properties
@@ -127,6 +129,7 @@ draw.plot_profile(hpge, split_by_type=True)
 ```
 
 ```{image} images/bege_profile.png
+
 ```
 
 We can also directly extract the $(r,z)$ profile and the surface types and
@@ -154,7 +157,7 @@ We can also easily extract the detector mass and volume:
 >>> hpge.volume
 <Quantity(126226.526, 'millimeter ** 3')>
 >>> # Convert to cm^3 if desired:
->>> hpge.volume.to('cm**3')
+>>> hpge.volume.to("cm**3")
 <Quantity(126.226526, 'centimeter ** 3')>
 ```
 
@@ -237,6 +240,7 @@ viewer.view()
 ```
 
 ```{image} images/bege.png
+
 ```
 
 The [remage tutorial](https://remage.readthedocs.io/en/stable/) gives a more
