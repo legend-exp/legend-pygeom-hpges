@@ -130,6 +130,7 @@ draw.plot_profile(hpge, split_by_type=True)
 
 ```{image} images/bege_profile.png
 :width: 70%
+:align: center
 ```
 
 We can also directly extract the $(r,z)$ profile and the surface types and
@@ -241,6 +242,7 @@ viewer.view()
 
 ```{image} images/bege.png
 :width: 70%
+:align: center
 ```
 
 The [remage tutorial](https://remage.readthedocs.io/en/stable/) gives a more
@@ -262,5 +264,5 @@ New detector variants can be added by subclassing {class}`~.base.HPGe` and
 implementing {meth}`.base.HPGe._decode_polycone_coord`. For asymmetric shapes,
 override {meth}`.base.HPGe._g4_solid` to build a CSG subtracted solid.
 
-This class is also the basis of the _legend-pygeom-l200_
-[implementation of the LEGEND-200 experiment](https://github.com/legend-exp/legend-pygeom-l200),
+This class is also the basis of the [_legend-pygeom-l200_ implementation of the
+LEGEND-200 experiment](https://github.com/legend-exp/legend-pygeom-l200).
