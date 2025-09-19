@@ -69,8 +69,9 @@ in the legend metadata documentation).
 - BEGe: {class}`~.bege.BEGe`
 - Semi-coax: {class}`~.semicoax.SemiCoax`
 - ICPC (inverted coax): {class}`~.invcoax.InvertedCoax`
-- Special asymmetrical variants: {class}`~.p00664b.P00664B`, {class}`~.v02160a.V02160A`,
-  {class}`~.v07646a.V07646A`, {class}`~.v02162b.V02162B`
+- Special asymmetrical variants of other detector types, as found in LEGEND:
+  {class}`~.p00664b.P00664B`, {class}`~.v02160a.V02160A`, {class}`~.v07646a.V07646A`,
+  {class}`~.v02162b.V02162B`
 
 ## Constructing the HPGe object
 
@@ -94,7 +95,7 @@ YAML/JSON file:
 
 :::{important}
 If the `production.enrichment` field is present in the metadata, the material is
-automatically set to enriched germanium with the corresponding 76Ge fraction
+automatically set to enriched germanium with the corresponding $^{76}$Ge fraction
 (approximated as a 74/76 mixture). If you pass your own `material` argument,
 it must belong to the same Geant4 registry you pass in.
 :::
@@ -142,8 +143,7 @@ surface area of each.
 ['pplus', 'passive', 'passive', 'passive', 'nplus', 'nplus', 'nplus']
 >>> sum(hpge.surface_area())
 <Quantity(13775.3258, 'millimeter ** 2')>
->>> # Area of the 5th segment (index 4), which is an n+ surface:
->>> hpge.surface_area(4)
+>>> hpge.surface_area(hpge.surfaces.index("nplus"))
 <Quantity(2202.8546..., 'millimeter ** 2')>
 ```
 
@@ -183,9 +183,11 @@ Distances are computed in $(r,z)$ after converting from $(x,y,z)$. A tolerance
 `tol` is used to treat points very close to the surface as inside.
 
 :::{note}
+
 For asymmetric detectors implemented via CSG subtraction (e.g. {class}`~.v02160a.V02160A`,
 {class}`~.p00664b.P00664B`), `get_profile()` returns the uncut polycone profile.
 Consequently, `surface_area()` refers to the symmetric parent polycone.
+
 :::
 
 ### ICPC borehole classification
@@ -253,10 +255,6 @@ complete example of using legendhpges to run a simulation.
 - Ensure coordinate arrays are shape `(N, 3)` in `(x, y, z)` with units of mm.
 - A {class}`NotImplementedError` is raised by distance methods for solids that
   are not {class}`pyg4ometry.geant4.solid.GenericPolycone`.
-- If you pass a custom `material`, it must be associated with the same
-  {class}`pyg4ometry.geant4.Registry` as the detector.
-- If your metadata sets `production.enrichment` to `None`, material construction
-  will fail; provide a valid enrichment or pass an explicit material.
 
 ## Extending
 
@@ -264,5 +262,5 @@ New detector variants can be added by subclassing {class}`~.base.HPGe` and
 implementing {meth}`.base.HPGe._decode_polycone_coord`. For asymmetric shapes,
 override {meth}`.base.HPGe._g4_solid` to build a CSG subtracted solid.
 
-This class is also the basis of the [_legend-pygeom-l200_ implementation of the
+This package is also used in the [_legend-pygeom-l200_ implementation of the
 LEGEND-200 experiment](https://github.com/legend-exp/legend-pygeom-l200).

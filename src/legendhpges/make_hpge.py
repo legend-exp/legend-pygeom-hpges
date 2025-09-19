@@ -45,14 +45,14 @@ def make_hpge(
             name to attach to the detector. Used to name
             solid and logical volume.
         material
-            pyg4ometry Geant4 material for the detector.
+            pyg4ometry Geant4 material for the detector; must be associated with the same
+            ``registry``.
 
     Examples
     --------
         >>> gedet = make_hpge(metadata, registry)
 
         >>> gedet = make_hpge(metadata, registry, name = "my_det", material = my_material)
-
     """
     if not isinstance(metadata, dict | AttrsDict):
         gedet_meta = AttrsDict(utils.load_dict(metadata))
