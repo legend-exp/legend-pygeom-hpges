@@ -10,11 +10,11 @@ properties and perform geometric queries.
 
 ## Key features
 
-- Build detectors directly from LEGEND metadata (YAML/JSON) or Python dicts
+- Build detector geometry directly from human-readable input file format
 - Multiple geometries supported: PPC, BEGe, Semi‑Coax, ICPC, plus special variants
 - Seamless Geant4 integration via pyg4ometry (visualisation and GDML export)
 - Compute volume, mass and surface areas with unit-aware quantities
-- Distance-to-surface and point-in-detector queries; ICPC borehole classification
+- Calculation of useful geometrical queries (like distances of points to surfaces etc.)
 - Consistent unit handling using pint
 
 ## Getting started
