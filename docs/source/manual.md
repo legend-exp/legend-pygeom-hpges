@@ -255,10 +255,6 @@ complete example of using legendhpges to run a simulation.
 - Ensure coordinate arrays are shape `(N, 3)` in `(x, y, z)` with units of mm.
 - A {class}`NotImplementedError` is raised by distance methods for solids that
   are not {class}`pyg4ometry.geant4.solid.GenericPolycone`.
-- If you pass a custom `material`, it must be associated with the same
-  {class}`pyg4ometry.geant4.Registry` as the detector.
-- If your metadata sets `production.enrichment` to `None`, material construction
-  will fail; provide a valid enrichment or pass an explicit material.
 
 ## Extending
 
