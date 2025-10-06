@@ -69,7 +69,7 @@ def test_inside_bad_dimensions(test_data_configs, reg):
 
 def test_inside_output(test_data_configs, reg):
     gedet = make_hpge(test_data_configs + "/B99000A.json", registry=reg)
-    r, z = gedet._decode_polycone_coord()
+    gedet._decode_polycone_coord()
 
     # detetor is a simple bege
     # p+ at 0-7.5 mm
