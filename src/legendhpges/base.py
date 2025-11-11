@@ -264,8 +264,9 @@ class HPGe(ABC, geant4.LogicalVolume):
             dl = dl[surface_indices]
             r0 = r0[surface_indices]
             sr = sr[surface_indices]
+
         return np.where(
             dr == 0,
             abs(dz) * r0 * 2 * np.pi * u.mm**2,
-            abs(dr) * dl * np.pi * u.mm**2,
+            abs(sr) * dl * np.pi * u.mm**2,
         )
