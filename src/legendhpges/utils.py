@@ -284,7 +284,7 @@ def diagonal_segment_distance(s1, s2, points, tol, signed, dist_result, sign_res
 
 
 @numba.njit(cache=True)
-def shortest_distance(
+def shortest_distance_optimised(
     s1_list: NDArray,
     s2_list: NDArray,
     points: NDArray,
@@ -413,6 +413,103 @@ def shortest_distance(
         )
     return dists
 
+@numba.njit(cache=True)
+def shortest_distance(
+    s1_list: NDArray,
+    s2_list: NDArray,
+    points: NDArray,
+    tol: float = 1e-11,
+    signed: bool = True,
+) -> tuple[NDArray, NDArray]:
+    """Get the shortest distance between each point and a line segment.
+
+    Based on vector algebra where the distance vector is given by:
+
+    .. math::
+        d = s_1 - p - ( (n · (s_1- p)) * n )
+
+    where:
+
+    - :math:`s_1` is a vector from which the distance is measured,
+    - `p` is a point vector,
+    - `n` is a unit direction vector from :math:`s_1` to :math:`s_2`,
+    - `a` is another point vector.
+
+    If the projection point lies inside the segment s1-s2. Else the closest
+    point is either :math:`s_1` or :math:`s_2`.  The distance is the modulus of
+    this vector and this calculation is performed for each point.  A sign is
+    attached based on the cross product of the line vector and the distance
+    vector.  To avoid numerical issues any point within the tolerance is
+    considered inside.
+
+    Parameters
+    ----------
+    s1_list
+        `(n_segments,2)` np.array of the first points in the line segment, for
+        the second axis indices `0,1` correspond to `r,z`.
+    s2_list
+        second points, same format as `s1_list`.
+    points
+        `(n_points,2)` array of points to compare, first axis corresponds to
+        the point index and the second to `(r,z)`.
+    tol
+        tolerance when computing sign, points within this distance to the
+        surface are pushed inside.
+    signed
+        boolean flag to attach a sign to the distance (positive if inside).
+
+    Returns
+    -------
+        ``(n_points,n_segments)`` numpy array of the shortest distances for each segment.
+    """
+
+    # helper functions
+    def _dot(a, b):
+        return np.sum(a * b, axis=1)
+
+    def _norm(a):
+        ax = 1 if a.ndim == 2 else 0
+        return np.sqrt(np.sum(a**2, axis=ax))
+
+    n_segments = len(s1_list)
+    dists = np.full((len(points), len(s1_list)), np.nan)
+
+    for segment in range(n_segments):
+        s1 = s1_list[segment]
+        s2 = s2_list[segment]
+
+        n = (s2 - s1) / _norm(s2 - s1)
+
+        proj_dist = -_dot(n, (n * _dot(s1 - points, n)[:, np.newaxis]))
+
+        dist_vec = np.empty_like(s1 - points)
+
+        condition1 = proj_dist < 0
+        condition2 = proj_dist > _norm(s2 - s1)
+        condition3 = (~condition1) & (~condition2)
+
+        diff_s1 = s1 - points
+        dist_vec[condition1] = diff_s1[condition1]
+        dist_vec[condition2] = s2 - points[condition2]
+        dist_vec[condition3] = (
+            diff_s1[condition3] - n * _dot(diff_s1, n)[condition3, np.newaxis]
+        )
+
+        # make this signed so inside is positive and outside negative
+        if signed:
+            sign_vec = n[0] * dist_vec[:, 1] - n[1] * dist_vec[:, 0]
+
+            # push points on surface inside
+            sign_vec = np.where(np.abs(sign_vec) < tol, -tol, sign_vec)
+            sign_vec_norm = -sign_vec / np.abs(sign_vec)
+
+        else:
+            sign_vec_norm = np.ones(len(dist_vec))
+
+        dists[:, segment] = np.where(
+            np.abs(_norm(dist_vec)) < tol, tol, np.abs(_norm(dist_vec)) * sign_vec_norm
+        )
+    return dists
 
 @numba.njit(cache=True)
 def iterate_segments(s1, s2, coords_rz, tol, signed):
