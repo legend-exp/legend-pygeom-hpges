@@ -413,6 +413,7 @@ def shortest_distance_optimised(
         )
     return dists
 
+
 @numba.njit(cache=True)
 def shortest_distance(
     s1_list: NDArray,
@@ -510,6 +511,7 @@ def shortest_distance(
             np.abs(_norm(dist_vec)) < tol, tol, np.abs(_norm(dist_vec)) * sign_vec_norm
         )
     return dists
+
 
 @numba.njit(cache=True)
 def iterate_segments(s1, s2, coords_rz, tol, signed):

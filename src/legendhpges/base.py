@@ -161,7 +161,7 @@ class HPGe(ABC, geant4.LogicalVolume):
         surface_indices: ArrayLike | None = None,
         tol: float = 1e-11,
         signed: bool = False,
-        optimised: bool = False
+        optimised: bool = False,
     ) -> NDArray:
         """Compute the distance of a set of points to the nearest detector surface.
 
@@ -206,15 +206,14 @@ class HPGe(ABC, geant4.LogicalVolume):
         # convert coords
         coords_rz = utils.convert_coords(coords)
 
-        if (not optimised):
+        if not optimised:
             dists = utils.shortest_distance(s1, s2, coords_rz, tol=tol, signed=signed)
             idx = np.abs(dists).argmin(axis=1)
             return dists[np.arange(dists.shape[0]), idx]
-        else:
-            msg = f"Optimised version is not fully tested in all cases"
-            log.warning(msg)
+        msg = "Optimised version is not fully tested in all cases"
+        log.warning(msg)
 
-            return utils.iterate_segments(s1, s2, coords_rz, tol, signed)
+        return utils.iterate_segments(s1, s2, coords_rz, tol, signed)
 
     @property
     def volume(self) -> Quantity:
