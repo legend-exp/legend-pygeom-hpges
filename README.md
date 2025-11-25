@@ -12,5 +12,5 @@
 ![License](https://img.shields.io/github/license/legend-exp/legend-pygeom-hpges)
 [![Read the Docs](https://img.shields.io/readthedocs/legend-pygeom-hpges?logo=readthedocs)](https://legend-pygeom-hpges.readthedocs.io)
 
-Geometry management and builder package for LEGEND HPGE detectors using
+Geometry management and builder package for LEGEND HPGe detectors using
 [pyg4ometry](https://pypi.org/project/pyg4ometry/).
