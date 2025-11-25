@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "legend_pygeom_hpges"
-description = "Geometry management for LEGEND HPGE detectors"
+description = "Geometry management for LEGEND HPGe detectors"
 authors = [
     { name = "Luigi Pertoldi", email = "gipert@pm.me" },
 ]
