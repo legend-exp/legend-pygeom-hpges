@@ -8,7 +8,7 @@ all: apidoc
 apidoc: clean-apidoc
 	sphinx-apidoc --private --module-first --force \
       --output-dir "$(SOURCEDIR)/api" \
-      ../src/legendhpges ../src/legendhpges/_version.py
+      ../src/pygeomhpges ../src/pygeomhpges/_version.py
 
 clean-apidoc:
 	rm -rf "$(SOURCEDIR)/api"

@@ -78,7 +78,7 @@ in the legend metadata documentation).
 The HPGe object can be constructed from the metadata with:
 
 ```pycon
->>> from legendhpges import make_hpge
+>>> from pygeomhpges import make_hpge
 >>> import pyg4ometry as pg4
 >>> reg = pg4.geant4.Registry()
 >>> hpge = make_hpge(metadata, name="det_L", registry=reg)
@@ -124,7 +124,7 @@ is able to label the contact type (p+, n+ or passivated) each surface
 corresponds to (based on the metadata).
 
 ```python
-from legendhpges import draw
+from pygeomhpges import draw
 
 draw.plot_profile(hpge, split_by_type=True)
 ```
@@ -195,7 +195,7 @@ Consequently, `surface_area()` refers to the symmetric parent polycone.
 For ICPC-based detectors, you can test if points are inside the borehole:
 
 ```pycon
->>> from legendhpges import InvertedCoax
+>>> from pygeomhpges import InvertedCoax
 >>> isinstance(hpge, InvertedCoax)
 True
 >>> hpge.is_inside_borehole([(0, 0, hpge.metadata.geometry.height_in_mm - 1)])
@@ -213,7 +213,7 @@ Two convenience builders are provided:
 `production.enrichment` is provided; otherwise natural germanium is used.
 
 ```pycon
->>> from legendhpges.materials import make_enriched_germanium
+>>> from pygeomhpges.materials import make_enriched_germanium
 >>> mat = make_enriched_germanium(0.92, registry=reg)  # doctest: +SKIP
 ```
 
@@ -248,7 +248,7 @@ viewer.view()
 ```
 
 The [remage tutorial](https://remage.readthedocs.io/en/stable/) gives a more
-complete example of using legendhpges to run a simulation.
+complete example of using pygeomhpges to run a simulation.
 
 ## Tips and troubleshooting
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from legendhpges import utils
+from pygeomhpges import utils
 
 
 def test_distances():

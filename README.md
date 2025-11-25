@@ -1,4 +1,4 @@
-# legendhpges
+# pygeomhpges
 
 [![PyPI](https://img.shields.io/pypi/v/legend-pygeom-hpges?logo=pypi)](https://pypi.org/project/legend-pygeom-hpges/)
 [![conda-forge](https://img.shields.io/conda/vn/conda-forge/legend-pygeom-hpges.svg)](https://anaconda.org/conda-forge/legend-pygeom-hpges)

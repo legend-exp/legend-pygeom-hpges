@@ -48,7 +48,7 @@ Discussions = "https://github.com/legend-exp/legend-pygeom-hpges/discussions"
 Changelog = "https://github.com/legend-exp/legend-pygeom-hpges/releases"
 
 [tool.setuptools_scm]
-write_to = "src/legendhpges/_version.py"
+write_to = "src/pygeomhpges/_version.py"
 
 [project.optional-dependencies]
 all = [
