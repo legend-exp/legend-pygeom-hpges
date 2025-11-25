@@ -1,6 +1,6 @@
 # legend-pygeom-hpges
 
-legendhpges provides High-Purity Germanium (HPGe) detector models built from
+pygeomhpges provides High-Purity Germanium (HPGe) detector models built from
 [LEGEND](https://legend-exp.org/) metadata for radiation transport simulations.
 It integrates with {mod}`pyg4ometry` and [Geant4](https://geant4.web.cern.ch/)
 for visualisation and simulation, and offers utilities to compute detector
@@ -19,7 +19,7 @@ properties and perform geometric queries.
 
 ## Getting started
 
-legendhpges can be installed from PyPI or conda-forge:
+pygeomhpges can be installed from PyPI or conda-forge:
 
 PyPI:
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 from pyg4ometry import geant4 as g4
 
-from legendhpges import materials
+from pygeomhpges import materials
 
 
 def test_number_density_meas():

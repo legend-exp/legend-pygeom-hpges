@@ -8,8 +8,8 @@ from dbetto import TextDB
 from legendtestdata import LegendTestData
 from pyg4ometry import geant4
 
-from legendhpges import make_hpge
-from legendhpges.utils import shortest_grid_distance
+from pygeomhpges import make_hpge
+from pygeomhpges.utils import shortest_grid_distance
 
 configs = TextDB(pathlib.Path(__file__).parent.resolve() / "configs")
 

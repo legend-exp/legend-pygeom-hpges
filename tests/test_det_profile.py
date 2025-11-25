@@ -7,7 +7,7 @@ from dbetto import TextDB
 from legendtestdata import LegendTestData
 from pyg4ometry import geant4
 
-from legendhpges import (
+from pygeomhpges import (
     P00664B,
     PPC,
     V02160A,

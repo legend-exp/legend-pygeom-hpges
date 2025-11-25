@@ -8,7 +8,7 @@ from dbetto import TextDB
 from legendtestdata import LegendTestData
 from pyg4ometry import geant4
 
-from legendhpges import make_hpge
+from pygeomhpges import make_hpge
 
 configs = TextDB(pathlib.Path(__file__).parent.resolve() / "configs")
 
