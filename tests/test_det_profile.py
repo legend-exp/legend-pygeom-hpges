@@ -12,6 +12,7 @@ from pygeomhpges import (
     PPC,
     V02160A,
     V02162B,
+    V06649,
     V07646A,
     BEGe,
     InvertedCoax,
@@ -79,6 +80,10 @@ def test_v02162b(reg, natural_germanium):
 
 def test_v02160a(reg, natural_germanium):
     V02160A(configs.V02160A, material=natural_germanium, registry=reg)
+
+
+def test_v06649m(reg, natural_germanium):
+    V06649(configs.V06649M, material=natural_germanium, registry=reg)
 
 
 def test_make_icpc(test_data_configs, reg_or_none):

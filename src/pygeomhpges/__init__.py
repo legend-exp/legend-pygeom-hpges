@@ -9,6 +9,7 @@ from .ppc import PPC
 from .semicoax import SemiCoax
 from .v02160a import V02160A
 from .v02162b import V02162B
+from .v06649 import V06649
 from .v07646a import V07646A
 
 __all__ = [
@@ -16,6 +17,7 @@ __all__ = [
     "PPC",
     "V02160A",
     "V02162B",
+    "V06649",
     "V07646A",
     "BEGe",
     "InvertedCoax",
