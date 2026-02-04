@@ -22,7 +22,7 @@ class P00664B(HPGe):
         c = self.metadata.geometry
 
         # return ordered r,z lists, default unit [mm]
-        r, z = self._decode_polycone_coord()
+        r, z = self._get_polycone_coord()
 
         x_cut_plane = c.extra.crack.radius_in_mm
 
@@ -110,7 +110,7 @@ class P00664B(HPGe):
 
         # volume of the full solid without cut
         full_volume = 0
-        pr, pz = self._decode_polycone_coord()
+        pr, pz = self._get_polycone_coord()
         r1 = pr[-1]
         z1 = pz[-1]
         for i in range(len(pz)):

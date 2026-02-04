@@ -92,12 +92,21 @@ class HPGe(ABC, geant4.LogicalVolume):
             in their class definition.
         """
         # return ordered r,z lists, default unit [mm]
-        r, z = self._decode_polycone_coord()
+        r, z = self._get_polycone_coord()
 
         # build generic polycone, default [mm]
         return geant4.solid.GenericPolycone(
             self.name, 0, 2 * math.pi, r, z, self.registry
         )
+
+    def _get_polycone_coord(self) -> tuple[list[float], list[float]]:
+        # return ordered r,z lists, default unit [mm]
+        r, z = self._decode_polycone_coord()
+
+        assert len(z) == len(r)
+        assert len(self.surfaces) == len(z) - 1
+
+        return r, z
 
     @abstractmethod
     def _decode_polycone_coord(self) -> tuple[list[float], list[float]]:
@@ -113,6 +122,8 @@ class HPGe(ABC, geant4.LogicalVolume):
         ----
         Must be overloaded by derived classes.
         """
+        msg = "_decode_polycone_coord must be implemented by a subclass"
+        raise NotImplementedError(msg)
 
     def get_profile(self) -> tuple[list[float], list[float]]:
         """Get the profile of the HPGe detector.

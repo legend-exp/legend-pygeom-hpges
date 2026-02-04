@@ -24,7 +24,7 @@ class V02160A(HPGe):
         c = self.metadata.geometry
 
         # return ordered r,z lists, default unit [mm]
-        r, z = self._decode_polycone_coord()
+        r, z = self._get_polycone_coord()
 
         # build generic polycone, default [mm]
         uncut_hpge = geant4.solid.GenericPolycone(
@@ -151,7 +151,7 @@ class V02160A(HPGe):
 
         # volume of the full solid without cut
         full_volume = 0
-        pr, pz = self._decode_polycone_coord()
+        pr, pz = self._get_polycone_coord()
         r1 = pr[-1]
         z1 = pz[-1]
         for i in range(len(pz)):

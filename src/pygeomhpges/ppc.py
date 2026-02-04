@@ -8,7 +8,7 @@ from .base import HPGe
 class PPC(HPGe):
     """A p-type point contact germanium detector."""
 
-    def _decode_polycone_coord(self):
+    def _decode_polycone_coord(self) -> tuple[list[float], list[float]]:
         c = self.metadata.geometry
 
         def _tan(a):
