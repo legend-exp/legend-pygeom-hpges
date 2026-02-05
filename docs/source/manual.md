@@ -69,9 +69,9 @@ in the legend metadata documentation).
 - BEGe: {class}`~.bege.BEGe`
 - Semi-coax: {class}`~.semicoax.SemiCoax`
 - ICPC (inverted coax): {class}`~.invcoax.InvertedCoax`
-- Special asymmetrical variants of other detector types, as found in LEGEND:
+- Special (asymmetrical) variants of other detector types, as found in LEGEND:
   {class}`~.p00664b.P00664B`, {class}`~.v02160a.V02160A`, {class}`~.v07646a.V07646A`,
-  {class}`~.v02162b.V02162B`
+  {class}`~.v02162b.V02162B`, {class}`~.v06649.V06649`(A/M)
 
 ## Constructing the HPGe object
 
