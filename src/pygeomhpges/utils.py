@@ -7,26 +7,26 @@ from pathlib import Path
 import numba
 import numpy as np
 import yaml
-from numpy.typing import ArrayLike, NDArray
+from numpy.typing import NDArray
 
 log = logging.getLogger(__name__)
 __file_extensions__ = {"json": [".json"], "yaml": [".yaml", ".yml"]}
 
 
-def load_dict(fname: str, ftype: str | None = None) -> dict:
+def load_dict(fname: str | Path, ftype: str | None = None) -> dict:
     """Load a text file as a Python dict."""
-    fname = Path(fname)
+    path = Path(fname)
 
     # determine file type from extension
     if ftype is None:
         for _ftype, exts in __file_extensions__.items():
-            if fname.suffix in exts:
+            if path.suffix in exts:
                 ftype = _ftype
 
-    msg = f"loading {ftype} dict from: {fname}"
+    msg = f"loading {ftype} dict from: {path}"
     log.debug(msg)
 
-    with fname.open() as f:
+    with path.open() as f:
         if ftype == "json":
             return json.load(f)
         if ftype == "yaml":
@@ -37,7 +37,7 @@ def load_dict(fname: str, ftype: str | None = None) -> dict:
 
 
 @numba.njit(cache=True)
-def convert_coords(coords: ArrayLike) -> NDArray:
+def convert_coords(coords: NDArray) -> NDArray:
     """Converts (x,y,z) coordinates into (r,z)
 
     Parameters
@@ -122,7 +122,7 @@ def shortest_distance_to_plane(
 
 
 def get_line_segments(
-    r: ArrayLike, z: ArrayLike, surface_indices: ArrayLike = None
+    r: NDArray, z: NDArray, surface_indices: NDArray | None = None
 ) -> tuple[NDArray, NDArray]:
     """Extracts the line segments from a shape.
 
@@ -290,7 +290,7 @@ def shortest_distance_optimised(
     points: NDArray,
     tol: float = 1e-11,
     signed: bool = True,
-) -> tuple[NDArray, NDArray]:
+) -> NDArray:
     """Get the shortest distance between each point and a line segment.
 
     Based on vector algebra where the distance vector is given by:
@@ -421,7 +421,7 @@ def shortest_distance(
     points: NDArray,
     tol: float = 1e-11,
     signed: bool = True,
-) -> tuple[NDArray, NDArray]:
+) -> NDArray:
     """Get the shortest distance between each point and a line segment.
 
     Based on vector algebra where the distance vector is given by:

@@ -52,9 +52,9 @@ repos:
     hooks:
       - id: mypy
         files: src|tests
-        stages: [manual]
         additional_dependencies:
           - pytest
+          - types-PyYAML
 
   - repo: https://github.com/codespell-project/codespell
     rev: "v2.4.2"

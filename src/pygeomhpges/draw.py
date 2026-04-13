@@ -10,8 +10,8 @@ from .base import HPGe
 
 
 def plot_profile(
-    hpge: HPGe, axes: plt.Axes = None, split_by_type: bool = False, **kwargs
-) -> tuple[plt.Figure, plt.Axes]:
+    hpge: HPGe, axes: plt.Axes | None = None, split_by_type: bool = False, **kwargs
+) -> tuple[plt.Figure | None, plt.Axes]:
     """Plot the HPGe profile with :mod:`matplotlib`.
 
     Parameters

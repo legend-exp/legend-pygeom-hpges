@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from collections.abc import Mapping
+from dbetto import AttrsDict
 
 
-def make_pplus(geometry: Mapping) -> tuple[list, list, list]:
+def make_pplus(geometry: AttrsDict) -> tuple[list, list, list]:
     """Make the pplus contact for BeGe and some ICPC.
 
     Methods to avoid duplicating code.
