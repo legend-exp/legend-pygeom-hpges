@@ -71,7 +71,7 @@ class HPGe(ABC, geant4.LogicalVolume):
 
         self.registry = registry
 
-        self.surfaces = []
+        self.surfaces: list[str] = []
 
         # build logical volume, default [mm]
         super().__init__(self._g4_solid(), material, self.name, self.registry)
@@ -150,7 +150,7 @@ class HPGe(ABC, geant4.LogicalVolume):
 
         return r, z
 
-    def is_inside(self, coords: ArrayLike, tol: float = 1e-11) -> NDArray[bool]:
+    def is_inside(self, coords: ArrayLike, tol: float = 1e-11) -> NDArray[np.bool_]:
         """Compute whether each point is inside the volume.
 
         Parameters
@@ -169,7 +169,7 @@ class HPGe(ABC, geant4.LogicalVolume):
     def distance_to_surface(
         self,
         coords: ArrayLike,
-        surface_indices: ArrayLike | None = None,
+        surface_indices: NDArray | None = None,
         tol: float = 1e-11,
         signed: bool = False,
         optimised: bool = False,
@@ -212,7 +212,9 @@ class HPGe(ABC, geant4.LogicalVolume):
 
         # get the coordinates
         r, z = self.get_profile()
-        s1, s2 = utils.get_line_segments(r, z, surface_indices=surface_indices)
+        s1, s2 = utils.get_line_segments(
+            np.array(r), np.array(z), surface_indices=surface_indices
+        )
 
         # convert coords
         coords_rz = utils.convert_coords(coords)
@@ -247,8 +249,8 @@ class HPGe(ABC, geant4.LogicalVolume):
         return (self.volume * (self.material.density * u.g / u.cm**3)).to(u.g)
 
     def surface_area(
-        self, surface_indices: ArrayLike | None = None
-    ) -> NDArray[Quantity]:
+        self, surface_indices: NDArray | None = None
+    ) -> NDArray:
         """Surface area of the HPGe.
 
         If a list of surface_indices is provided the area is computed only
@@ -268,10 +270,10 @@ class HPGe(ABC, geant4.LogicalVolume):
         if not isinstance(self.solid, geant4.solid.GenericPolycone):
             logging.warning("The area is that of the solid without cut")
 
-        r, z = self.get_profile()
+        r_profile, z_profile = self.get_profile()
 
-        r = np.array(r)
-        z = np.array(z)
+        r = np.array(r_profile)
+        z = np.array(z_profile)
 
         dr = np.array([r2 - r1 for r1, r2 in pairwise(r)])
         sr = np.array([r2 + r1 for r1, r2 in pairwise(r)])
