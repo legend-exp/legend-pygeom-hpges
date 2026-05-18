@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from ._version import version as __version__
+from .base import HPGe
 from .bege import BEGe
 from .invcoax import InvertedCoax
 from .make_hpge import make_hpge
@@ -20,6 +21,7 @@ __all__ = [
     "V06649",
     "V07646A",
     "BEGe",
+    "HPGe",
     "InvertedCoax",
     "SemiCoax",
     "__version__",
