@@ -140,7 +140,7 @@ class HPGe(ABC, geant4.LogicalVolume):
             self.solid.obj1, geant4.solid.GenericPolycone
         ):
             msg = "solid is not a polycone and neither is its primary consistient (obj1), thus no profile can be computed."
-            raise ValueError(msg)
+            raise TypeError(msg)
         if not isinstance(self.solid, geant4.solid.GenericPolycone):
             r = self.solid.obj1.pR
             z = self.solid.obj1.pZ
