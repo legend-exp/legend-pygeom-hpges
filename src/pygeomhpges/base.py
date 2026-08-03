@@ -266,7 +266,7 @@ class HPGe(ABC, geant4.LogicalVolume):
         asymmetric detectors.
         """
         if not isinstance(self.solid, geant4.solid.GenericPolycone):
-            logging.warning("The area is that of the solid without cut")
+            log.warning("The area is that of the solid without cut")
 
         r_profile, z_profile = self.get_profile()
 
