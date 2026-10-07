@@ -46,27 +46,25 @@ class V06649(HPGe):
             z += [0]
             surfaces += ["nplus"]
 
-        # this special detector type does not support a top taper
-        assert c.taper.top.height_in_mm == 0
-        assert c.taper.top.angle_in_deg == 0
-
-        # ... but has a special geometry with a cylindrical top.
+        # the top of the crystal is a narrower cylinder; the top taper bevels
+        # the outer edge of its top face
         if c.extra.top_cylinder.height_in_mm > 0:
-            r += [
-                c.radius_in_mm,
-                c.extra.top_cylinder.radius_in_mm,
-                c.extra.top_cylinder.radius_in_mm,
-            ]
-
-            z += [
-                c.height_in_mm - c.extra.top_cylinder.height_in_mm,
-                c.height_in_mm - c.extra.top_cylinder.height_in_mm,
-                c.height_in_mm,
-            ]
-            surfaces += ["nplus", "nplus", "nplus"]
-
+            r_top = c.extra.top_cylinder.radius_in_mm
+            r += [c.radius_in_mm, r_top]
+            z += [c.height_in_mm - c.extra.top_cylinder.height_in_mm] * 2
+            surfaces += ["nplus", "nplus"]
         else:
-            r += [c.radius_in_mm]
+            r_top = c.radius_in_mm
+
+        if c.taper.top.height_in_mm > 0:
+            r += [
+                r_top,
+                r_top - c.taper.top.height_in_mm * _tan(c.taper.top.angle_in_deg),
+            ]
+            z += [c.height_in_mm - c.taper.top.height_in_mm, c.height_in_mm]
+            surfaces += ["nplus", "nplus"]
+        else:
+            r += [r_top]
             z += [c.height_in_mm]
             surfaces += ["nplus"]
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import pathlib
 
 import pytest
@@ -84,6 +85,19 @@ def test_v02160a(reg, natural_germanium):
 
 def test_v06649m(reg, natural_germanium):
     V06649(configs.V06649M, material=natural_germanium, registry=reg)
+
+
+def test_v06649m_top_taper(reg, natural_germanium):
+    meta = copy.deepcopy(configs.V06649M)
+    meta.geometry.taper.top = {"angle_in_deg": 45, "height_in_mm": 2}
+    gedet = V06649(meta, material=natural_germanium, registry=reg)
+
+    r, z = gedet._get_polycone_coord()
+    r_top = meta.geometry.extra.top_cylinder.radius_in_mm
+    h = meta.geometry.height_in_mm
+    assert (r_top, h - 2) in zip(r, z, strict=True)
+    assert (pytest.approx(r_top - 2), h) in zip(r, z, strict=True)
+    assert gedet.volume < V06649(configs.V06649M, registry=geant4.Registry()).volume
 
 
 def test_make_icpc(test_data_configs, reg_or_none):
