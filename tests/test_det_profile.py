@@ -180,7 +180,7 @@ def test_make_v02160a(reg_or_none):
 
 
 def test_null_enrichment(reg_or_none):
-    metadata = configs.V07646A
+    metadata = copy.deepcopy(configs.V07646A)
     metadata.production.enrichment = None
     with pytest.raises(ValueError):
         make_hpge(metadata, registry=reg_or_none, name="my_gedet")
